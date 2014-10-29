@@ -17,7 +17,7 @@ abstract class VComponent extends Component {
     assert(_isAttached == false);
 
     _vTree = build();
-    // TODO: document fragment?
+    // NOTE: tried doc fragment, it just makes it slower
     for (var i = 0; i < _vTree.length; i++) {
       final node = _vTree[i];
       element.append(node.render());
@@ -33,6 +33,7 @@ abstract class VComponent extends Component {
 
     if (_isDirty) {
       final newVTree = build();
+      assert(newVTree != null);
       final patch = v.diffChildren(_vTree, newVTree);
       _vTree = newVTree;
       if (patch != null) {

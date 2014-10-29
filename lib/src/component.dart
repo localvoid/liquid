@@ -26,12 +26,13 @@ abstract class Component extends ComponentBase {
       var p = parent;
       var c = this;
       while (p != null) {
-        p._addInvalidatedChild(c);
         // if component is already have invalidated children, it means that parents
         // already know that there is a dirty component below
         if (p._invalidatedChildren != null) {
+          p._addInvalidatedChild(c);
           break;
         }
+        p._addInvalidatedChild(c);
         c = p;
         p = p.parent;
       }

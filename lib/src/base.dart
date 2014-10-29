@@ -28,6 +28,9 @@ abstract class ComponentBase {
     assert(c._next == null);
 
     c._next = _children;
+    if (_children != null) {
+      _children._prev = c;
+    }
     _children = c;
   }
 
@@ -38,9 +41,11 @@ abstract class ComponentBase {
       c._next = null;
     } else {
       c._prev._next = c._next;
-      c._next._prev = c._prev;
+      if (c._next != null) {
+        c._next._prev = c._prev;
+        c._next = null;
+      }
       c._prev = null;
-      c._next = null;
     }
   }
 
@@ -49,6 +54,9 @@ abstract class ComponentBase {
     assert(c._invalidatedNext == null);
 
     c._invalidatedNext = _invalidatedChildren;
+    if (_invalidatedChildren != null) {
+      _invalidatedChildren._invalidatedPrev = c;
+    }
     _invalidatedChildren = c;
   }
 
@@ -58,18 +66,24 @@ abstract class ComponentBase {
       c._invalidatedNext = null;
     } else {
       c._invalidatedPrev._invalidatedNext = c._invalidatedNext;
-      c._invalidatedNext._invalidatedPrev = c._invalidatedPrev;
+      if (c._invalidatedNext != null) {
+        c._invalidatedNext._invalidatedPrev = c._invalidatedPrev;
+        c._invalidatedNext = null;
+      }
       c._invalidatedPrev = null;
-      c._invalidatedNext = null;
     }
   }
 
   void update() {
     var c = _invalidatedChildren;
     while (c != null) {
+      final next = c._invalidatedNext;
       c.update();
-      c = c._invalidatedNext;
+      c._invalidatedPrev = null;
+      c._invalidatedNext = null;
+      c = next;
     }
+    _invalidatedChildren = null;
   }
 
   /// update/patch phase
