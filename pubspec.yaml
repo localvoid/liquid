@@ -1,0 +1,6 @@
+name: liquid
+description: Liquid
+version: 0.0.1
+dependencies:
+  vdom:
+    git: git://github.com/localvoid/vdom.git
