@@ -39,7 +39,10 @@ abstract class Component extends ComponentBase {
   /// Each Component is responsible in creating of its own html Element.
   ///
   /// MainLoop state: DomWrite
-  Component(ComponentBase parent, [this.element = null]) : super(parent) {
+  Component(ComponentBase parent, this.element,
+      {Symbol className: null, Object key: null})
+      : super(parent: parent, key: key, className: className) {
+
     assert(parent != null);
     parent._addChild(this);
   }

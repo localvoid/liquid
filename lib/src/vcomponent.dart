@@ -51,7 +51,8 @@ class VDomComponent extends v.Node {
   final Function _initFunction;
   Component _component = null;
 
-  VDomComponent(Object key, this._initFunction) : super(key) {
+  VDomComponent(Object key, this._initFunction, [Symbol className = null])
+      : super(key) {
     assert(_initFunction != null);
   }
 

@@ -6,6 +6,8 @@ part of liquid;
 
 abstract class ComponentBase {
   final ComponentBase parent;
+  final Symbol className;
+  final Object key;
 
   // intrusive hlist of children components
   ComponentBase _children = null;
@@ -34,7 +36,7 @@ abstract class ComponentBase {
   Stream<ComponentEvent> get onBroadcastEvent =>
       _onBroadcastEventController.stream;
 
-  ComponentBase([this.parent = null]);
+  ComponentBase({this.parent: null, this.key: null, this.className: null});
 
   /// MainLoop state: DomWrite
   void _addChild(ComponentBase c) {
@@ -134,11 +136,13 @@ abstract class ComponentBase {
   }
 
   /// Broadcast event to children
-  void broadcast(ComponentEvent e) {
+  void broadcast(ComponentEvent e, [Symbol selector]) {
     var c = _children;
     while (c != null) {
-      c._onBroadcastEventController.add(e);
-      c = c._next;
+      if (selector == null || c.className == selector) {
+        c._onBroadcastEventController.add(e);
+        c = c._next;
+      }
     }
   }
 }
