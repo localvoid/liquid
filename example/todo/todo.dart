@@ -81,9 +81,9 @@ class TodoApp extends VComponent {
         e.stopPropagation();
       }
     });
-    element.onInput.listen((e) {
-      if (e.target.matches('input')) {
-        inputText = e.target.value;
+    onEvent.listen((e) {
+      if (e.target is TextInputComponent) {
+        inputText = e.value;
       }
     });
   }
@@ -97,7 +97,7 @@ class TodoApp extends VComponent {
       new v.Element(0, 'h3', [new v.Text(0, 'TODO')]),
       TodoList.virtual(1, this, this.items),
       new v.Element(2, 'form', [
-        TextInputComponent.virtual(0, this, inputText),
+        TextInputComponent.virtual(99, this, inputText),
         new v.Element(1, 'button', [new v.Text(0, 'Add # ${items.length + 1}')])
         ])
       ];

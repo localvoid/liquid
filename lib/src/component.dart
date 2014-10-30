@@ -132,4 +132,9 @@ abstract class Component extends ComponentBase {
       c = c._next;
     }
   }
+
+  /// Emit event to parent
+  void emit(ComponentEvent e) {
+    parent._onEventController.add(e);
+  }
 }

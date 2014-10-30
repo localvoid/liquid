@@ -1,8 +1,11 @@
 part of liquid.components;
 
-/// Just an example
-///
-/// To properly implement it, we need to add custom events on top of components
+class TextInputEvent extends ComponentEvent {
+  final String value;
+
+  TextInputEvent(TextInputComponent target, this.value) : super(target);
+}
+
 class TextInputComponent extends Component {
   String _value;
 
@@ -10,6 +13,7 @@ class TextInputComponent extends Component {
       : super(parent, new InputElement(type: 'text')) {
     element.onInput.listen((_) {
       _value = (element as InputElement).value;
+      emit(new TextInputEvent(this, _value));
     });
   }
 

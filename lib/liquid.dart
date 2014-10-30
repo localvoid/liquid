@@ -4,9 +4,11 @@
 
 library liquid;
 
+import 'dart:async';
 import 'dart:html' as html;
 import 'package:vdom/vdom.dart' as v;
 
+part 'package:liquid/src/event.dart';
 part 'package:liquid/src/base.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';

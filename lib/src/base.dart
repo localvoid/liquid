@@ -20,6 +20,20 @@ abstract class ComponentBase {
   bool _isAttached = false;
   bool get isAttached => _isAttached;
 
+  final StreamController<ComponentEvent> _onEventController =
+      new StreamController<ComponentEvent>.broadcast();
+
+  /// Events from children
+  Stream<ComponentEvent> get onEvent =>
+      _onEventController.stream;
+
+  final StreamController<ComponentEvent> _onBroadcastEventController =
+      new StreamController<ComponentEvent>.broadcast();
+
+  /// Broadcasted events from parents
+  Stream<ComponentEvent> get onBroadcastEvent =>
+      _onBroadcastEventController.stream;
+
   ComponentBase([this.parent = null]);
 
   /// MainLoop state: DomWrite
@@ -115,6 +129,15 @@ abstract class ComponentBase {
     var c = _children;
     while (c != null) {
       c.detached();
+      c = c._next;
+    }
+  }
+
+  /// Broadcast event to children
+  void broadcast(ComponentEvent e) {
+    var c = _children;
+    while (c != null) {
+      c._onBroadcastEventController.add(e);
       c = c._next;
     }
   }
