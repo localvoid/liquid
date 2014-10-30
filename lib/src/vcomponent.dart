@@ -12,8 +12,9 @@ abstract class VComponent extends Component {
   /// Returns virtual tree for the current state
   List<v.Node> build();
 
-  /// update/patch phase
+  /// MainLoop state: DomWrite
   void render() {
+    assert(element != null);
     assert(_isAttached == false);
 
     _vTree = build();
@@ -27,8 +28,9 @@ abstract class VComponent extends Component {
     }
   }
 
-  /// update/patch phase
+  /// MainLoop state: DomWrite
   void update() {
+    assert(element != null);
     assert(_isAttached == true);
 
     if (_isDirty) {
@@ -39,22 +41,21 @@ abstract class VComponent extends Component {
       if (patch != null) {
         v.applyChildrenPatch(patch, element, _isAttached);
       }
-      _isDirty = false;
     }
 
     super.update();
   }
 }
 
-class VComponentElement extends v.Node {
+class VDomComponent extends v.Node {
   final Function _initFunction;
   Component _component = null;
 
-  VComponentElement(Object key, this._initFunction) : super(key) {
+  VDomComponent(Object key, this._initFunction) : super(key) {
     assert(_initFunction != null);
   }
 
-  v.NodePatch diff(VComponentElement other) {
+  v.NodePatch diff(VDomComponent other) {
     assert(other != null);
 
     // transfer component state
@@ -75,9 +76,10 @@ class VComponentElement extends v.Node {
 
   void detached() {
     _component.detached();
+    _component.dispose();
   }
 
   String toString() {
-    return (_component == null) ? 'VComponentElement[stateless]' : 'VComponent[$_component]';
+    return (_component == null) ? 'VDomComponent[stateless]' : 'VDomComponent[$_component]';
   }
 }

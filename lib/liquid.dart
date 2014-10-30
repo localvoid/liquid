@@ -11,3 +11,4 @@ part 'package:liquid/src/base.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';
 part 'package:liquid/src/root.dart';
+part 'package:liquid/src/update_loop.dart';

@@ -22,7 +22,7 @@ abstract class ComponentBase {
 
   ComponentBase([this.parent = null]);
 
-  /// update/patch phase
+  /// MainLoop state: DomWrite
   void _addChild(ComponentBase c) {
     assert(c._prev == null);
     assert(c._next == null);
@@ -34,7 +34,7 @@ abstract class ComponentBase {
     _children = c;
   }
 
-  /// update/patch phase
+  /// MainLoop state: DomWrite
   void _removeChild(ComponentBase c) {
     if (c._prev == null) {
       _children = c._next;
@@ -49,6 +49,7 @@ abstract class ComponentBase {
     }
   }
 
+  /// MainLoop state: any
   void _addInvalidatedChild(ComponentBase c) {
     assert(c._invalidatedPrev == null);
     assert(c._invalidatedNext == null);
@@ -60,6 +61,7 @@ abstract class ComponentBase {
     _invalidatedChildren = c;
   }
 
+  /// MainLoop state: DomWrite
   void _removeInvalidatedChild(ComponentBase c) {
     if (c._invalidatedPrev == null) {
       _invalidatedChildren = c._invalidatedNext;
@@ -74,6 +76,9 @@ abstract class ComponentBase {
     }
   }
 
+  /// Update dirty Components
+  ///
+  /// MainLoop state: DomWrite
   void update() {
     var c = _invalidatedChildren;
     while (c != null) {
@@ -86,7 +91,9 @@ abstract class ComponentBase {
     _invalidatedChildren = null;
   }
 
-  /// update/patch phase
+  /// Invoked when the Component is attached to the Document
+  ///
+  /// MainLoop state: DomWrite
   void attached() {
     assert(_isAttached == false);
 
@@ -99,7 +106,9 @@ abstract class ComponentBase {
     _isAttached = true;
   }
 
-  /// update/patch phase
+  /// Invoked when the Component is detached from the Document
+  ///
+  /// MainLoop state: DomWrite
   void detached() {
     assert(_isAttached == true);
 

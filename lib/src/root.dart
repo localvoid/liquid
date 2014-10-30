@@ -5,5 +5,20 @@
 part of liquid;
 
 class RootComponent extends ComponentBase {
+  final UpdateLoop loop;
 
+  RootComponent(this.loop);
+
+  void _addInvalidatedChild(ComponentBase c) {
+    if (_invalidatedChildren == null) {
+      loop.add(this);
+    }
+    super._addInvalidatedChild(c);
+  }
+
+  void injectComponent(Component c, html.Element parentElement) {
+    c.render();
+    parentElement.append(c.element);
+    c.attached();
+  }
 }
