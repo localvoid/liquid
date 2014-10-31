@@ -62,13 +62,12 @@ class UpdateLoop {
           _writeQueue.removeFirst();
         }
         fn();
-
-        while (_readQueue.isNotEmpty) {
-          final rq = _readQueue;
-          _readQueue = [];
-          for (var i = 0; i < rq.length; i++) {
-            rq[i]();
-          }
+      }
+      while (_readQueue.isNotEmpty) {
+        final rq = _readQueue;
+        _readQueue = [];
+        for (var i = 0; i < rq.length; i++) {
+          rq[i]();
         }
       }
     }
