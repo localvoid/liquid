@@ -5,9 +5,15 @@
 part of liquid;
 
 abstract class ComponentBase {
+  static const renderedFlag = 1;
+  static const attachedFlag = 1 << 1;
+  static const readDOMFlag  = 1 << 2;
+  static const cleanFlag    = 1 << 3;
+
   final ComponentBase parent;
-  final Symbol className;
   final Object key;
+  final Symbol className;
+  int _flags;
 
   // intrusive hlist of children components
   ComponentBase _children = null;
@@ -19,24 +25,21 @@ abstract class ComponentBase {
   ComponentBase _invalidatedPrev = null;
   ComponentBase _invalidatedNext = null;
 
-  bool _isAttached = false;
-  bool get isAttached => _isAttached;
+  bool get isAttached => (_flags & attachedFlag) == attachedFlag;
+  bool get isRendered => (_flags & renderedFlag) == renderedFlag;
+  bool get shouldReadDOM => (_flags & readDOMFlag) == readDOMFlag;
+  bool get isDirty => (_flags & cleanFlag) != cleanFlag;
 
-  final StreamController<ComponentEvent> _onEventController =
-      new StreamController<ComponentEvent>.broadcast();
+  set isRendered(bool v) {
+    if (v) {
+      _flags |= renderedFlag;
+    } else {
+      _flags &= ~renderedFlag;
+    }
+  }
 
-  /// Events from children
-  Stream<ComponentEvent> get onEvent =>
-      _onEventController.stream;
-
-  final StreamController<ComponentEvent> _onBroadcastEventController =
-      new StreamController<ComponentEvent>.broadcast();
-
-  /// Broadcasted events from parents
-  Stream<ComponentEvent> get onBroadcastEvent =>
-      _onBroadcastEventController.stream;
-
-  ComponentBase({this.parent: null, this.key: null, this.className: null});
+  ComponentBase({this.parent: null, this.key: null, this.className: null, int flags: 0})
+      : _flags = flags;
 
   /// MainLoop state: DomWrite
   void _addChild(ComponentBase c) {
@@ -95,11 +98,15 @@ abstract class ComponentBase {
   /// Update dirty Components
   ///
   /// MainLoop state: DomWrite
-  void update() {
+  void _update() {
+    _updateChildren();
+  }
+
+  void _updateChildren() {
     var c = _invalidatedChildren;
     while (c != null) {
       final next = c._invalidatedNext;
-      c.update();
+      c._update();
       c._invalidatedPrev = null;
       c._invalidatedNext = null;
       c = next;
@@ -111,7 +118,7 @@ abstract class ComponentBase {
   ///
   /// MainLoop state: DomWrite
   void attached() {
-    assert(_isAttached == false);
+    assert(!isAttached);
 
     var c = _children;
     while (c != null) {
@@ -119,28 +126,33 @@ abstract class ComponentBase {
       c = c._next;
     }
 
-    _isAttached = true;
+    _flags |= attachedFlag;
   }
 
   /// Invoked when the Component is detached from the Document
   ///
   /// MainLoop state: DomWrite
   void detached() {
-    assert(_isAttached == true);
+    assert(isAttached);
 
     var c = _children;
     while (c != null) {
       c.detached();
       c = c._next;
     }
+
+    _flags &= ~attachedFlag;
   }
+
+  void onEvent(ComponentEvent e) {}
+  void onBroadcastEvent(ComponentEvent e) {}
 
   /// Broadcast event to children
   void broadcast(ComponentEvent e, [Symbol selector]) {
     var c = _children;
     while (c != null) {
       if (selector == null || c.className == selector) {
-        c._onBroadcastEventController.add(e);
+        c.onBroadcastEvent(e);
         c = c._next;
       }
     }

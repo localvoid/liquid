@@ -7,52 +7,47 @@ part of liquid;
 abstract class VComponent extends Component {
   List<v.Node> _vTree;
 
-  VComponent(ComponentBase parent, html.Element element) : super(parent, element);
+  VComponent(ComponentBase parent,
+      html.Element element,
+      {Object key: null,
+       Symbol className: null,
+       int flags: 0})
+      : super(parent, element, key: key, className: className, flags: flags);
 
   /// Returns virtual tree for the current state
   List<v.Node> build();
 
-  /// MainLoop state: DomWrite
-  void render() {
+  void writeDOM() {
     assert(element != null);
-    assert(_isAttached == false);
+    final newVTree = build();
+    assert(newVTree != null);
 
-    _vTree = build();
-    // NOTE: tried doc fragment, it just makes it slower
-    for (var i = 0; i < _vTree.length; i++) {
-      final node = _vTree[i];
-      element.append(node.render());
-      if (_isAttached) {
-        node.attached();
-      }
-    }
-  }
-
-  /// MainLoop state: DomWrite
-  void update() {
-    assert(element != null);
-    assert(_isAttached == true);
-
-    if (_isDirty) {
-      final newVTree = build();
-      assert(newVTree != null);
+    if (isRendered) {
       final patch = v.diffChildren(_vTree, newVTree);
-      _vTree = newVTree;
       if (patch != null) {
-        v.applyChildrenPatch(patch, element, _isAttached);
+        v.applyChildrenPatch(patch, element, isAttached);
       }
+    } else {
+      // NOTE: tried doc fragment, it just makes it slower
+      for (var i = 0; i < newVTree.length; i++) {
+        final node = newVTree[i];
+        element.append(node.render());
+        if (isAttached) {
+          node.attached();
+        }
+      }
+      isRendered = true;
     }
-
-    super.update();
+    _vTree = newVTree;
   }
 }
 
 class VDomComponent extends v.Node {
-  final Function _initFunction;
+  static List<VDomComponent> _pool = new List<VDomComponent>();
+  Function _initFunction;
   Component _component = null;
 
-  VDomComponent(Object key, this._initFunction, [Symbol className = null])
-      : super(key) {
+  VDomComponent(Object key, this._initFunction) : super(key) {
     assert(_initFunction != null);
   }
 
@@ -67,7 +62,6 @@ class VDomComponent extends v.Node {
 
   html.Node render() {
     _component = _initFunction(null);
-    _component.render();
     return _component.element;
   }
 

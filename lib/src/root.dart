@@ -11,13 +11,12 @@ class RootComponent extends ComponentBase {
 
   void _addInvalidatedChild(ComponentBase c) {
     if (_invalidatedChildren == null) {
-      loop.add(this);
+      addInvalidatedRoot(this);
     }
     super._addInvalidatedChild(c);
   }
 
   void injectComponent(Component c, html.Element parentElement) {
-    c.render();
     parentElement.append(c.element);
     c.attached();
   }

@@ -43,8 +43,7 @@ class TextInputComponent extends Component {
     (element as InputElement).value = value;
   }
 
-  void update() {
+  void writeDOM() {
     (element as InputElement).value = value;
-    super.update();
   }
 }

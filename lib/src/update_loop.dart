@@ -1,30 +1,92 @@
 part of liquid;
 
+///
+/// loop {
+///   void readDOM() {}
+///   void writeDOM() {}
+///
+///   _update() {
+///     if (isDirty) {
+///       if (_readDOMFlag) {
+///         _readDOMQueue.add(this);
+///         return;
+///       } else {
+///         writeDOM();
+///       }
+///     }
+///     _updateChildren();
+///   }
+///
+///   _updateFinish() {
+///     writeDOM();
+///     _updateChildren();
+///   }
+///
+///   _updateChildren() {
+///     for (final c in children) {
+///       c._update();
+///     }
+///   }
+/// }
+///
+/// TODO: REFACTOR ALL THIS MESS!
 class UpdateLoop {
-  List<ComponentBase> _queue = [];
-  int _ref = -1;
+  /// List of invalidated root components
+  List<ComponentBase> _invalidatedRoots = [];
 
-  void add(ComponentBase c) {
-    if (_queue.isEmpty) {
-      _ref = html.window.requestAnimationFrame(_handleAnimationFrame);
+  /// readDOM queue
+  List<ComponentBase> _readDOMQueue = [];
+
+  /// RAF id
+  int _id = 0;
+
+  void addInvalidatedRoot(ComponentBase c) {
+    if (_id == 0) {
+      _id = html.window.requestAnimationFrame(_handleAnimationFrame);
     }
-    _queue.add(c);
+    _invalidatedRoots.add(c);
   }
 
   void _handleAnimationFrame(num t) {
-    _ref = -1;
-    while (_queue.isNotEmpty) {
-      _queue.removeLast().update();
+    _id = 0;
+
+    for (var i = 0; i < _invalidatedRoots.length; i++) {
+      _invalidatedRoots[i]._update();
+    }
+    _invalidatedRoots = [];
+
+    while (_readDOMQueue.isNotEmpty) {
+      final queue = _readDOMQueue;
+      _readDOMQueue = [];
+
+      for (var i = 0; i < queue.length; i++) {
+        queue[i].readDOM();
+      }
+      for (var i = 0; i < queue.length; i++) {
+        queue[i]._updateFinish();
+      }
     }
   }
 
   void forceUpdate() {
-    if (_ref != -1) {
-      html.window.cancelAnimationFrame(_ref);
-      _ref = -1;
-      while (_queue.isNotEmpty) {
-        _queue.removeLast().update();
-      }
+    if (_id != 0) {
+      html.window.cancelAnimationFrame(_id);
+      _id = 0;
+      _handleAnimationFrame(0);
     }
   }
+}
+
+final _updateLoop = new UpdateLoop();
+
+void addInvalidatedRoot(ComponentBase c) {
+  _updateLoop.addInvalidatedRoot(c);
+}
+
+void addReadDOM(ComponentBase c) {
+  _updateLoop._readDOMQueue.add(c);
+}
+
+void forceUpdate() {
+  _updateLoop.forceUpdate();
 }

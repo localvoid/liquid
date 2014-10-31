@@ -31,17 +31,15 @@ part of liquid;
 abstract class Component extends ComponentBase {
   html.Element element;
 
-  bool _isDirty = false;
-
-  /// Component is dirty and will be updated in DomWrite phase
-  bool get isDirty => _isDirty;
-
   /// Each Component is responsible in creating of its own html Element.
   ///
   /// MainLoop state: DomWrite
-  Component(ComponentBase parent, this.element,
-      {Symbol className: null, Object key: null})
-      : super(parent: parent, key: key, className: className) {
+  Component(ComponentBase parent,
+      this.element,
+      {Object key: null,
+       Symbol className: null,
+       int flags: 0})
+      : super(parent: parent, key: key, className: className, flags: flags) {
 
     assert(parent != null);
     parent._addChild(this);
@@ -59,8 +57,8 @@ abstract class Component extends ComponentBase {
   void invalidate() {
     assert(element != null);
 
-    if (!_isDirty) {
-      _isDirty = true;
+    if (!isDirty) {
+      _flags &= ~ComponentBase.cleanFlag;
       _propagateDirtyState();
     }
   }
@@ -85,11 +83,29 @@ abstract class Component extends ComponentBase {
   /// Initial subtree render
   ///
   /// MainLoop state: DomWrite
-  void render();
+  void readDOM() {}
+  void writeDOM();
 
-  void update() {
-    super.update();
-    _isDirty = false;
+  void _update() {
+    assert(element != null);
+    assert(isAttached);
+
+    if (isDirty) {
+      if (shouldReadDOM) {
+        // TODO: fix this! enqueue to read dom
+        readDOM();
+        return;
+      }
+      writeDOM();
+      _flags |= ComponentBase.cleanFlag;
+    }
+    _updateChildren();
+  }
+
+  void _updateFinish() {
+    writeDOM();
+    _flags |= ComponentBase.cleanFlag;
+    _updateChildren();
   }
 
   /// Component is disposed and can't be used anymore
@@ -104,18 +120,13 @@ abstract class Component extends ComponentBase {
   /// MainLoop state: DomWrite
   void attached() {
     assert(element != null);
-    assert(_isAttached == false);
+    assert(!isAttached);
 
-    _isAttached = true;
-    if (_isDirty) {
-      _propagateDirtyState();
+    if (isDirty) {
+      parent._addInvalidatedChild(this);
     }
 
-    var c = _children;
-    while (c != null) {
-      c.attached();
-      c = c._next;
-    }
+    super.attached();
   }
 
   /// Component is detached from the DOM
@@ -123,21 +134,17 @@ abstract class Component extends ComponentBase {
   /// MainLoop state: DomWrite
   void detached() {
     assert(element != null);
-    assert(_isAttached == true);
+    assert(isAttached);
 
-    if (_isDirty) {
+    if (isDirty) {
       parent._removeInvalidatedChild(this);
     }
 
-    var c = _children;
-    while (c != null) {
-      c.detached();
-      c = c._next;
-    }
+    super.detached();
   }
 
   /// Emit event to parent
   void emit(ComponentEvent e) {
-    parent._onEventController.add(e);
+    parent.onEvent(e);
   }
 }
