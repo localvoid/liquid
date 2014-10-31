@@ -75,10 +75,7 @@ abstract class ComponentBase {
   /// MainLoop state: DomWrite
   void attached() {
     assert(!isAttached);
-
-    if (isDirty) {
-      update();
-    }
+    _flags |= attachedFlag;
 
     var c = _children;
     while (c != null) {
@@ -86,7 +83,9 @@ abstract class ComponentBase {
       c = c._next;
     }
 
-    _flags |= attachedFlag;
+    if (isDirty) {
+      update();
+    }
   }
 
   /// Invoked when the Component is detached from the Document
@@ -94,14 +93,13 @@ abstract class ComponentBase {
   /// MainLoop state: DomWrite
   void detached() {
     assert(isAttached);
+    _flags &= ~attachedFlag;
 
     var c = _children;
     while (c != null) {
       c.detached();
       c = c._next;
     }
-
-    _flags &= ~attachedFlag;
   }
 
   void onEvent(ComponentEvent e) {}

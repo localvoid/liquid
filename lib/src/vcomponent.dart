@@ -41,7 +41,9 @@ abstract class VComponent extends Component {
         for (var i = 0; i < newVTree.length; i++) {
           final node = newVTree[i];
           element.append(node.render());
-          node.attached();
+          if (isAttached) {
+            node.attached();
+          }
         }
         isRendered = true;
       }
@@ -74,9 +76,7 @@ class VDomComponent extends v.Node {
   }
 
   void attached() {
-    if (_component.parent.isAttached) {
-      _component.attached();
-    }
+    _component.attached();
   }
 
   void detached() {
