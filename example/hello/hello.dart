@@ -35,8 +35,7 @@ class HelloComponent extends VComponent {
 }
 
 main() {
-  final updateLoop = new UpdateLoop();
-  final root = new RootComponent(updateLoop);
+  final root = new RootComponent();
   final hello = new HelloComponent(root, 'World');
   root.injectComponent(hello, querySelector('body'));
 }

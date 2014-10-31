@@ -67,6 +67,19 @@ class TodoList extends VComponent {
   }
 }
 
+class AmazingButton extends StaticTree {
+  AmazingButton(String name) : super(new ButtonElement()) {
+    element.classes.add('amazing-button');
+    element.text = name;
+  }
+
+  static VDomStaticTree virtual(Object key, String name) {
+    return new VDomStaticTree(key, () {
+      return new AmazingButton(name);
+    });
+  }
+}
+
 class TodoApp extends VComponent {
   final List<Item> items;
   String inputText = '';
@@ -77,7 +90,7 @@ class TodoApp extends VComponent {
 
   void _initEventListeners() {
     element.onClick.listen((e) {
-      if (e.target.matches('button')) {
+      if (e.target.matches('.amazing-button')) {
         _addItem(inputText);
         inputText = '';
         invalidate();
@@ -103,14 +116,13 @@ class TodoApp extends VComponent {
       TodoList.virtual(1, this, this.items),
       new v.Element(2, 'form', [
         TextInputComponent.virtual(0, this, className: #formInput, value: inputText),
-        new v.Element(1, 'button', [new v.Text(0, 'Add # ${items.length + 1}')])
+        AmazingButton.virtual(1, 'Add item')
         ])
       ];
   }
 }
 
 main() {
-  final updateLoop = new UpdateLoop();
-  final root = new RootComponent(updateLoop);
+  final root = new RootComponent();
   root.injectComponent(new TodoApp(root, []), querySelector('body'));
 }

@@ -43,7 +43,6 @@ abstract class VComponent extends Component {
 }
 
 class VDomComponent extends v.Node {
-  static List<VDomComponent> _pool = new List<VDomComponent>();
   Function _initFunction;
   Component _component = null;
 

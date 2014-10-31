@@ -5,9 +5,7 @@
 part of liquid;
 
 class RootComponent extends ComponentBase {
-  final UpdateLoop loop;
-
-  RootComponent(this.loop);
+  RootComponent();
 
   void _addInvalidatedChild(ComponentBase c) {
     if (_invalidatedChildren == null) {
