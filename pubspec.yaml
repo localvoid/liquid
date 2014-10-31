@@ -3,3 +3,4 @@ description: Liquid
 version: 0.0.1
 dependencies:
   vdom: '>=0.3.2'
+  collection: '>=1.0.0'

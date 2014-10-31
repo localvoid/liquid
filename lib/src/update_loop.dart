@@ -1,92 +1,84 @@
 part of liquid;
 
-///
-/// loop {
-///   void readDOM() {}
-///   void writeDOM() {}
-///
-///   _update() {
-///     if (isDirty) {
-///       if (_readDOMFlag) {
-///         _readDOMQueue.add(this);
-///         return;
-///       } else {
-///         writeDOM();
-///       }
-///     }
-///     _updateChildren();
-///   }
-///
-///   _updateFinish() {
-///     writeDOM();
-///     _updateChildren();
-///   }
-///
-///   _updateChildren() {
-///     for (final c in children) {
-///       c._update();
-///     }
-///   }
-/// }
-///
-/// TODO: REFACTOR ALL THIS MESS!
-class UpdateLoop {
-  /// List of invalidated root components
-  List<ComponentBase> _invalidatedRoots = [];
+class WriteGroup implements Comparable {
+  final int depth;
+  final List<Function> callbacks = [];
+  WriteGroup(this.depth);
 
-  /// readDOM queue
-  List<ComponentBase> _readDOMQueue = [];
+  int compareTo(WriteGroup other) => depth.compareTo(other.depth);
+}
+
+class UpdateLoop {
+  static UpdateLoop _instance = new UpdateLoop();
+
+  /// Write groups indexed by depth
+  List<WriteGroup> _writeGroups = [];
+  HeapPriorityQueue<WriteGroup> _writeQueue = new HeapPriorityQueue<WriteGroup>();
+
+  List<Function> _readQueue = [];
 
   /// RAF id
   int _id = 0;
 
-  void addInvalidatedRoot(ComponentBase c) {
+  static void read(Function fn) {
+    _instance._readQueue.add(fn);
+    _instance._requestAnimationFrame();
+  }
+
+  static void write(int depth, Function fn) {
+    final g = _instance.getWriteGroup(depth);
+    if (g.callbacks.isEmpty) {
+      _instance._writeQueue.add(g);
+    }
+    g.callbacks.add(fn);
+    _instance._requestAnimationFrame();
+  }
+
+  void _requestAnimationFrame() {
     if (_id == 0) {
       _id = html.window.requestAnimationFrame(_handleAnimationFrame);
     }
-    _invalidatedRoots.add(c);
+  }
+
+  WriteGroup getWriteGroup(int depth) {
+    if (depth >= _writeGroups.length) {
+      var i = _writeGroups.length;
+      while (i <= depth) {
+        _writeGroups.add(new WriteGroup(i++));
+      }
+    }
+    return _writeGroups[depth];
   }
 
   void _handleAnimationFrame(num t) {
     _id = 0;
 
-    for (var i = 0; i < _invalidatedRoots.length; i++) {
-      _invalidatedRoots[i]._update();
-    }
-    _invalidatedRoots = [];
+    /// Yeah, that is how batching should properly work :)
+    while (_writeQueue.isNotEmpty) {
+      while (_writeQueue.isNotEmpty) {
+        final group = _writeQueue.first;
+        final fn = group.callbacks.removeLast();
+        if (group.callbacks.isEmpty) {
+          _writeQueue.removeFirst();
+        }
+        fn();
 
-    while (_readDOMQueue.isNotEmpty) {
-      final queue = _readDOMQueue;
-      _readDOMQueue = [];
-
-      for (var i = 0; i < queue.length; i++) {
-        queue[i].readDOM();
-      }
-      for (var i = 0; i < queue.length; i++) {
-        queue[i]._updateFinish();
+        while (_readQueue.isNotEmpty) {
+          final rq = _readQueue;
+          _readQueue = [];
+          for (var i = 0; i < rq.length; i++) {
+            rq[i]();
+          }
+        }
       }
     }
   }
 
-  void forceUpdate() {
-    if (_id != 0) {
-      html.window.cancelAnimationFrame(_id);
-      _id = 0;
-      _handleAnimationFrame(0);
+  static void forceUpdate() {
+    if (_instance._id != 0) {
+      html.window.cancelAnimationFrame(_instance._id);
+      _instance._id = 0;
+      _instance._handleAnimationFrame(-1);
     }
   }
-}
-
-final _updateLoop = new UpdateLoop();
-
-void addInvalidatedRoot(ComponentBase c) {
-  _updateLoop.addInvalidatedRoot(c);
-}
-
-void addReadDOM(ComponentBase c) {
-  _updateLoop._readDOMQueue.add(c);
-}
-
-void forceUpdate() {
-  _updateLoop.forceUpdate();
 }

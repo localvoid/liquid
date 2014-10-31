@@ -14,31 +14,40 @@ abstract class VComponent extends Component {
        int flags: 0})
       : super(parent, element, key: key, className: className, flags: flags);
 
+  VComponent.x(ComponentBase parent,
+      html.Element element,
+      Object key,
+      Symbol className,
+      int flags)
+      : this(parent, element, key: key, className: className, flags: flags);
+
   /// Returns virtual tree for the current state
   List<v.Node> build();
 
-  void writeDOM() {
+  void update() {
     assert(element != null);
-    final newVTree = build();
-    assert(newVTree != null);
 
-    if (isRendered) {
-      final patch = v.diffChildren(_vTree, newVTree);
-      if (patch != null) {
-        v.applyChildrenPatch(patch, element, isAttached);
-      }
-    } else {
-      // NOTE: tried doc fragment, it just makes it slower
-      for (var i = 0; i < newVTree.length; i++) {
-        final node = newVTree[i];
-        element.append(node.render());
-        if (isAttached) {
+    if (isDirty) {
+      final newVTree = build();
+      assert(newVTree != null);
+
+      if (isRendered) {
+        final patch = v.diffChildren(_vTree, newVTree);
+        if (patch != null) {
+          v.applyChildrenPatch(patch, element, isAttached);
+        }
+      } else {
+        // NOTE: tried doc fragment, it just makes it slower
+        for (var i = 0; i < newVTree.length; i++) {
+          final node = newVTree[i];
+          element.append(node.render());
           node.attached();
         }
+        isRendered = true;
       }
-      isRendered = true;
+      _flags |= ComponentBase.cleanFlag;
+      _vTree = newVTree;
     }
-    _vTree = newVTree;
   }
 }
 
@@ -65,12 +74,13 @@ class VDomComponent extends v.Node {
   }
 
   void attached() {
-    _component.attached();
+    if (_component.parent.isAttached) {
+      _component.attached();
+    }
   }
 
   void detached() {
     _component.detached();
-    _component.dispose();
   }
 
   String toString() {

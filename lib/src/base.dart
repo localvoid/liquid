@@ -7,12 +7,12 @@ part of liquid;
 abstract class ComponentBase {
   static const renderedFlag = 1;
   static const attachedFlag = 1 << 1;
-  static const readDOMFlag  = 1 << 2;
-  static const cleanFlag    = 1 << 3;
+  static const cleanFlag    = 1 << 2;
 
   final ComponentBase parent;
   final Object key;
   final Symbol className;
+  final int depth;
   int _flags;
 
   // intrusive hlist of children components
@@ -20,14 +20,8 @@ abstract class ComponentBase {
   ComponentBase _prev = null;
   ComponentBase _next = null;
 
-  // intrusive hlist of invalidated children
-  ComponentBase _invalidatedChildren = null;
-  ComponentBase _invalidatedPrev = null;
-  ComponentBase _invalidatedNext = null;
-
   bool get isAttached => (_flags & attachedFlag) == attachedFlag;
   bool get isRendered => (_flags & renderedFlag) == renderedFlag;
-  bool get shouldReadDOM => (_flags & readDOMFlag) == readDOMFlag;
   bool get isDirty => (_flags & cleanFlag) != cleanFlag;
 
   set isRendered(bool v) {
@@ -38,7 +32,11 @@ abstract class ComponentBase {
     }
   }
 
-  ComponentBase({this.parent: null, this.key: null, this.className: null, int flags: 0})
+  void clean() {
+    _flags |= cleanFlag;
+  }
+
+  ComponentBase({this.parent: null, this.key: null, this.className: null, this.depth: 0, int flags: 0})
       : _flags = flags;
 
   /// MainLoop state: DomWrite
@@ -68,50 +66,8 @@ abstract class ComponentBase {
     }
   }
 
-  /// MainLoop state: any
-  void _addInvalidatedChild(ComponentBase c) {
-    assert(c._invalidatedPrev == null);
-    assert(c._invalidatedNext == null);
-
-    c._invalidatedNext = _invalidatedChildren;
-    if (_invalidatedChildren != null) {
-      _invalidatedChildren._invalidatedPrev = c;
-    }
-    _invalidatedChildren = c;
-  }
-
-  /// MainLoop state: DomWrite
-  void _removeInvalidatedChild(ComponentBase c) {
-    if (c._invalidatedPrev == null) {
-      _invalidatedChildren = c._invalidatedNext;
-      c._invalidatedNext = null;
-    } else {
-      c._invalidatedPrev._invalidatedNext = c._invalidatedNext;
-      if (c._invalidatedNext != null) {
-        c._invalidatedNext._invalidatedPrev = c._invalidatedPrev;
-        c._invalidatedNext = null;
-      }
-      c._invalidatedPrev = null;
-    }
-  }
-
-  /// Update dirty Components
-  ///
-  /// MainLoop state: DomWrite
-  void _update() {
-    _updateChildren();
-  }
-
-  void _updateChildren() {
-    var c = _invalidatedChildren;
-    while (c != null) {
-      final next = c._invalidatedNext;
-      c._update();
-      c._invalidatedPrev = null;
-      c._invalidatedNext = null;
-      c = next;
-    }
-    _invalidatedChildren = null;
+  void update() {
+    _flags |= cleanFlag;
   }
 
   /// Invoked when the Component is attached to the Document
@@ -119,6 +75,10 @@ abstract class ComponentBase {
   /// MainLoop state: DomWrite
   void attached() {
     assert(!isAttached);
+
+    if (isDirty) {
+      update();
+    }
 
     var c = _children;
     while (c != null) {

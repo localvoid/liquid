@@ -5,14 +5,7 @@
 part of liquid;
 
 class RootComponent extends ComponentBase {
-  RootComponent();
-
-  void _addInvalidatedChild(ComponentBase c) {
-    if (_invalidatedChildren == null) {
-      addInvalidatedRoot(this);
-    }
-    super._addInvalidatedChild(c);
-  }
+  RootComponent() : super(flags: ComponentBase.attachedFlag);
 
   void injectComponent(Component c, html.Element parentElement) {
     parentElement.append(c.element);

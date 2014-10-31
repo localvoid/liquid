@@ -5,6 +5,7 @@
 library liquid;
 
 import 'dart:html' as html;
+import 'package:collection/priority_queue.dart';
 import 'package:vdom/vdom.dart' as v;
 
 part 'package:liquid/src/event.dart';

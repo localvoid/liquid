@@ -39,11 +39,10 @@ class TextInputComponent extends Component {
     });
   }
 
-  void render() {
-    (element as InputElement).value = value;
-  }
-
-  void writeDOM() {
-    (element as InputElement).value = value;
+  void update() {
+    if (isDirty) {
+      (element as InputElement).value = value;
+      clean();
+    }
   }
 }

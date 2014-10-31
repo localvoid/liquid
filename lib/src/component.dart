@@ -39,7 +39,7 @@ abstract class Component extends ComponentBase {
       {Object key: null,
        Symbol className: null,
        int flags: 0})
-      : super(parent: parent, key: key, className: className, flags: flags) {
+      : super(parent: parent, key: key, className: className, depth: parent.depth + 1, flags: flags) {
 
     assert(parent != null);
     parent._addChild(this);
@@ -59,88 +59,8 @@ abstract class Component extends ComponentBase {
 
     if (!isDirty) {
       _flags &= ~ComponentBase.cleanFlag;
-      _propagateDirtyState();
+      UpdateLoop.write(depth, update);
     }
-  }
-
-  void _propagateDirtyState() {
-    // propagate info that one of the childrens is dirty
-    var p = parent;
-    var c = this;
-    while (p != null) {
-      // if component is already have invalidated children, it means that parents
-      // already know that there is a dirty component below
-      if (p._invalidatedChildren != null) {
-        p._addInvalidatedChild(c);
-        break;
-      }
-      p._addInvalidatedChild(c);
-      c = p;
-      p = p.parent;
-    }
-  }
-
-  /// Initial subtree render
-  ///
-  /// MainLoop state: DomWrite
-  void readDOM() {}
-  void writeDOM();
-
-  void _update() {
-    assert(element != null);
-    assert(isAttached);
-
-    if (isDirty) {
-      if (shouldReadDOM) {
-        // TODO: fix this! enqueue to read dom
-        readDOM();
-        return;
-      }
-      writeDOM();
-      _flags |= ComponentBase.cleanFlag;
-    }
-    _updateChildren();
-  }
-
-  void _updateFinish() {
-    writeDOM();
-    _flags |= ComponentBase.cleanFlag;
-    _updateChildren();
-  }
-
-  /// Component is disposed and can't be used anymore
-  ///
-  /// MainLoop state: DomWrite
-  void dispose() {
-    parent._removeChild(this);
-  }
-
-  /// Component is attached to the DOM
-  ///
-  /// MainLoop state: DomWrite
-  void attached() {
-    assert(element != null);
-    assert(!isAttached);
-
-    if (isDirty) {
-      parent._addInvalidatedChild(this);
-    }
-
-    super.attached();
-  }
-
-  /// Component is detached from the DOM
-  ///
-  /// MainLoop state: DomWrite
-  void detached() {
-    assert(element != null);
-    assert(isAttached);
-
-    if (isDirty) {
-      parent._removeInvalidatedChild(this);
-    }
-
-    super.detached();
   }
 
   /// Emit event to parent
