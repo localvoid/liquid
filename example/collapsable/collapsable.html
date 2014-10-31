@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>collapsable</title>
+
+    <style>
+    .collapsable {
+      background: #ccc;
+      overflow: hidden;
+      height: 400px;
+      transition: height 1000ms;
+    }
+    .collapsable-open {
+    }
+    .collapsable-close {
+      height: 0;
+    }
+
+    </style>
+  </head>
+
+  <body>
+    <script type="application/dart" src="collapsable.dart"></script>
+    <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>
