@@ -53,7 +53,7 @@ class UpdateLoop {
   void _handleAnimationFrame(num t) {
     _id = 0;
 
-    /// Yeah, that is how batching should properly work :)
+    /// TODO: Convert to dep gragh with futures
     while (_writeQueue.isNotEmpty) {
       while (_writeQueue.isNotEmpty) {
         final group = _writeQueue.first;

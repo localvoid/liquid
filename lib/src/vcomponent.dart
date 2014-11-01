@@ -4,6 +4,22 @@
 
 part of liquid;
 
+/// Lazy component reference
+class VRef<T extends Component> {
+  final Function _onAttached;
+  T _component;
+  T get get => _component;
+
+  VRef([this._onAttached = null]);
+
+  void set(T c) {
+    _component = c;
+    if (_onAttached != null) {
+      _onAttached(c);
+    }
+  }
+}
+
 abstract class VComponent extends Component {
   List<v.Node> _vTree;
 
