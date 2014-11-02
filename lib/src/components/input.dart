@@ -1,30 +1,32 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid.components;
 
 class TextInputComponent extends Component {
   final bool _controlled;
-  String _value;
-  String get value => _value;
+  String get value => (element as InputElement).value;
   set value(String newValue) {
-    if (_value != newValue) {
-      _value = newValue;
-      (element as InputElement).value = value;
+    InputElement e = element;
+    if (e.value != newValue) {
+      e.value = newValue;
     }
   }
 
-  bool get isEmpty => _value.isEmpty;
-  bool get isNotEmpty => _value.isNotEmpty;
+  bool get isEmpty => value.isEmpty;
+  bool get isNotEmpty => value.isNotEmpty;
 
   TextInputComponent(Object key, ComponentBase parent,
-      {Symbol className, String value: null,
+      {Symbol type, String value: null,
        Map<String, String> attributes: null})
       : _controlled = value == null ? false : true,
-        _value = value,
         super(parent, new InputElement(type: 'text'),
               key: key,
-              className: className,
+              type: type,
               flags: ComponentBase.cleanFlag) {
-    if (_value != null) {
-      (element as InputElement).value = value;
+    if (value != null) {
+      this.value = value;
     }
     if (attributes != null) {
       attributes.forEach((k, v) {
@@ -34,14 +36,14 @@ class TextInputComponent extends Component {
   }
 
   static VDomComponent virtual(Object key, ComponentBase parent,
-                              {Symbol className,
+                              {Symbol type,
                                String value: null,
                                Map<String, String> attributes: null,
                                VRef<TextInputComponent> ref: null}) {
     return new VDomComponent(key, (component) {
       if (component == null) {
         component = new TextInputComponent(key, parent,
-            className: className,
+            type: type,
             value: value,
             attributes: attributes);
         if (ref != null) {
@@ -49,7 +51,9 @@ class TextInputComponent extends Component {
         }
         return component;
       }
-      component.value = value;
+      if (component._controlled) {
+        component.value = value;
+      }
     });
   }
 }

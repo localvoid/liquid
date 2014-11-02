@@ -9,7 +9,7 @@ import 'dart:html' as html;
 import 'package:collection/priority_queue.dart';
 import 'package:vdom/vdom.dart' as v;
 
-part 'package:liquid/src/utils.dart';
+part 'package:liquid/src/helpers.dart';
 part 'package:liquid/src/event.dart';
 part 'package:liquid/src/static_tree.dart';
 part 'package:liquid/src/base.dart';

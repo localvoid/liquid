@@ -9,9 +9,10 @@ abstract class ComponentBase {
   static const attachedFlag = 1 << 1;
   static const cleanFlag    = 1 << 2;
 
+  final html.Element element;
   final ComponentBase parent;
   final Object key;
-  final Symbol className;
+  final Symbol type;
   final int depth;
   int _flags;
 
@@ -32,11 +33,20 @@ abstract class ComponentBase {
     }
   }
 
-  void clean() {
-    _flags |= cleanFlag;
+  set isDirty(bool v) {
+    if (v) {
+      _flags &= ~cleanFlag;
+    } else {
+      _flags |= cleanFlag;
+    }
   }
 
-  ComponentBase({this.parent: null, this.key: null, this.className: null, this.depth: 0, int flags: 0})
+  ComponentBase(this.element,
+                {this.parent: null,
+                 this.key: null,
+                 this.type: null,
+                 this.depth: 0,
+                 int flags: 0})
       : _flags = flags;
 
   /// MainLoop state: DomWrite
@@ -67,6 +77,10 @@ abstract class ComponentBase {
   }
 
   void update() {
+    updateFinish();
+  }
+
+  void updateFinish() {
     _flags |= cleanFlag;
   }
 
@@ -75,6 +89,7 @@ abstract class ComponentBase {
   /// MainLoop state: DomWrite
   void attached() {
     assert(!isAttached);
+    parent._addChild(this);
     _flags |= attachedFlag;
 
     var c = _children;
@@ -93,6 +108,7 @@ abstract class ComponentBase {
   /// MainLoop state: DomWrite
   void detached() {
     assert(isAttached);
+    parent._removeChild(this);
     _flags &= ~attachedFlag;
 
     var c = _children;
@@ -102,17 +118,57 @@ abstract class ComponentBase {
     }
   }
 
+  // Do we really need this events stuff?
   void onEvent(ComponentEvent e) {}
   void onBroadcastEvent(ComponentEvent e) {}
 
   /// Broadcast event to children
-  void broadcast(ComponentEvent e, [Symbol selector]) {
+  void broadcast(ComponentEvent e, [Symbol type]) {
     var c = _children;
     while (c != null) {
-      if (selector == null || c.className == selector) {
+      if (type == null || c.type == type) {
         c.onBroadcastEvent(e);
         c = c._next;
       }
     }
+  }
+
+  Component findByKey(Object key) {
+    var c = _children;
+    while (c != null) {
+      if (c.key == key) {
+        return c;
+      }
+      c = c._next;
+    }
+    return null;
+  }
+
+  Component findByType(Symbol type) {
+    var c = _children;
+    while (c != null) {
+      if (c.type == type) {
+        return c;
+      }
+      c = c._next;
+    }
+    return null;
+  }
+
+  void append(Component c) {
+    element.append(c.element);
+    c.attached();
+  }
+
+  html.Element queryMatchingParent(html.Element e, String selector) {
+    final sentinel = element.parent;
+    do {
+      if (e.matches(selector)) {
+        return e;
+      }
+      e = e.parent;
+    } while (e != null || identical(e, sentinel));
+
+    return null;
   }
 }

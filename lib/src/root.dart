@@ -5,10 +5,6 @@
 part of liquid;
 
 class RootComponent extends ComponentBase {
-  RootComponent() : super(flags: ComponentBase.attachedFlag);
-
-  void injectComponent(Component c, html.Element parentElement) {
-    parentElement.append(c.element);
-    c.attached();
-  }
+  RootComponent.mount(html.Element element)
+      : super(element, flags: ComponentBase.attachedFlag);
 }

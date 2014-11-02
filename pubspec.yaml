@@ -2,5 +2,5 @@ name: liquid
 description: Liquid
 version: 0.0.1
 dependencies:
-  vdom: '>=0.3.2'
+  vdom: '>=0.3.4'
   collection: '>=1.0.0'

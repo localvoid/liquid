@@ -1,6 +1,10 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid.components;
 
-class CheckBox extends Component {
+class CheckBoxComponent extends Component {
   final bool _controlled;
   bool _checked;
   bool get checked => _checked;
@@ -11,14 +15,14 @@ class CheckBox extends Component {
     }
   }
 
-  CheckBox(Object key, ComponentBase parent,
-      {Symbol className, bool checked: null,
+  CheckBoxComponent(Object key, ComponentBase parent,
+      {Symbol type, bool checked: null,
        Map<String, String> attributes: null})
       : _controlled = checked == null ? false : true,
         _checked = checked,
         super(parent, new InputElement(type: 'checkbox'),
               key: key,
-              className: className,
+              type: type,
               flags: ComponentBase.cleanFlag) {
     if (checked != null) {
       (element as InputElement).checked = checked;
@@ -31,13 +35,13 @@ class CheckBox extends Component {
   }
 
   static VDomComponent virtual(Object key, ComponentBase parent,
-                              {Symbol className, bool checked: null,
+                              {Symbol type, bool checked: null,
                                Map<String, String> attributes: null,
-                               VRef<CheckBox> ref: null}) {
+                               VRef<CheckBoxComponent> ref: null}) {
     return new VDomComponent(key, (component) {
       if (component == null) {
-        component = new CheckBox(key, parent,
-            className: className,
+        component = new CheckBoxComponent(key, parent,
+            type: type,
             checked: checked,
             attributes: attributes);
         if (ref != null) {

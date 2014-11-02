@@ -1,8 +1,12 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid;
 
 class WriteGroup implements Comparable {
   final int depth;
-  final List<Function> callbacks = [];
+  final List callbacks = [];
   WriteGroup(this.depth);
 
   int compareTo(WriteGroup other) => depth.compareTo(other.depth);
@@ -14,6 +18,8 @@ class UpdateLoop {
   /// Write groups indexed by depth
   List<WriteGroup> _writeGroups = [];
   HeapPriorityQueue<WriteGroup> _writeQueue = new HeapPriorityQueue<WriteGroup>();
+
+  Completer _readCompleter;
 
   List<Function> _readQueue = [];
 
@@ -53,7 +59,6 @@ class UpdateLoop {
   void _handleAnimationFrame(num t) {
     _id = 0;
 
-    /// TODO: Convert to dep gragh with futures
     while (_writeQueue.isNotEmpty) {
       while (_writeQueue.isNotEmpty) {
         final group = _writeQueue.first;

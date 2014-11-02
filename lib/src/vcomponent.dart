@@ -26,16 +26,9 @@ abstract class VComponent extends Component {
   VComponent(ComponentBase parent,
       html.Element element,
       {Object key: null,
-       Symbol className: null,
+       Symbol type: null,
        int flags: 0})
-      : super(parent, element, key: key, className: className, flags: flags);
-
-  VComponent.x(ComponentBase parent,
-      html.Element element,
-      Object key,
-      Symbol className,
-      int flags)
-      : this(parent, element, key: key, className: className, flags: flags);
+      : super(parent, element, key: key, type: type, flags: flags);
 
   /// Returns virtual tree for the current state
   List<v.Node> build();
@@ -43,29 +36,26 @@ abstract class VComponent extends Component {
   void update() {
     assert(element != null);
 
-    if (isDirty) {
-      final newVTree = build();
-      assert(newVTree != null);
+    final newVTree = build();
+    assert(newVTree != null);
 
-      if (isRendered) {
-        final patch = v.diffChildren(_vTree, newVTree);
-        if (patch != null) {
-          v.applyChildrenPatch(patch, element, isAttached);
-        }
-      } else {
-        // NOTE: tried doc fragment, it just makes it slower
-        for (var i = 0; i < newVTree.length; i++) {
-          final node = newVTree[i];
-          element.append(node.render());
-          if (isAttached) {
-            node.attached();
-          }
-        }
-        isRendered = true;
+    if (isRendered) {
+      final patch = v.diffChildren(_vTree, newVTree);
+      if (patch != null) {
+        v.applyChildrenPatch(patch, element, isAttached);
       }
-      _flags |= ComponentBase.cleanFlag;
-      _vTree = newVTree;
+    } else {
+      for (var i = 0; i < newVTree.length; i++) {
+        final node = newVTree[i];
+        element.append(node.render());
+        if (isAttached) {
+          node.attached();
+        }
+      }
+      isRendered = true;
     }
+    _vTree = newVTree;
+    super.update();
   }
 }
 
@@ -100,6 +90,8 @@ class VDomComponent extends v.Node {
   }
 
   String toString() {
-    return (_component == null) ? 'VDomComponent[stateless]' : 'VDomComponent[$_component]';
+    return (_component == null)
+        ? 'VDomComponent[stateless]'
+        : 'VDomComponent[$_component]';
   }
 }
