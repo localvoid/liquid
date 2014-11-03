@@ -6,15 +6,14 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class Box extends VComponent {
   int count = 0;
 
   Box(ComponentBase parent, this.count)
-      : super(parent, new DivElement()) {
-    element.classes.add('box-view');
-  }
+      : super(parent, new DivElement());
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -22,16 +21,17 @@ class Box extends VComponent {
     final color = count % 255;
     final content = count % 100;
 
-    return [new v.Element(0, 'div', [new v.Text(0, content.toString())], null, ['box'], {
+    return vdom.div(0, [new v.Element(0, 'div', [new v.Text(0, content.toString())], null, ['box'], {
       'top': '${top}px',
       'left': '${left}px',
       'background': 'rgb(0, 0, $color)'
-    })];
+    })], null, ['box-view']);
   }
 
   void updateProperties(int newCount) {
     if (count != newCount) {
       count = newCount;
+      isDirty = true;
       update();
     }
   }
@@ -51,16 +51,14 @@ class App extends VComponent {
   List<int> items;
 
   App(ComponentBase parent, this.items)
-      : super(parent, new DivElement()) {
-    element.classes.add('grid');
-  }
+      : super(parent, new DivElement());
 
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
       result.add(Box.virtual(i, this, items[i]));
     }
-    return result;
+    return vdom.div(0, result, null, ['grid']);
   }
 }
 

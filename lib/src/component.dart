@@ -26,7 +26,13 @@ abstract class Component extends ComponentBase {
 
     if (!isDirty) {
       _flags &= ~ComponentBase.cleanFlag;
-      UpdateLoop.write(depth, update);
+      UpdateLoop.write(depth, _update);
+    }
+  }
+
+  void _update() {
+    if (isAttached && isDirty) {
+      update();
     }
   }
 

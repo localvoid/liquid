@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class BasicComponent extends VComponent {
@@ -20,14 +21,15 @@ class BasicComponent extends VComponent {
   BasicComponent(ComponentBase parent, this._elapsed)
       : super(parent, new ParagraphElement());
 
-  List<v.Node> build() {
-    return [new v.Text(0, 'Liquid has been successfully '
-        'running for $elapsedSeconds seconds.')];
+  build() {
+    return vdom.p(0, [vdom.t(0, 'Liquid has been successfully '
+        'running for $elapsedSeconds seconds.')]);
   }
 
   void updateProperties(int newElapsed) {
     if (elapsed != newElapsed) {
       elapsed = newElapsed;
+      isDirty = true;
       update();
     }
   }

@@ -4,6 +4,7 @@
 
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 import 'package:liquid/components.dart';
 
@@ -24,11 +25,12 @@ class TodoItem extends VComponent {
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
       item = newItem;
+      isDirty = true;
       update();
     }
   }
 
-  build() => [new v.Text(0, item.text)];
+  build() => vdom.li(0, [vdom.t(0, item.text)]);
 
   static VDomComponent virtual(Object key, ComponentBase parent, Item item) {
     return new VDomComponent(key, (component) {
@@ -46,13 +48,14 @@ class TodoList extends VComponent {
   TodoList(ComponentBase parent, this.items)
       : super(parent, new UListElement());
 
-  build() => items.map((i) => TodoItem.virtual(i.id, this, i)).toList();
+  build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, this, i)).toList());
 
   static VDomComponent virtual(Object key, ComponentBase parent, List<Item> items) {
     return new VDomComponent(key, (component) {
       if (component == null) {
         return new TodoList(parent, items);
       }
+      component.isDirty = true;
       component.update();
     });
   }
@@ -100,15 +103,15 @@ class TodoApp extends VComponent {
     items.add(new Item(text));
   }
 
-  List<v.Node> build() {
-    return [
-      new v.Element(0, 'h3', [new v.Text(0, 'TODO')]),
+  build() {
+    return vdom.div(0, [
+      vdom.h3(0, [vdom.t(0, 'TODO')]),
       TodoList.virtual(1, this, this.items),
-      new v.Element(2, 'form', [
+      vdom.form(2, [
         TextInputComponent.virtual(0, this, value: inputText),
         AmazingButton.virtual(1, 'Add item')
         ])
-      ];
+      ]);
   }
 }
 

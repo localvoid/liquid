@@ -21,7 +21,7 @@ class VRef<T extends Component> {
 }
 
 abstract class VComponent extends Component {
-  List<v.Node> _vTree;
+  v.Element _vElement;
 
   VComponent(ComponentBase parent,
       html.Element element,
@@ -31,30 +31,31 @@ abstract class VComponent extends Component {
       : super(parent, element, key: key, type: type, flags: flags);
 
   /// Returns virtual tree for the current state
-  List<v.Node> build();
+  v.Element build();
 
   void update() {
     assert(element != null);
 
-    final newVTree = build();
-    assert(newVTree != null);
+    if (!isAttached || !isDirty) {
+      return;
+    }
+
+    final newVElement = build();
+    assert(newVElement != null);
 
     if (isRendered) {
-      final patch = v.diffChildren(_vTree, newVTree);
+      final patch = _vElement.diff(newVElement);
       if (patch != null) {
-        v.applyChildrenPatch(patch, element, isAttached);
+        patch.apply(element, isAttached);
       }
     } else {
-      for (var i = 0; i < newVTree.length; i++) {
-        final node = newVTree[i];
-        element.append(node.render());
-        if (isAttached) {
-          node.attached();
-        }
+      newVElement.mount(element);
+      if (isAttached) {
+        newVElement.attached();
       }
       isRendered = true;
     }
-    _vTree = newVTree;
+    _vElement = newVElement;
     super.update();
   }
 }

@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class Collapsable extends VComponent {
@@ -14,7 +15,7 @@ class Collapsable extends VComponent {
   Collapsable(ComponentBase parent, this._collapsableChildren)
       : super(parent, new DivElement());
 
-  List<v.Node> build() => _collapsableChildren;
+  build() => vdom.div(0, _collapsableChildren);
 
   void update() {
     if (!isRendered) {
@@ -55,14 +56,15 @@ class BasicComponent extends VComponent {
     });
   }
 
-  List<v.Node> build() {
-    return [new v.Text(0, 'Liquid has been successfully '
-        'running for $elapsedSeconds seconds.')];
+  build() {
+    return vdom.p(0, [vdom.t(0, 'Liquid has been successfully '
+        'running for $elapsedSeconds seconds.')]);
   }
 
   void updateProperties(int newElapsed) {
     if (elapsed != newElapsed) {
       _elapsed = newElapsed;
+      isDirty = true;
       update();
     }
   }

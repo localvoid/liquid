@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html';
-import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class HelloComponent extends VComponent {
@@ -12,15 +12,8 @@ class HelloComponent extends VComponent {
   HelloComponent(ComponentBase parent, [this.name = 'Hello'])
       : super(parent, new DivElement());
 
-  List<v.Node> build() {
-    return [new v.Element(0, 'div', [new v.Text(0, 'Hello $name')])];
-  }
-
-  void updateProperties(String newName) {
-    if (name != newName) {
-      name = newName;
-      update();
-    }
+  build() {
+    return vdom.div(0, [vdom.t(0, 'Hello $name')]);
   }
 
   static VDomComponent virtual(Object key, ComponentBase parent,
@@ -29,7 +22,6 @@ class HelloComponent extends VComponent {
       if (component == null) {
         return new HelloComponent(parent, name);
       }
-      component.updateProperties(name);
     });
   }
 }

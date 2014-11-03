@@ -4,7 +4,7 @@
 
 part of liquid;
 
-void toggleClassName(html.Element element,
+bool toggleClassName(html.Element element,
                      bool oldValue, bool newValue,
                      String a, [String b = null]) {
   if (oldValue != newValue) {
@@ -20,4 +20,5 @@ void toggleClassName(html.Element element,
       }
     }
   }
+  return newValue;
 }

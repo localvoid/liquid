@@ -22,9 +22,15 @@ class UpdateLoop {
   Completer _readCompleter;
 
   List<Function> _readQueue = [];
+  List<Function> _afterQueue = [];
 
   /// RAF id
   int _id = 0;
+
+  static void after(Function fn) {
+    _instance._afterQueue.add(fn);
+    _instance._requestAnimationFrame();
+  }
 
   static void read(Function fn) {
     _instance._readQueue.add(fn);
@@ -76,6 +82,10 @@ class UpdateLoop {
         }
       }
     }
+    for (var i = 0; i < _afterQueue.length; i++) {
+      _afterQueue[i]();
+    }
+    _afterQueue = [];
   }
 
   static void forceUpdate() {
