@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:html';
-import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
@@ -21,11 +20,11 @@ class Box extends VComponent {
     final color = count % 255;
     final content = count % 100;
 
-    return vdom.div(0, [new v.Element(0, 'div', [new v.Text(0, content.toString())], null, ['box'], {
+    return vdom.div(0, [vdom.div(0, [vdom.t(content.toString())], classes: ['box'], styles: {
       'top': '${top}px',
       'left': '${left}px',
       'background': 'rgb(0, 0, $color)'
-    })], null, ['box-view']);
+    })], classes: ['box-view']);
   }
 
   void updateProperties(int newCount) {
@@ -58,7 +57,7 @@ class App extends VComponent {
     for (var i = 0; i < items.length; i++) {
       result.add(Box.virtual(i, this, items[i]));
     }
-    return vdom.div(0, result, null, ['grid']);
+    return vdom.div(0, result, classes: ['grid']);
   }
 }
 

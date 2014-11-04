@@ -2,5 +2,5 @@ name: liquid
 description: Library to build user interfaces
 version: 0.0.1
 dependencies:
-  vdom: '>=0.3.5'
+  vdom: '>=0.4.0'
   collection: '>=1.0.0'

@@ -18,15 +18,15 @@ class VDomStaticTree extends v.Node {
     assert(_initFunction != null);
   }
 
-  v.NodePatch diff(VDomStaticTree other) {
+  void sync(VDomStaticTree other, [bool isAttached = false]) {
     assert(other != null);
-
+    other.ref = ref;
     other._staticTree = _staticTree;
-    return null;
   }
 
   html.Node render() {
     _staticTree = _initFunction();
+    ref = _staticTree.element;
     return _staticTree.element;
   }
 

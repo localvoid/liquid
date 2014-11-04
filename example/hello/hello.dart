@@ -13,7 +13,7 @@ class HelloComponent extends VComponent {
       : super(parent, new DivElement());
 
   build() {
-    return vdom.div(0, [vdom.t(0, 'Hello $name')]);
+    return vdom.div(0, [vdom.t('Hello $name')]);
   }
 
   static VDomComponent virtual(Object key, ComponentBase parent,

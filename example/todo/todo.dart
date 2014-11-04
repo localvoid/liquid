@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html';
-import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 import 'package:liquid/components.dart';
@@ -30,7 +29,7 @@ class TodoItem extends VComponent {
     }
   }
 
-  build() => vdom.li(0, [vdom.t(0, item.text)]);
+  build() => vdom.li(0, [vdom.t(item.text)]);
 
   static VDomComponent virtual(Object key, ComponentBase parent, Item item) {
     return new VDomComponent(key, (component) {
@@ -105,7 +104,7 @@ class TodoApp extends VComponent {
 
   build() {
     return vdom.div(0, [
-      vdom.h3(0, [vdom.t(0, 'TODO')]),
+      vdom.h3(0, [vdom.t('TODO')]),
       TodoList.virtual(1, this, this.items),
       vdom.form(2, [
         TextInputComponent.virtual(0, this, value: inputText),

@@ -13,28 +13,21 @@ class Collapsable extends VComponent {
   List<v.Node> _collapsableChildren;
 
   Collapsable(ComponentBase parent, this._collapsableChildren)
-      : super(parent, new DivElement());
-
-  build() => vdom.div(0, _collapsableChildren);
-
-  void update() {
-    if (!isRendered) {
-      element.classes.add('collapsable');
-      element.onClick.listen((_) {
-        toggleCollapse();
-      });
-    }
-    super.update();
+      : super(parent, new DivElement()) {
+    element.onClick.listen((_) {
+      collapsed = true;
+      invalidate();
+    });
   }
 
-  void toggleCollapse() {
-    if (collapsed) {
-      element.classes.remove('collapsable-close');
-      element.classes.add('collapsable-open');
+  build() {
+    final classes = ['collapsable'];
+    if (!collapsed) {
+      classes.add('collapsable-open');
     } else {
-      element.classes.remove('collapsable-open');
-      element.classes.add('collapsable-close');
+      classes.add('collapsable-close');
     }
+    return vdom.div(0, _collapsableChildren, classes: classes);
   }
 }
 
@@ -57,7 +50,7 @@ class BasicComponent extends VComponent {
   }
 
   build() {
-    return vdom.p(0, [vdom.t(0, 'Liquid has been successfully '
+    return vdom.p(0, [vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
 

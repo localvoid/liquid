@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:html';
-import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
@@ -22,7 +21,7 @@ class BasicComponent extends VComponent {
       : super(parent, new ParagraphElement());
 
   build() {
-    return vdom.p(0, [vdom.t(0, 'Liquid has been successfully '
+    return vdom.p(0, [vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
 

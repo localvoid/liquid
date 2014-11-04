@@ -44,10 +44,7 @@ abstract class VComponent extends Component {
     assert(newVElement != null);
 
     if (isRendered) {
-      final patch = _vElement.diff(newVElement);
-      if (patch != null) {
-        patch.apply(element, isAttached);
-      }
+      _vElement.sync(newVElement, isAttached);
     } else {
       newVElement.mount(element);
       if (isAttached) {
@@ -68,18 +65,18 @@ class VDomComponent extends v.Node {
     assert(_initFunction != null);
   }
 
-  v.NodePatch diff(VDomComponent other) {
+  void sync(VDomComponent other, [bool isAttached = false]) {
     assert(other != null);
-
     // transfer component state
+    other.ref = ref;
     other._component = _component;
     other._initFunction(_component);
-    return null;
   }
 
   html.Node render() {
     _component = _initFunction(null);
-    return _component.element;
+    ref = _component.element;
+    return ref;
   }
 
   void attached() {
