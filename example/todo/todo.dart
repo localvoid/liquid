@@ -24,7 +24,6 @@ class TodoItem extends VComponent {
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
       item = newItem;
-      isDirty = true;
       update();
     }
   }
@@ -54,7 +53,6 @@ class TodoList extends VComponent {
       if (component == null) {
         return new TodoList(parent, items);
       }
-      component.isDirty = true;
       component.update();
     });
   }

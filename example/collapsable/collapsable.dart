@@ -57,7 +57,6 @@ class BasicComponent extends VComponent {
   void updateProperties(int newElapsed) {
     if (elapsed != newElapsed) {
       _elapsed = newElapsed;
-      isDirty = true;
       update();
     }
   }

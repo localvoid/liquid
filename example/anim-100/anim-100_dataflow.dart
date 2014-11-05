@@ -30,7 +30,6 @@ class Box extends VComponent {
   void updateProperties(int newCount) {
     if (count != newCount) {
       count = newCount;
-      isDirty = true;
       update();
     }
   }
@@ -68,6 +67,7 @@ main() {
   final app = new App(root, items);
   root.append(app);
 
+  /// I know that this is quite stupid :)
   new Timer.periodic(new Duration(), (t) {
     for (var i = 0; i < 100; i++) {
       items[i] += 1;

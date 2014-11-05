@@ -77,10 +77,6 @@ abstract class ComponentBase {
   }
 
   void update() {
-    updateFinish();
-  }
-
-  void updateFinish() {
     _flags |= cleanFlag;
   }
 

@@ -36,10 +36,6 @@ abstract class VComponent extends Component {
   void update() {
     assert(element != null);
 
-    if (!isAttached || !isDirty) {
-      return;
-    }
-
     final newVElement = build();
     assert(newVElement != null);
 
