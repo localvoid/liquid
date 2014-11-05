@@ -18,8 +18,8 @@ Our batching algorithm supports proper read/write batching, and not
 just write batching.
 
 And it is really FAST!
-[Here](localvoid.github.io/vdom-benchmark/components.html) is the
-benchmark for Composite Components.
+[Here](https://localvoid.github.io/vdom-benchmark/components.html) is
+the benchmark for Composite Components.
 
 First case of the benchmark is demonstrating switching from one "page"
 to another.  And the rest is about changes in lists, for example: chat
