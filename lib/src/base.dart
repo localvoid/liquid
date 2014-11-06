@@ -4,16 +4,42 @@
 
 part of liquid;
 
+/// Abstract base class for all Components
+///
+/// TODO: Add Iterator for traversing children
+/// TODO: Expose method that is registered in [UpdateLoop] when Component
+/// is invalidated.
 abstract class ComponentBase {
+  /// Component is rendered its subtree.
   static const renderedFlag = 1;
+
+  /// Component is attached to the DOM.
   static const attachedFlag = 1 << 1;
+
+  /// Component is clean. It is not dirtyFlag, just to make initial flags == 0
+  /// TODO: change to dirty?
   static const cleanFlag    = 1 << 2;
 
+  /// Components should have HtmlElement that it owns, it can be mounted to
+  /// an existing element, or create its own.
   final html.Element element;
+
+  /// Component's parent is used to establish parent-child relationship, in our
+  /// model parent-child relationship is not exactly the same as in DOM.
+  ///
+  /// Component can be inside of another Components subtree, but have different
+  /// parent.
   final ComponentBase parent;
+
+  /// Unique key
   final Object key;
+
+  /// Type
   final Symbol type;
+
+  /// Depth of the Component, used in [UpdateLoop] for write optimizations.
   final int depth;
+
   int _flags;
 
   // intrusive hlist of children components
@@ -21,10 +47,16 @@ abstract class ComponentBase {
   ComponentBase _prev = null;
   ComponentBase _next = null;
 
-  bool get isAttached => (_flags & attachedFlag) == attachedFlag;
+  /// Component is rendered its subtree.
   bool get isRendered => (_flags & renderedFlag) == renderedFlag;
+
+  /// Component is attached to the DOM.
+  bool get isAttached => (_flags & attachedFlag) == attachedFlag;
+
+  /// Component is dirty, and should be updated.
   bool get isDirty => (_flags & cleanFlag) != cleanFlag;
 
+  /// TODO: get rid of this?
   set isRendered(bool v) {
     if (v) {
       _flags |= renderedFlag;
@@ -33,6 +65,7 @@ abstract class ComponentBase {
     }
   }
 
+  /// TODO: get rid of this?
   set isDirty(bool v) {
     if (v) {
       _flags &= ~cleanFlag;
@@ -41,6 +74,9 @@ abstract class ComponentBase {
     }
   }
 
+  /// [ComponentBase] constructor
+  ///
+  /// Execution context: [UpdateLoop]:write
   ComponentBase(this.element,
                 {this.parent: null,
                  this.key: null,
@@ -49,7 +85,9 @@ abstract class ComponentBase {
                  int flags: 0})
       : _flags = flags;
 
-  /// MainLoop state: DomWrite
+  /// Execution context: [UpdateLoop]:write
+  ///
+  /// TODO: expose this to the API?
   void _addChild(ComponentBase c) {
     assert(c._prev == null);
     assert(c._next == null);
@@ -61,7 +99,9 @@ abstract class ComponentBase {
     _children = c;
   }
 
-  /// MainLoop state: DomWrite
+  /// Execution context: [UpdateLoop]:write
+  ///
+  /// TODO: expose this to the API?
   void _removeChild(ComponentBase c) {
     if (c._prev == null) {
       _children = c._next;
@@ -76,13 +116,14 @@ abstract class ComponentBase {
     }
   }
 
+  /// Update [Component]'s tag tree.
   void update() {
     _flags |= cleanFlag;
   }
 
-  /// Invoked when the Component is attached to the Document
+  /// Invoked when the Component is attached to the DOM.
   ///
-  /// MainLoop state: DomWrite
+  /// Execution context: [UpdateLoop]:write
   void attached() {
     assert(!isAttached);
     parent._addChild(this);
@@ -99,9 +140,9 @@ abstract class ComponentBase {
     }
   }
 
-  /// Invoked when the Component is detached from the Document
+  /// Invoked when the Component is detached from the DOM.
   ///
-  /// MainLoop state: DomWrite
+  /// Execution context: [UpdateLoop]:write
   void detached() {
     assert(isAttached);
     parent._removeChild(this);
@@ -114,7 +155,7 @@ abstract class ComponentBase {
     }
   }
 
-  // Do we really need this events stuff?
+  // TODO: do we really need this events stuff?
   void onEvent(ComponentEvent e) {}
   void onBroadcastEvent(ComponentEvent e) {}
 
@@ -129,6 +170,7 @@ abstract class ComponentBase {
     }
   }
 
+  /// Find child Component by [key]
   Component findByKey(Object key) {
     var c = _children;
     while (c != null) {
@@ -140,22 +182,33 @@ abstract class ComponentBase {
     return null;
   }
 
-  Component findByType(Symbol type) {
+  /// Find child Components by [type]
+  ///
+  /// TODO: return lazy iterator
+  List<Component> findByType(Symbol type) {
+    final result = [];
     var c = _children;
     while (c != null) {
       if (c.type == type) {
-        return c;
+        result.add(c);
       }
       c = c._next;
     }
-    return null;
+    return result;
   }
 
+  /// Append Component
+  ///
+  /// TODO: this is ugly.
   void append(Component c) {
     element.append(c.element);
     c.attached();
   }
 
+  /// Find html element that is between Component's root element and [e]
+  /// that matches [selector].
+  ///
+  /// TODO: rename?
   html.Element queryMatchingParent(html.Element e, String selector) {
     final sentinel = element.parent;
     do {

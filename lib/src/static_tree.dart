@@ -4,6 +4,7 @@
 
 part of liquid;
 
+/// TODO: Bad Example. Get rid of this.
 abstract class StaticTree {
   final html.Element element;
 

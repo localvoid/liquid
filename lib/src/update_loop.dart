@@ -4,6 +4,8 @@
 
 part of liquid;
 
+/// Callback groups that sorted by their depth to prevent
+/// unnecessary writes, when the parent removes its children.
 class WriteGroup implements Comparable {
   final int depth;
   final List callbacks = [];
@@ -12,6 +14,29 @@ class WriteGroup implements Comparable {
   int compareTo(WriteGroup other) => depth.compareTo(other.depth);
 }
 
+/// UpdateLoop is used to perform batched read and writes to the DOM.
+///
+/// The algorithm is quite simple:
+///
+/// ```
+/// while (_writePriorityQueue.isNotEmpty) {
+///   while (_writePriorityQueue.isNotEmpty) {
+///     runWriteTask(_writePriorityQueue.removeFirst());
+///   }
+///   while (_readQueue.isNotEmpty) {
+///     runReadTask(_readQueue.removeFirst());
+///   }
+/// }
+/// while (_animationQueue.isNotEmpty) {
+///   runAnimationTask(_animationQueue.removeFirst());
+/// }
+/// ```
+///
+/// It is implented in a slightly different way just to make it more
+/// efficient.
+///
+/// TODO: integrate Dart Zones
+/// TODO: add simple write queue for leaf nodes (animation mixin for comp?)
 class UpdateLoop {
   static UpdateLoop _instance = new UpdateLoop();
 
@@ -19,24 +44,25 @@ class UpdateLoop {
   List<WriteGroup> _writeGroups = [];
   HeapPriorityQueue<WriteGroup> _writeQueue = new HeapPriorityQueue<WriteGroup>();
 
-  Completer _readCompleter;
-
   List<Function> _readQueue = [];
   List<Function> _afterQueue = [];
 
   /// RAF id
   int _id = 0;
 
+  /// TODO: just use scheduleMicroTask
   static void after(Function fn) {
     _instance._afterQueue.add(fn);
     _instance._requestAnimationFrame();
   }
 
+  /// Add callback to the Read Queue
   static void read(Function fn) {
     _instance._readQueue.add(fn);
     _instance._requestAnimationFrame();
   }
 
+  /// Add callback to the Write Queue
   static void write(int depth, Function fn) {
     final g = _instance.getWriteGroup(depth);
     if (g.callbacks.isEmpty) {

@@ -2,9 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// TODO: move VRef and VDomComponent outside of this file, because
+/// they can work with raw Components, and VComponent is just Component
+/// that builds its subtree with virtual dom.
 part of liquid;
 
-/// Lazy component reference
+/// Lazy [Component] reference initialized when the Component is created
+/// by [VDomComponent] node in the virtual tree.
 class VRef<T extends Component> {
   final Function _onAttached;
   T _component;
@@ -20,6 +24,7 @@ class VRef<T extends Component> {
   }
 }
 
+/// Component that builds and updates its subtree using Virtual DOM.
 abstract class VComponent extends Component {
   v.Element _vElement;
 
@@ -53,6 +58,7 @@ abstract class VComponent extends Component {
   }
 }
 
+/// VDom Node for Components
 class VDomComponent extends v.Node {
   Function _initFunction;
   Component _component = null;

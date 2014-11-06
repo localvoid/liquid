@@ -4,8 +4,9 @@
 
 part of liquid;
 
+/// Raw DOM Component
 abstract class Component extends ComponentBase {
-  /// MainLoop state: DomWrite
+  /// Execution context: [UpdateLoop]:write
   Component(ComponentBase parent,
       html.Element element,
       {Object key: null,
@@ -20,7 +21,7 @@ abstract class Component extends ComponentBase {
     assert(parent != null);
   }
 
-  /// Mark Component as a dirty.
+  /// Add Component to the [UpdateLoop]:write queue
   void invalidate() {
     assert(element != null);
 
@@ -30,13 +31,14 @@ abstract class Component extends ComponentBase {
     }
   }
 
+  /// TODO: expose this in API in a better way.
   void _update() {
     if (isAttached && isDirty) {
       update();
     }
   }
 
-  /// Emit event to parent
+  /// Emit event to the parent.
   void emit(ComponentEvent e) {
     parent.onEvent(e);
   }

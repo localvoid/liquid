@@ -4,6 +4,7 @@
 
 part of liquid;
 
+/// Root Component
 class RootComponent extends ComponentBase {
   RootComponent.mount(html.Element element)
       : super(element, flags: ComponentBase.attachedFlag);
