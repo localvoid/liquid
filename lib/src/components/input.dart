@@ -21,10 +21,10 @@ class TextInputComponent extends Component {
       {Symbol type, String value: null,
        Map<String, String> attributes: null})
       : _controlled = value == null ? false : true,
-        super(parent, new InputElement(type: 'text'),
+        super(new InputElement(type: 'text'),
+              parent,
               key: key,
-              type: type,
-              flags: ComponentBase.cleanFlag) {
+              type: type) {
     if (value != null) {
       this.value = value;
     }

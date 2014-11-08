@@ -7,8 +7,8 @@ part of liquid;
 /// Raw DOM Component
 abstract class Component extends ComponentBase {
   /// Execution context: [UpdateLoop]:write
-  Component(ComponentBase parent,
-      html.Element element,
+  Component(html.Element element,
+      ComponentBase parent,
       {Object key: null,
        Symbol type: null,
        int flags: 0})
@@ -24,15 +24,16 @@ abstract class Component extends ComponentBase {
   /// Add Component to the [UpdateLoop]:write queue
   void invalidate() {
     assert(element != null);
-
     if (!isDirty) {
-      _flags &= ~ComponentBase.cleanFlag;
-      UpdateLoop.write(depth, _update);
+      _flags |= ComponentBase.dirtyFlag;
+      Scheduler.zone.run(() {
+        Scheduler.write(depth).then(_update);
+      });
     }
   }
 
   /// TODO: expose this in API in a better way.
-  void _update() {
+  void _update(_) {
     if (isAttached && isDirty) {
       update();
     }

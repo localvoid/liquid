@@ -20,10 +20,10 @@ class CheckBoxComponent extends Component {
        Map<String, String> attributes: null})
       : _controlled = checked == null ? false : true,
         _checked = checked,
-        super(parent, new InputElement(type: 'checkbox'),
+        super(new InputElement(type: 'checkbox'),
+              parent,
               key: key,
-              type: type,
-              flags: ComponentBase.cleanFlag) {
+              type: type) {
     if (checked != null) {
       (element as InputElement).checked = checked;
     }

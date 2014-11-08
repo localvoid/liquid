@@ -13,7 +13,7 @@ class Collapsable extends VComponent {
   List<v.Node> _collapsableChildren;
 
   Collapsable(ComponentBase parent, this._collapsableChildren)
-      : super(parent, new DivElement()) {
+      : super('div', parent) {
     element.onClick.listen((_) {
       collapsed = true;
       invalidate();
@@ -38,7 +38,7 @@ class BasicComponent extends VComponent {
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
   BasicComponent(ComponentBase parent, this._elapsed)
-      : super(parent, new ParagraphElement());
+      : super('p', parent);
 
   void attached() {
     super.attached();

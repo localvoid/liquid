@@ -10,7 +10,7 @@ class HelloComponent extends VComponent {
   String name;
 
   HelloComponent(ComponentBase parent, [this.name = 'Hello'])
-      : super(parent, new DivElement());
+      : super('div', parent);
 
   build() {
     return vdom.div(0, [vdom.t('Hello $name')]);

@@ -12,7 +12,7 @@ class Box extends VComponent {
   int count = 0;
 
   Box(ComponentBase parent, this.count)
-      : super(parent, new DivElement());
+      : super('div', parent);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -49,7 +49,7 @@ class App extends VComponent {
   List<int> items;
 
   App(ComponentBase parent, this.items)
-      : super(parent, new DivElement());
+      : super('div', parent);
 
   build() {
     final result = [];

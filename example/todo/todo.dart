@@ -19,7 +19,7 @@ class TodoItem extends VComponent {
   Item item;
 
   TodoItem(ComponentBase parent, this.item)
-      : super(parent, new LIElement());
+      : super('li', parent);
 
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
@@ -44,7 +44,7 @@ class TodoList extends VComponent {
   List<Item> items;
 
   TodoList(ComponentBase parent, this.items)
-      : super(parent, new UListElement());
+      : super('ul', parent);
 
   build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, this, i)).toList());
 
@@ -58,33 +58,22 @@ class TodoList extends VComponent {
   }
 }
 
-class AmazingButton extends StaticTree {
-  AmazingButton(String name) : super(new ButtonElement()) {
-    element.classes.add('amazing-button');
-    element.text = name;
-  }
-
-  static VDomStaticTree virtual(Object key, String name) {
-    return new VDomStaticTree(key, () {
-      return new AmazingButton(name);
-    });
-  }
-}
-
 class TodoApp extends VComponent {
   final List<Item> items;
   String inputText = '';
 
   TodoApp(ComponentBase parent, this.items)
-      : super(parent, new DivElement()) {
+      : super('div', parent) {
     _initEventListeners();
   }
 
   void _initEventListeners() {
-    element.onClick.matches('.amazing-button').listen((e) {
-      _addItem(inputText);
-      inputText = '';
-      invalidate();
+    element.onClick.matches('.add-button').listen((e) {
+      if (inputText.isNotEmpty) {
+        _addItem(inputText);
+        inputText = '';
+        invalidate();
+      }
       e.preventDefault();
       e.stopPropagation();
     });
@@ -106,7 +95,7 @@ class TodoApp extends VComponent {
       TodoList.virtual(1, this, this.items),
       vdom.form(2, [
         TextInputComponent.virtual(0, this, value: inputText),
-        AmazingButton.virtual(1, 'Add item')
+        vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
         ])
       ]);
   }

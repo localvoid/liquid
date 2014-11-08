@@ -18,7 +18,7 @@ class BasicComponent extends VComponent {
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
   BasicComponent(ComponentBase parent, this._elapsed)
-      : super(parent, new ParagraphElement());
+      : super('p', parent);
 
   build() {
     return vdom.p(0, [vdom.t('Liquid has been successfully '

@@ -7,7 +7,7 @@ part of liquid;
 /// Abstract base class for all Components
 ///
 /// TODO: Add Iterator for traversing children
-/// TODO: Expose method that is registered in [UpdateLoop] when Component
+/// TODO: Expose method that is registered in [Scheduler] when Component
 /// is invalidated.
 abstract class ComponentBase {
   /// Component is rendered its subtree.
@@ -16,9 +16,8 @@ abstract class ComponentBase {
   /// Component is attached to the DOM.
   static const attachedFlag = 1 << 1;
 
-  /// Component is clean. It is not dirtyFlag, just to make initial flags == 0
-  /// TODO: change to dirty?
-  static const cleanFlag    = 1 << 2;
+  /// Component is dirty and should be updated in the next Update Loop
+  static const dirtyFlag    = 1 << 2;
 
   /// Components should have HtmlElement that it owns, it can be mounted to
   /// an existing element, or create its own.
@@ -37,7 +36,7 @@ abstract class ComponentBase {
   /// Type
   final Symbol type;
 
-  /// Depth of the Component, used in [UpdateLoop] for write optimizations.
+  /// Depth of the Component, used in [Scheduler] for write optimizations.
   final int depth;
 
   int _flags;
@@ -54,7 +53,7 @@ abstract class ComponentBase {
   bool get isAttached => (_flags & attachedFlag) == attachedFlag;
 
   /// Component is dirty, and should be updated.
-  bool get isDirty => (_flags & cleanFlag) != cleanFlag;
+  bool get isDirty => (_flags & dirtyFlag) == dirtyFlag;
 
   /// TODO: get rid of this?
   set isRendered(bool v) {
@@ -68,9 +67,9 @@ abstract class ComponentBase {
   /// TODO: get rid of this?
   set isDirty(bool v) {
     if (v) {
-      _flags &= ~cleanFlag;
+      _flags |= dirtyFlag;
     } else {
-      _flags |= cleanFlag;
+      _flags &= ~dirtyFlag;
     }
   }
 
@@ -118,7 +117,7 @@ abstract class ComponentBase {
 
   /// Update [Component]'s tag tree.
   void update() {
-    _flags |= cleanFlag;
+    _flags &= ~dirtyFlag;
   }
 
   /// Invoked when the Component is attached to the DOM.
@@ -128,16 +127,6 @@ abstract class ComponentBase {
     assert(!isAttached);
     parent._addChild(this);
     _flags |= attachedFlag;
-
-    var c = _children;
-    while (c != null) {
-      c.attached();
-      c = c._next;
-    }
-
-    if (isDirty) {
-      update();
-    }
   }
 
   /// Invoked when the Component is detached from the DOM.
@@ -203,6 +192,7 @@ abstract class ComponentBase {
   void append(Component c) {
     element.append(c.element);
     c.attached();
+    c.update();
   }
 
   /// Find html element that is between Component's root element and [e]
