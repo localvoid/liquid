@@ -27,12 +27,6 @@ First case of the benchmark is demonstrating switching from one "page"
 to another. And the rest is about changes in lists, for example: chat
 window with user list or datatable.
 
-## Server-Side rendering
-
-There won't be any server-side rendering support in this library, so
-if you are looking for "Isomorphic Dart", it is better to create
-another library that will support server-side rendering.
-
 ## Web-Components
 
 One of the goals for this library was to make it lightweight, and make
