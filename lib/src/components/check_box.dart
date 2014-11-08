@@ -34,13 +34,13 @@ class CheckBoxComponent extends Component {
     }
   }
 
-  static VDomComponent virtual(Object key, ComponentBase parent,
+  static VDomComponent virtual(Object key,
                               {Symbol type, bool checked: null,
                                Map<String, String> attributes: null,
                                VRef<CheckBoxComponent> ref: null}) {
-    return new VDomComponent(key, (component) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        component = new CheckBoxComponent(key, parent,
+        component = new CheckBoxComponent(key, context,
             type: type,
             checked: checked,
             attributes: attributes);

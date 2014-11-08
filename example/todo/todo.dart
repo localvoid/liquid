@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
@@ -31,9 +32,9 @@ class TodoItem extends VComponent {
   build() => vdom.li(0, [vdom.t(item.text)]);
 
   static VDomComponent virtual(Object key, ComponentBase parent, Item item) {
-    return new VDomComponent(key, (component) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new TodoItem(parent, item);
+        return new TodoItem(context, item);
       }
       component.updateProperties(item);
     });
@@ -49,9 +50,9 @@ class TodoList extends VComponent {
   build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, this, i)).toList());
 
   static VDomComponent virtual(Object key, ComponentBase parent, List<Item> items) {
-    return new VDomComponent(key, (component) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new TodoList(parent, items);
+        return new TodoList(context, items);
       }
       component.update();
     });
@@ -68,20 +69,22 @@ class TodoApp extends VComponent {
   }
 
   void _initEventListeners() {
-    element.onClick.matches('.add-button').listen((e) {
-      if (inputText.isNotEmpty) {
-        _addItem(inputText);
-        inputText = '';
-        invalidate();
-      }
-      e.preventDefault();
-      e.stopPropagation();
-    });
+    Zone.ROOT.run(() {
+      element.onClick.matches('.add-button').listen((e) {
+        if (inputText.isNotEmpty) {
+          _addItem(inputText);
+          inputText = '';
+          invalidate();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      });
 
-    element.onChange.matches('input').listen((e) {
-      InputElement element = e.matchingTarget;
-      inputText = element.value;
-      e.stopPropagation();
+      element.onChange.matches('input').listen((e) {
+        InputElement element = e.matchingTarget;
+        inputText = element.value;
+        e.stopPropagation();
+      });
     });
   }
 
@@ -94,7 +97,7 @@ class TodoApp extends VComponent {
       vdom.h3(0, [vdom.t('TODO')]),
       TodoList.virtual(1, this, this.items),
       vdom.form(2, [
-        TextInputComponent.virtual(0, this, value: inputText),
+        TextInputComponent.virtual(0, value: inputText),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
         ])
       ]);

@@ -14,9 +14,11 @@ class Collapsable extends VComponent {
 
   Collapsable(ComponentBase parent, this._collapsableChildren)
       : super('div', parent) {
-    element.onClick.listen((_) {
-      collapsed = true;
-      invalidate();
+    Zone.ROOT.run(() {
+      element.onClick.listen((_) {
+        collapsed = true;
+        invalidate();
+      });
     });
   }
 
@@ -61,11 +63,10 @@ class BasicComponent extends VComponent {
     }
   }
 
-  static VDomComponent virtual(Object key, ComponentBase parent,
-                               int elapsed) {
-    return new VDomComponent(key, (component) {
+  static VDomComponent virtual(Object key, int elapsed) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new BasicComponent(parent, elapsed);
+        return new BasicComponent(context, elapsed);
       }
       component.updateProperties(elapsed);
     });
@@ -74,6 +75,6 @@ class BasicComponent extends VComponent {
 
 main() {
   final root = new RootComponent.mount(document.body);
-  final collapsable = new Collapsable(root, [BasicComponent.virtual(0, root, 0)]);
+  final collapsable = new Collapsable(root, [BasicComponent.virtual(0, 0)]);
   root.append(collapsable);
 }

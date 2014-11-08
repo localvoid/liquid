@@ -9,7 +9,7 @@ part of liquid;
 /// TODO: Add Iterator for traversing children
 /// TODO: Expose method that is registered in [Scheduler] when Component
 /// is invalidated.
-abstract class ComponentBase {
+abstract class ComponentBase implements v.Context {
   /// Component is rendered its subtree.
   static const renderedFlag = 1;
 
@@ -33,11 +33,11 @@ abstract class ComponentBase {
   /// Unique key
   final Object key;
 
+  /// Context
+  final int depth;
+
   /// Type
   final Symbol type;
-
-  /// Depth of the Component, used in [Scheduler] for write optimizations.
-  final int depth;
 
   int _flags;
 
@@ -78,9 +78,9 @@ abstract class ComponentBase {
   /// Execution context: [UpdateLoop]:write
   ComponentBase(this.element,
                 {this.parent: null,
+                 this.depth: 0,
                  this.key: null,
                  this.type: null,
-                 this.depth: 0,
                  int flags: 0})
       : _flags = flags;
 

@@ -20,11 +20,15 @@ class Box extends VComponent {
     final color = count % 255;
     final content = count % 100;
 
-    return vdom.div(0, [vdom.div(0, [vdom.t(content.toString())], classes: ['box'], styles: {
-      'top': '${top}px',
-      'left': '${left}px',
-      'background': 'rgb(0, 0, $color)'
-    })], classes: ['box-view']);
+    return vdom.div(0, [
+      vdom.div(0, [vdom.t(content.toString())],
+        classes: ['box'],
+        styles: {
+          'top': '${top}px',
+          'left': '${left}px',
+          'background': 'rgb(0, 0, $color)'
+      })],
+      classes: ['box-view']);
   }
 
   void updateProperties(int newCount) {
@@ -34,11 +38,10 @@ class Box extends VComponent {
     }
   }
 
-  static VDomComponent virtual(Object key, ComponentBase parent,
-                               int count) {
-    return new VDomComponent(key, (component) {
+  static VDomComponent virtual(Object key, int count) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new Box(parent, count);
+        return new Box(context, count);
       }
       component.updateProperties(count);
     });
@@ -54,7 +57,7 @@ class App extends VComponent {
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
-      result.add(Box.virtual(i, this, items[i]));
+      result.add(Box.virtual(i, items[i]));
     }
     return vdom.div(0, result, classes: ['grid']);
   }

@@ -33,10 +33,3 @@ One of the goals for this library was to make it lightweight, and make
 sure that it stays lightweight in all browsers that Dart language
 supports. So, there won't be any support for Web Components, until all
 major browsers start supporting them.
-
-## Ownership
-
-Ownership in our library isn't exactly the same as in React
-library. Component's owner is the Component responsible for creating
-it. And to implement decorator components it is possible to lend
-components to children.

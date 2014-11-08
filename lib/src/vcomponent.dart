@@ -45,9 +45,9 @@ abstract class VComponent extends Component {
   void updateSubtree() {
     final newVElement = build();
     if (isRendered) {
-      _vElement.sync(newVElement, isAttached);
+      _vElement.sync(newVElement, this);
     } else {
-      newVElement.mount(element, isAttached);
+      newVElement.mount(element, this);
       isRendered = true;
     }
     _vElement = newVElement;
@@ -60,6 +60,8 @@ abstract class VComponent extends Component {
   }
 }
 
+typedef Component VDomInitFunction(Component component, v.Context context);
+
 /// VDom Node for Components
 class VDomComponent extends v.Node {
   Function _initFunction;
@@ -69,33 +71,33 @@ class VDomComponent extends v.Node {
     assert(_initFunction != null);
   }
 
-  void sync(VDomComponent other, [bool isAttached = false]) {
+  void sync(VDomComponent other, v.Context context) {
     assert(other != null);
 
     // transfer component state
     other.ref = ref;
     other._component = _component;
-    other._initFunction(_component);
+    other._initFunction(_component, context);
   }
 
-  html.Node render() {
-    _component = _initFunction(null);
+  html.Node render(v.Context context) {
+    _component = _initFunction(null, context);
     ref = _component.element;
     return ref;
   }
 
-  void inject(html.Element container, bool isAttached) {
-    container.append(render());
-    if (isAttached) {
+  void inject(html.Element container, v.Context context) {
+    container.append(render(context));
+    if (context.isAttached) {
       attached();
     }
     _component.update();
   }
 
   void injectBefore(html.Element container, html.Node nextRef,
-                    bool isAttached) {
-    container.insertBefore(render(), nextRef);
-    if (isAttached) {
+                    v.Context context) {
+    container.insertBefore(render(context), nextRef);
+    if (context.isAttached) {
       attached();
     }
     _component.update();

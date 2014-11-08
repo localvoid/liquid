@@ -35,14 +35,14 @@ class TextInputComponent extends Component {
     }
   }
 
-  static VDomComponent virtual(Object key, ComponentBase parent,
+  static VDomComponent virtual(Object key,
                               {Symbol type,
                                String value: null,
                                Map<String, String> attributes: null,
                                VRef<TextInputComponent> ref: null}) {
-    return new VDomComponent(key, (component) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        component = new TextInputComponent(key, parent,
+        component = new TextInputComponent(key, context,
             type: type,
             value: value,
             attributes: attributes);
