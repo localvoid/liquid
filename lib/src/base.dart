@@ -120,6 +120,10 @@ abstract class ComponentBase implements v.Context {
     _flags &= ~dirtyFlag;
   }
 
+  void updateFinish() {
+    _flags &= ~dirtyFlag;
+  }
+
   /// Invoked when the Component is attached to the DOM.
   ///
   /// Execution context: [UpdateLoop]:write

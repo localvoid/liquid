@@ -56,7 +56,6 @@ class Scheduler {
   }
 
   Future _write(int depth) {
-    _requestAnimationFrame();
     if (depth >= _writeGroups.length) {
       var i = _writeGroups.length;
       while (i <= depth) {
@@ -67,22 +66,23 @@ class Scheduler {
     if (g.completer == null) {
       g.completer = new Completer();
       _writeQueue.add(g);
+      _requestAnimationFrame();
     }
     return g.completer.future;
   }
 
   Future _read() {
-    _requestAnimationFrame();
     if (_readCompleter == null) {
       _readCompleter = new Completer();
+      _requestAnimationFrame();
     }
     return _readCompleter.future;
   }
 
   Future _after() {
-    _requestAnimationFrame();
     if (_afterCompleter == null) {
       _afterCompleter = new Completer();
+      _requestAnimationFrame();
     }
     return _afterCompleter.future;
   }

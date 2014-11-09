@@ -27,10 +27,13 @@ abstract class Component extends ComponentBase {
     if (!isDirty) {
       _flags |= ComponentBase.dirtyFlag;
       Scheduler.zone.run(() {
-        Scheduler.write(depth).then(_update);
+        writeDOM().then(_update);
       });
     }
   }
+
+  Future writeDOM() => Scheduler.write(depth);
+  Future readDOM() => Scheduler.read();
 
   /// TODO: expose this in API in a better way.
   void _update(_) {
