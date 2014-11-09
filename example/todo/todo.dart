@@ -31,13 +31,13 @@ class TodoItem extends VComponent {
 
   build() => vdom.li(0, [vdom.t(item.text)]);
 
-  static VDomComponent virtual(Object key, ComponentBase parent, Item item) {
-    return new VDomComponent(key, (component, context) {
+  static VDomInitFunction init(Item item) {
+    return (component, context) {
       if (component == null) {
         return new TodoItem(context, item);
       }
       component.updateProperties(item);
-    });
+    };
   }
 }
 
@@ -47,15 +47,15 @@ class TodoList extends VComponent {
   TodoList(ComponentBase parent, this.items)
       : super('ul', parent);
 
-  build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, this, i)).toList());
+  build() => vdom.ul(0, items.map((i) => component(i.id, TodoItem.init(i))).toList());
 
-  static VDomComponent virtual(Object key, ComponentBase parent, List<Item> items) {
-    return new VDomComponent(key, (component, context) {
+  static VDomInitFunction init(List<Item> items) {
+    return (component, context) {
       if (component == null) {
         return new TodoList(context, items);
       }
       component.update();
-    });
+    };
   }
 }
 
@@ -95,9 +95,9 @@ class TodoApp extends VComponent {
   build() {
     return vdom.div(0, [
       vdom.h3(0, [vdom.t('TODO')]),
-      TodoList.virtual(1, this, this.items),
+      component(1, TodoList.init(this.items)),
       vdom.form(2, [
-        TextInputComponent.virtual(0, value: inputText),
+        component(0, TextInputComponent.init(value: inputText)),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
         ])
       ]);

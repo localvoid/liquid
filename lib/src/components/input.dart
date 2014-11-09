@@ -17,13 +17,12 @@ class TextInputComponent extends Component {
   bool get isEmpty => value.isEmpty;
   bool get isNotEmpty => value.isNotEmpty;
 
-  TextInputComponent(Object key, ComponentBase parent,
+  TextInputComponent(ComponentBase parent,
       {Symbol type, String value: null,
        Map<String, String> attributes: null})
       : _controlled = value == null ? false : true,
         super(new InputElement(type: 'text'),
               parent,
-              key: key,
               type: type) {
     if (value != null) {
       this.value = value;
@@ -35,25 +34,20 @@ class TextInputComponent extends Component {
     }
   }
 
-  static VDomComponent virtual(Object key,
-                              {Symbol type,
+  static VDomInitFunction init({Symbol type,
                                String value: null,
-                               Map<String, String> attributes: null,
-                               VRef<TextInputComponent> ref: null}) {
-    return new VDomComponent(key, (component, context) {
+                               Map<String, String> attributes: null}) {
+    return (component, context) {
       if (component == null) {
-        component = new TextInputComponent(key, context,
+        component = new TextInputComponent(context,
             type: type,
             value: value,
             attributes: attributes);
-        if (ref != null) {
-          ref.set(component);
-        }
         return component;
       }
       if (component._controlled) {
         component.value = value;
       }
-    });
+    };
   }
 }

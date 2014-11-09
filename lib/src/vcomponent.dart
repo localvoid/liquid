@@ -22,6 +22,17 @@ class VRef<T extends Component> {
       _onAttached(c);
     }
   }
+
+  VDomInitFunction capture(VDomInitFunction f) {
+    return (Component component, Component context) {
+      if (component != null) {
+        return f(component, context);
+      }
+      final c = f(component, context);
+      set(c);
+      return c;
+    };
+  }
 }
 
 /// Component that builds and updates its subtree using Virtual DOM.
@@ -64,7 +75,7 @@ typedef Component VDomInitFunction(Component component, v.Context context);
 
 /// VDom Node for Components
 class VDomComponent extends v.Node {
-  Function _initFunction;
+  VDomInitFunction _initFunction;
   Component _component = null;
 
   VDomComponent(Object key, this._initFunction) : super(key) {
@@ -116,4 +127,8 @@ class VDomComponent extends v.Node {
         ? 'VDomComponent[stateless]'
         : 'VDomComponent[$_component]';
   }
+}
+
+VDomComponent component(Object key, VDomInitFunction initFunction) {
+  return new VDomComponent(key, initFunction);
 }

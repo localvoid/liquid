@@ -11,15 +11,12 @@ class OuterBox extends VComponent {
   OuterBox(ComponentBase parent) : super('div', parent);
 
   build() {
-    return vdom.div(0, [Box.virtual(0)], classes: ['outer-box']);
+    return vdom.div(0, [component(0, Box.init)], classes: ['outer-box']);
   }
 
-  static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new OuterBox(context);
-      }
-    });
+  static Component init(component, context) {
+    assert(component == null);
+    return new OuterBox(context);
   }
 }
 
@@ -35,11 +32,11 @@ class Box extends VComponent {
 
   build() {
     if (_state == 0) {
-      return vdom.div(0, [InnerBox.virtual(0, _childRef)], classes: ['box']);
+      return vdom.div(0, [component(0, _childRef.capture(InnerBox.init))], classes: ['box']);
     } else {
       return vdom.div(0, [vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
                           vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
-                          InnerBox.virtual(0, _childRef)], classes: ['box']);
+                          component(0, InnerBox.init)], classes: ['box']);
     }
   }
 
@@ -70,12 +67,9 @@ class Box extends VComponent {
     });
   }
 
-  static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new Box(context);
-      }
-    });
+  static Component init(component, context) {
+    assert(component == null);
+    return new Box(context);
   }
 }
 
@@ -86,14 +80,11 @@ class InnerBox extends VComponent {
     return vdom.div(0, [vdom.t('x')], classes: ['inner-box']);
   }
 
-  static VDomComponent virtual(Object key, VRef<InnerBox> ref) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        final c = new InnerBox(context);
-        ref.set(c);
-        return c;
-      }
-    });
+  static Component init(component, context) {
+    if (component == null) {
+      return new InnerBox(context);
+    }
+    return null;
   }
 }
 
@@ -101,9 +92,9 @@ class App extends VComponent {
   App(ComponentBase parent) : super('div', parent);
 
   build() {
-    return vdom.div(0, [OuterBox.virtual(0),
-                        OuterBox.virtual(1),
-                        OuterBox.virtual(2)]);
+    return vdom.div(0, [component(0, OuterBox.init),
+                        component(1, OuterBox.init),
+                        component(2, OuterBox.init)]);
   }
 }
 

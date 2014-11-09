@@ -15,14 +15,6 @@ class HelloComponent extends VComponent {
   build() {
     return vdom.div(0, [vdom.t('Hello $name')]);
   }
-
-  static VDomComponent virtual(Object key, [String name = 'Hello']) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new HelloComponent(context, name);
-      }
-    });
-  }
 }
 
 main() {

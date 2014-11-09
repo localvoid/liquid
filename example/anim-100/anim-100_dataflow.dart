@@ -38,13 +38,13 @@ class Box extends VComponent {
     }
   }
 
-  static VDomComponent virtual(Object key, int count) {
-    return new VDomComponent(key, (component, context) {
+  static VDomInitFunction init(int count) {
+    return (component, context) {
       if (component == null) {
         return new Box(context, count);
       }
       component.updateProperties(count);
-    });
+    };
   }
 }
 
@@ -57,7 +57,7 @@ class App extends VComponent {
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
-      result.add(Box.virtual(i, items[i]));
+      result.add(component(i, Box.init(items[i])));
     }
     return vdom.div(0, result, classes: ['grid']);
   }

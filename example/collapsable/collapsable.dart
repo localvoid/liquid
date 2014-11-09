@@ -63,18 +63,18 @@ class BasicComponent extends VComponent {
     }
   }
 
-  static VDomComponent virtual(Object key, int elapsed) {
-    return new VDomComponent(key, (component, context) {
+  static VDomInitFunction init(int elapsed) {
+    return (component, context) {
       if (component == null) {
         return new BasicComponent(context, elapsed);
       }
       component.updateProperties(elapsed);
-    });
+    };
   }
 }
 
 main() {
   final root = new RootComponent.mount(document.body);
-  final collapsable = new Collapsable(root, [BasicComponent.virtual(0, 0)]);
+  final collapsable = new Collapsable(root, [component(0, BasicComponent.init(0))]);
   root.append(collapsable);
 }

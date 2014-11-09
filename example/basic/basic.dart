@@ -31,15 +31,6 @@ class BasicComponent extends VComponent {
       update();
     }
   }
-
-  static VDomComponent virtual(Object key, int elapsed) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new BasicComponent(context, elapsed);
-      }
-      component.updateProperties(elapsed);
-    });
-  }
 }
 
 main() {
