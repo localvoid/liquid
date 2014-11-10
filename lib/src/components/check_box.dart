@@ -4,35 +4,35 @@
 
 part of liquid.components;
 
-class TextInput extends v.ElementBase {
-  final String _value;
+class CheckBox extends v.ElementBase {
+  final bool _checked;
 
-  String get value => (ref as InputElement).value;
+  bool get checked => (ref as CheckboxInputElement).checked;
 
-  TextInput(Object key,
-      {String value: null,
+  CheckBox(Object key,
+      {bool checked: null,
        Map<String, String> attributes: null,
        List<String> classes: null,
        Map<String, String> styles: null})
-       : _value = value,
+       : _checked = checked,
          super(key, attributes: attributes, classes: classes, styles: styles);
 
   void create(v.Context context) {
-    ref = new InputElement(type: 'text');
+    ref = new CheckboxInputElement();
   }
 
   void render(v.Context context) {
     super.render(context);
-    if (_value != null) {
-      (ref as InputElement).value = _value;
+    if (_checked != null) {
+      (ref as CheckboxInputElement).checked = _checked;
     }
   }
 
-  void update(TextInput other, v.Context context) {
+  void update(CheckBox other, v.Context context) {
     super.update(other, context);
-    final InputElement e = ref;
-    if (e.value != other._value) {
-      e.value = other._value;
+    final CheckboxInputElement e = ref;
+    if (e.checked != other._checked) {
+      e.checked = other._checked;
     }
   }
 }

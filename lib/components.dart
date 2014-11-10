@@ -8,3 +8,4 @@ import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
 
 part 'package:liquid/src/components/text_input.dart';
+part 'package:liquid/src/components/check_box.dart';
