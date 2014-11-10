@@ -19,8 +19,8 @@ class Item {
 class TodoItem extends VComponent {
   Item item;
 
-  TodoItem(ComponentBase parent, this.item)
-      : super('li', parent);
+  TodoItem(Object key, ComponentBase parent, this.item)
+      : super(key, 'li', parent);
 
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
@@ -32,9 +32,9 @@ class TodoItem extends VComponent {
   build() => vdom.li(0, [vdom.t(item.text)]);
 
   static VDomInitFunction init(Item item) {
-    return (component, context) {
+    return (component, key, context) {
       if (component == null) {
-        return new TodoItem(context, item);
+        return new TodoItem(key, context, item);
       }
       component.updateProperties(item);
     };
@@ -44,15 +44,15 @@ class TodoItem extends VComponent {
 class TodoList extends VComponent {
   List<Item> items;
 
-  TodoList(ComponentBase parent, this.items)
-      : super('ul', parent);
+  TodoList(Object key, ComponentBase parent, this.items)
+      : super(key, 'ul', parent);
 
   build() => vdom.ul(0, items.map((i) => component(i.id, TodoItem.init(i))).toList());
 
   static VDomInitFunction init(List<Item> items) {
-    return (component, context) {
+    return (component, key, context) {
       if (component == null) {
-        return new TodoList(context, items);
+        return new TodoList(key, context, items);
       }
       component.update();
     };
@@ -63,8 +63,8 @@ class TodoApp extends VComponent {
   final List<Item> items;
   String inputText = '';
 
-  TodoApp(ComponentBase parent, this.items)
-      : super('div', parent) {
+  TodoApp(Object key, ComponentBase parent, this.items)
+      : super(key, 'div', parent) {
     _initEventListeners();
   }
 
@@ -97,7 +97,7 @@ class TodoApp extends VComponent {
       vdom.h3(0, [vdom.t('TODO')]),
       component(1, TodoList.init(this.items)),
       vdom.form(2, [
-        component(0, TextInputComponent.init(value: inputText)),
+        new TextInput(0, value: inputText),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
         ])
       ]);
@@ -105,6 +105,5 @@ class TodoApp extends VComponent {
 }
 
 main() {
-  final root = new RootComponent.mount(document.body);
-  root.append(new TodoApp(root, []));
+  injectComponent(new TodoApp(0, Component.ROOT, []), document.body);
 }

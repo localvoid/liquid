@@ -10,9 +10,11 @@ import 'dart:html' as html;
 import 'package:collection/priority_queue.dart';
 import 'package:vdom/vdom.dart' as v;
 
+part 'package:liquid/src/vdom/component.dart';
 part 'package:liquid/src/event.dart';
 part 'package:liquid/src/base.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';
 part 'package:liquid/src/root.dart';
 part 'package:liquid/src/scheduler.dart';
+part 'package:liquid/src/main.dart';

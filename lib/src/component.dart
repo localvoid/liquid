@@ -6,34 +6,23 @@ part of liquid;
 
 /// Raw DOM Component
 abstract class Component extends ComponentBase {
-  /// Execution context: [UpdateLoop]:write
-  Component(html.Element element,
-      ComponentBase parent,
-      {Object key: null,
-       Symbol type: null,
-       int flags: 0})
-      : super(element,
-          parent: parent,
-          key: key,
-          type: type,
-          depth: parent.depth + 1,
-          flags: flags) {
+  static final ROOT = new RootComponent();
+
+  /// Execution context: [Update]:write
+  Component(Object key, html.Element element, ComponentBase parent, {int flags: 0})
+      : super(key, element, parent, parent.depth + 1, flags: flags) {
     assert(parent != null);
   }
 
-  /// Add Component to the [UpdateLoop]:write queue
+  /// Add Component to the [Update]:write queue
   void invalidate() {
-    assert(element != null);
     if (!isDirty) {
-      _flags |= ComponentBase.dirtyFlag;
+      flags |= ComponentBase.dirtyFlag;
       Scheduler.zone.run(() {
         writeDOM().then(_update);
       });
     }
   }
-
-  Future writeDOM() => Scheduler.write(depth);
-  Future readDOM() => Scheduler.read();
 
   /// TODO: expose this in API in a better way.
   void _update(_) {
@@ -42,8 +31,6 @@ abstract class Component extends ComponentBase {
     }
   }
 
-  /// Emit event to the parent.
-  void emit(ComponentEvent e) {
-    parent.onEvent(e);
-  }
+  Future writeDOM() => Scheduler.write(depth);
+  Future readDOM() => Scheduler.read();
 }

@@ -6,7 +6,7 @@ part of liquid;
 
 /// Base class for Component events.
 abstract class ComponentEvent {
-  final ComponentBase target;
+  final ComponentBase component;
 
-  ComponentEvent(this.target);
+  ComponentEvent(this.component);
 }

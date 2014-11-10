@@ -11,8 +11,8 @@ import 'package:liquid/liquid.dart';
 class Box extends VComponent {
   int count = 0;
 
-  Box(ComponentBase parent, this.count)
-      : super('div', parent);
+  Box(Object key, ComponentBase parent, this.count)
+      : super(key, 'div', parent);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -39,9 +39,9 @@ class Box extends VComponent {
   }
 
   static VDomInitFunction init(int count) {
-    return (component, context) {
+    return (component, key, context) {
       if (component == null) {
-        return new Box(context, count);
+        return new Box(key, context, count);
       }
       component.updateProperties(count);
     };
@@ -51,8 +51,8 @@ class Box extends VComponent {
 class App extends VComponent {
   List<int> items;
 
-  App(ComponentBase parent, this.items)
-      : super('div', parent);
+  App(Object key, ComponentBase parent, this.items)
+      : super(key, 'div', parent);
 
   build() {
     final result = [];
@@ -64,11 +64,10 @@ class App extends VComponent {
 }
 
 main() {
-  final root = new RootComponent.mount(document.body);
   final start = new DateTime.now().millisecondsSinceEpoch;
   final items = new List<int>.filled(100, 0);
-  final app = new App(root, items);
-  root.append(app);
+  final app = new App(0, Component.ROOT, items);
+  injectComponent(app, document.body);
 
   /// I know that this is quite stupid :)
   new Timer.periodic(new Duration(), (t) {

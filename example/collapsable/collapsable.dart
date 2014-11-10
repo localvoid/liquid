@@ -12,8 +12,8 @@ class Collapsable extends VComponent {
   bool collapsed = false;
   List<v.Node> _collapsableChildren;
 
-  Collapsable(ComponentBase parent, this._collapsableChildren)
-      : super('div', parent) {
+  Collapsable(Object key, ComponentBase parent, this._collapsableChildren)
+      : super(key, 'div', parent) {
     Zone.ROOT.run(() {
       element.onClick.listen((_) {
         collapsed = true;
@@ -39,8 +39,8 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(ComponentBase parent, this._elapsed)
-      : super('p', parent);
+  BasicComponent(Object key, ComponentBase parent, this._elapsed)
+      : super(key, 'p', parent);
 
   void attached() {
     super.attached();
@@ -64,9 +64,9 @@ class BasicComponent extends VComponent {
   }
 
   static VDomInitFunction init(int elapsed) {
-    return (component, context) {
+    return (component, key, context) {
       if (component == null) {
-        return new BasicComponent(context, elapsed);
+        return new BasicComponent(key, context, elapsed);
       }
       component.updateProperties(elapsed);
     };
@@ -74,7 +74,7 @@ class BasicComponent extends VComponent {
 }
 
 main() {
-  final root = new RootComponent.mount(document.body);
-  final collapsable = new Collapsable(root, [component(0, BasicComponent.init(0))]);
-  root.append(collapsable);
+  final collapsable = new Collapsable(0, Component.ROOT,
+      [component(0, BasicComponent.init(0))]);
+  injectComponent(collapsable, document.body);
 }

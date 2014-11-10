@@ -8,15 +8,15 @@ import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class OuterBox extends VComponent {
-  OuterBox(ComponentBase parent) : super('div', parent);
+  OuterBox(Object key, ComponentBase parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [component(0, Box.init)], classes: ['outer-box']);
   }
 
-  static Component init(component, context) {
+  static Component init(component, key, context) {
     assert(component == null);
-    return new OuterBox(context);
+    return new OuterBox(key, context);
   }
 }
 
@@ -24,19 +24,20 @@ class Box extends VComponent {
   int _state = 0;
   int _outerWidth = 0;
   int _innerWidth = 0;
-  VRef<InnerBox> _childRef = new VRef<InnerBox>();
+  VDomComponent _child;
   StreamSubscription _resizeSub;
 
 
-  Box(ComponentBase parent) : super('div', parent);
+  Box(Object key, ComponentBase parent) : super(key, 'div', parent);
 
   build() {
+    _child = component(0, InnerBox.init);
     if (_state == 0) {
-      return vdom.div(0, [component(0, _childRef.capture(InnerBox.init))], classes: ['box']);
+      return vdom.div(0, [_child], classes: ['box']);
     } else {
       return vdom.div(0, [vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
                           vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
-                          component(0, InnerBox.init)], classes: ['box']);
+                          _child], classes: ['box']);
     }
   }
 
@@ -58,7 +59,7 @@ class Box extends VComponent {
     updateSubtree();
     readDOM().then((_) {
       _outerWidth = parent.element.clientWidth;
-      _innerWidth = _childRef.get.element.clientWidth;
+      _innerWidth = (_child.ref as Element).clientWidth;
       _state = 1;
       writeDOM().then((_) {
         updateSubtree();
@@ -67,29 +68,29 @@ class Box extends VComponent {
     });
   }
 
-  static Component init(component, context) {
+  static Component init(component, key, context) {
     assert(component == null);
-    return new Box(context);
+    return new Box(key, context);
   }
 }
 
 class InnerBox extends VComponent {
-  InnerBox(ComponentBase parent) : super('div', parent);
+  InnerBox(Object key, ComponentBase parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [vdom.t('x')], classes: ['inner-box']);
   }
 
-  static Component init(component, context) {
+  static Component init(component, key, context) {
     if (component == null) {
-      return new InnerBox(context);
+      return new InnerBox(key, context);
     }
     return null;
   }
 }
 
 class App extends VComponent {
-  App(ComponentBase parent) : super('div', parent);
+  App(Object key, ComponentBase parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [component(0, OuterBox.init),
@@ -99,7 +100,5 @@ class App extends VComponent {
 }
 
 main() {
-  final root = new RootComponent.mount(document.body);
-  final app = new App(root);
-  root.append(app);
+  injectComponent(new App(0, Component.ROOT), document.body);
 }

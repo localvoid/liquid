@@ -5,7 +5,6 @@
 library liquid.components;
 
 import 'dart:html';
-import 'package:liquid/liquid.dart';
+import 'package:vdom/vdom.dart' as v;
 
-part 'package:liquid/src/components/input.dart';
-part 'package:liquid/src/components/check_box.dart';
+part 'package:liquid/src/components/text_input.dart';
