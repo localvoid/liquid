@@ -8,7 +8,7 @@ part of liquid;
 abstract class VComponent extends Component {
   v.Element _vElement;
 
-  VComponent(Object key, String tagName, ComponentBase parent, {int flags: 0})
+  VComponent(Object key, String tagName, Component parent, {int flags: 0})
       : super(key, html.document.createElement(tagName), parent, flags: flags);
 
   /// Returns virtual tree for the current state
@@ -16,15 +16,17 @@ abstract class VComponent extends Component {
 
   /// Update Subtree
   void updateSubtree() {
+    assert(_vElement != null);
     final newVElement = build();
-    if (isRendered) {
-      _vElement.update(newVElement, this);
-    } else {
-      newVElement.mount(element, this);
-      newVElement.render(this);
-      flags |= ComponentBase.renderedFlag;
-    }
+    _vElement.update(newVElement, this);
     _vElement = newVElement;
+  }
+
+  void render() {
+    assert(_vElement == null);
+    _vElement = build();
+    _vElement.mount(element, this);
+    _vElement.render(this);
   }
 
   void update() {

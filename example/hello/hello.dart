@@ -9,7 +9,7 @@ import 'package:liquid/liquid.dart';
 class HelloComponent extends VComponent {
   String name;
 
-  HelloComponent(Object key, ComponentBase parent, [this.name = 'Hello'])
+  HelloComponent(Object key, Component parent, [this.name = 'Hello'])
       : super(key, 'div', parent);
 
   build() {

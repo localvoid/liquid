@@ -16,6 +16,43 @@ class WriteGroup implements Comparable {
   int compareTo(WriteGroup other) => depth.compareTo(other.depth);
 }
 
+class Frame {
+  /// Write groups indexed by depth
+  List<WriteGroup> writeGroups = [];
+  HeapPriorityQueue<WriteGroup> writeQueue = new HeapPriorityQueue<WriteGroup>();
+  Completer readCompleter;
+  Completer afterCompleter;
+
+  Future write(int depth) {
+    if (depth >= writeGroups.length) {
+      var i = writeGroups.length;
+      while (i <= depth) {
+        writeGroups.add(new WriteGroup(i++));
+      }
+    }
+    final g = writeGroups[depth];
+    if (g.completer == null) {
+      g.completer = new Completer();
+      writeQueue.add(g);
+    }
+    return g.completer.future;
+  }
+
+  Future read() {
+    if (readCompleter == null) {
+      readCompleter = new Completer();
+    }
+    return readCompleter.future;
+  }
+
+  Future after() {
+    if (afterCompleter == null) {
+      afterCompleter = new Completer();
+    }
+    return afterCompleter.future;
+  }
+}
+
 /// Scheduler for update tasks
 ///
 /// TODO: add simple write queue for leaf nodes (animation mixin for comps)
@@ -26,11 +63,20 @@ class Scheduler {
   Zone _zone;
   Queue<Function> _currentTasks = new Queue<Function>();
 
-  /// Write groups indexed by depth
-  List<WriteGroup> _writeGroups = [];
-  HeapPriorityQueue<WriteGroup> _writeQueue = new HeapPriorityQueue<WriteGroup>();
-  Completer _readCompleter;
-  Completer _afterCompleter;
+  Frame _currentFrame;
+  Frame getCurrentFrame() {
+    assert(_currentFrame != null);
+    return _currentFrame;
+  }
+
+  Frame _nextFrame;
+  Frame getNextFrame() {
+    if (_nextFrame == null) {
+      _nextFrame = new Frame();
+      _requestAnimationFrame();
+    }
+    return _nextFrame;
+  }
 
   int _rafId = 0;
 
@@ -55,76 +101,47 @@ class Scheduler {
     }
   }
 
-  Future _write(int depth) {
-    if (depth >= _writeGroups.length) {
-      var i = _writeGroups.length;
-      while (i <= depth) {
-        _writeGroups.add(new WriteGroup(i++));
-      }
-    }
-    final g = _writeGroups[depth];
-    if (g.completer == null) {
-      g.completer = new Completer();
-      _writeQueue.add(g);
-      _requestAnimationFrame();
-    }
-    return g.completer.future;
-  }
-
-  Future _read() {
-    if (_readCompleter == null) {
-      _readCompleter = new Completer();
-      _requestAnimationFrame();
-    }
-    return _readCompleter.future;
-  }
-
-  Future _after() {
-    if (_afterCompleter == null) {
-      _afterCompleter = new Completer();
-      _requestAnimationFrame();
-    }
-    return _afterCompleter.future;
-  }
-
   void _handleAnimationFrame(num t) {
     _rafId = 0;
 
     _zone.run(() {
+      _currentFrame = _nextFrame;
+      _nextFrame = null;
+      final wq = _currentFrame.writeQueue;
+
       do {
-        while (_writeQueue.isNotEmpty) {
-          final writeGroup = _writeQueue.removeFirst();
+        while (wq.isNotEmpty) {
+          final writeGroup = wq.removeFirst();
           writeGroup.completer.complete();
           _runTasks();
           writeGroup.completer = null;
         }
 
-        if (_readCompleter != null) {
-          _readCompleter.complete();
+        if (_currentFrame.readCompleter != null) {
+          _currentFrame.readCompleter.complete();
           _runTasks();
-          _readCompleter = null;
+          _currentFrame.readCompleter = null;
         }
-      } while (_writeQueue.isNotEmpty);
+      } while (wq.isNotEmpty);
 
-      if (_afterCompleter != null) {
-        _afterCompleter.complete();
+      if (_currentFrame.afterCompleter != null) {
+        _currentFrame.afterCompleter.complete();
         _runTasks();
-        _afterCompleter = null;
+        _currentFrame.afterCompleter = null;
       }
     });
   }
 
   static Zone get zone => _instance._zone;
 
-  static Future write(int depth) => _instance._write(depth);
-  static Future read() => _instance._read();
-  static Future after() => _instance._after();
+  static Frame get currentFrame => _instance.getCurrentFrame();
+  static Frame get nextFrame => _instance.getNextFrame();
 
   static void forceUpdate() {
     if (_instance._rafId != 0) {
       html.window.cancelAnimationFrame(_instance._rafId);
       _instance._rafId = 0;
-      _instance._handleAnimationFrame(-1);
+      _instance._handleAnimationFrame(html.window.performance.now());
     }
   }
 }

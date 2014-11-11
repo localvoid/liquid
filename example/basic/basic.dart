@@ -17,7 +17,7 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Object key, ComponentBase parent, this._elapsed)
+  BasicComponent(Object key, Component parent, this._elapsed)
       : super(key, 'p', parent);
 
   build() {

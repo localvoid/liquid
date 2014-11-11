@@ -14,12 +14,16 @@ class VDomComponent extends v.Node {
   }
 
   void create(v.Context context) {
+    assert(component == null);
+    assert(ref == null);
     component = _initFunction(null, key, context);
     ref = component.element;
   }
 
   void render(v.Context context) {
-    component.update();
+    assert(component != null);
+    assert(ref != null);
+    component.render();
   }
 
   void update(VDomComponent other, v.Context context) {

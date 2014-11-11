@@ -11,7 +11,7 @@ import 'package:liquid/liquid.dart';
 class Box extends VComponent {
   int count = 0;
 
-  Box(Object key, ComponentBase parent, this.count)
+  Box(Object key, Component parent, this.count)
       : super(key, 'div', parent);
 
   build() {
@@ -51,7 +51,7 @@ class Box extends VComponent {
 class App extends VComponent {
   List<int> items;
 
-  App(Object key, ComponentBase parent, this.items)
+  App(Object key, Component parent, this.items)
       : super(key, 'div', parent);
 
   build() {

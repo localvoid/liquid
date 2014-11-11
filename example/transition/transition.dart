@@ -29,7 +29,9 @@ class TodoItem extends VComponent {
     }
   }
 
-  build() => vdom.li(0, [vdom.t(item.text)]);
+  build() => vdom.li(0, [vdom.text(0, item.text + ' '),
+                         vdom.button(1, [vdom.t('x')], classes: const ['remove-button'])],
+                        attributes: {'key': key.toString()});
 
   static VDomInitFunction init(Item item) {
     return (component, key, context) {
@@ -47,7 +49,8 @@ class TodoList extends VComponent {
   TodoList(Object key, Component parent, this.items)
       : super(key, 'ul', parent);
 
-  build() => vdom.ul(0, items.map((i) => component(i.id, TodoItem.init(i))).toList());
+  build() => new TransitionGroupElement(0, 'ul',
+      items.map((i) => component(i.id, TodoItem.init(i))).toList());
 
   static VDomInitFunction init(List<Item> items) {
     return (component, key, context) {
@@ -76,6 +79,14 @@ class TodoApp extends VComponent {
           inputText = '';
           invalidate();
         }
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      element.onClick.matches('.remove-button').listen((e) {
+        final li = queryMatchingParent(e.target, 'li');
+        items.removeWhere((i) => i.id == int.parse(li.attributes['key']));
+        invalidate();
         e.preventDefault();
         e.stopPropagation();
       });

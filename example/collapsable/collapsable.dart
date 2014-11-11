@@ -12,7 +12,7 @@ class Collapsable extends VComponent {
   bool collapsed = false;
   List<v.Node> _collapsableChildren;
 
-  Collapsable(Object key, ComponentBase parent, this._collapsableChildren)
+  Collapsable(Object key, Component parent, this._collapsableChildren)
       : super(key, 'div', parent) {
     Zone.ROOT.run(() {
       element.onClick.listen((_) {
@@ -39,7 +39,7 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Object key, ComponentBase parent, this._elapsed)
+  BasicComponent(Object key, Component parent, this._elapsed)
       : super(key, 'p', parent);
 
   void attached() {

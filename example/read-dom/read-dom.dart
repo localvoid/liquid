@@ -8,7 +8,7 @@ import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class OuterBox extends VComponent {
-  OuterBox(Object key, ComponentBase parent) : super(key, 'div', parent);
+  OuterBox(Object key, Component parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [component(0, Box.init)], classes: ['outer-box']);
@@ -28,7 +28,7 @@ class Box extends VComponent {
   StreamSubscription _resizeSub;
 
 
-  Box(Object key, ComponentBase parent) : super(key, 'div', parent);
+  Box(Object key, Component parent) : super(key, 'div', parent);
 
   build() {
     _child = component(0, InnerBox.init);
@@ -75,7 +75,7 @@ class Box extends VComponent {
 }
 
 class InnerBox extends VComponent {
-  InnerBox(Object key, ComponentBase parent) : super(key, 'div', parent);
+  InnerBox(Object key, Component parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [vdom.t('x')], classes: ['inner-box']);
@@ -90,7 +90,7 @@ class InnerBox extends VComponent {
 }
 
 class App extends VComponent {
-  App(Object key, ComponentBase parent) : super(key, 'div', parent);
+  App(Object key, Component parent) : super(key, 'div', parent);
 
   build() {
     return vdom.div(0, [component(0, OuterBox.init),
