@@ -6,28 +6,32 @@ part of liquid;
 
 /// Write groups sorted by their depth to prevent unnecessary writes when the
 /// parent removes its children.
-class WriteGroup implements Comparable {
-  /// Components depth
+class _WriteGroup implements Comparable {
+  /// Depth relative to other Contexts
   final int depth;
+
   Completer completer;
 
-  WriteGroup(this.depth);
+  _WriteGroup(this.depth);
 
-  int compareTo(WriteGroup other) => depth.compareTo(other.depth);
+  int compareTo(_WriteGroup other) => depth.compareTo(other.depth);
 }
 
+/// Frame tasks
 class Frame {
   /// Write groups indexed by depth
-  List<WriteGroup> writeGroups = [];
-  HeapPriorityQueue<WriteGroup> writeQueue = new HeapPriorityQueue<WriteGroup>();
+  List<_WriteGroup> writeGroups = [];
+  HeapPriorityQueue<_WriteGroup> writeQueue = new HeapPriorityQueue<_WriteGroup>();
   Completer readCompleter;
   Completer afterCompleter;
 
+  /// Returns [Future] that completes when [Scheduler] launches write
+  /// tasks for that [Frame]
   Future write(int depth) {
     if (depth >= writeGroups.length) {
       var i = writeGroups.length;
       while (i <= depth) {
-        writeGroups.add(new WriteGroup(i++));
+        writeGroups.add(new _WriteGroup(i++));
       }
     }
     final g = writeGroups[depth];
@@ -38,6 +42,8 @@ class Frame {
     return g.completer.future;
   }
 
+  /// Returns [Future] that completes when [Scheduler] launches read
+  /// tasks for that [Frame]
   Future read() {
     if (readCompleter == null) {
       readCompleter = new Completer();
@@ -45,6 +51,8 @@ class Frame {
     return readCompleter.future;
   }
 
+  /// Returns [Future] that completes when [Scheduler] finishes all
+  /// read and write tasks for that [Frame]
   Future after() {
     if (afterCompleter == null) {
       afterCompleter = new Completer();
@@ -53,7 +61,37 @@ class Frame {
   }
 }
 
-/// Scheduler for update tasks
+/// [Scheduler] runs [Frame]'s write/read tasks.
+///
+/// Whenever you add any task to the [nextFrame], Scheduler starts waiting
+/// for the next frame with the requestAnimationFrame call and then runs all
+/// tasks inside the Scheduler's [zone].
+///
+/// [Scheduler] runs all write tasks and microtasks that were registered
+/// in its [zone], when all this tasks are finished, it starts running
+/// reading tasks and microtasks, then it checks if there any write tasks
+/// were added after read batch, if anything is added, it performs the loop
+/// again, otherwise it runs all `after` tasks and finishes.
+///
+/// ```dart
+/// while (writeTasks.isNotEmpty) {
+///   while (writeTasks.isNotEmpty) {
+///     writeTasks.removeFirst().start();
+///     runMicrotasks();
+///   }
+///   while (readTasks.isNotEmpty) {
+///     readTasks.removeFirst().start();
+///     runMicrotasks();
+///   }
+/// }
+/// while (afterTasks.isNotEmpty) {
+///   afterTasks.removeFirst().start();
+///   runMicrotasks();
+/// }
+/// ```
+///
+/// By executing tasks this way we can guarantee almost optimal read/write
+/// batching.
 ///
 /// TODO: add simple write queue for leaf nodes (animation mixin for comps)
 class Scheduler {
@@ -132,11 +170,18 @@ class Scheduler {
     });
   }
 
+  /// [Scheduler]'s Zone
   static Zone get zone => _instance._zone;
 
+  /// Current [Frame] that is executed right now, it is only possible
+  /// to get current frame if the code is running inside of Scheduler
+  /// execution context.
   static Frame get currentFrame => _instance.getCurrentFrame();
+
+  /// Next [Frame].
   static Frame get nextFrame => _instance.getNextFrame();
 
+  /// Force [Scheduler] to run tasks for the [nextFrame].
   static void forceUpdate() {
     if (_instance._rafId != 0) {
       html.window.cancelAnimationFrame(_instance._rafId);

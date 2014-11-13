@@ -4,46 +4,125 @@
 
 part of liquid;
 
-/// Component that builds and updates its subtree with Virtual DOM.
+/// Component that builds and updates its subtree using Virtual DOM.
+///
+/// It implements special method [updateSubtree] that updates the view
+/// of the subtree.
+///
+/// ```
+/// class MyComponent extends VComponent {
+///   MyComponent(Object key, Context context)
+///       : super(key, 'div', context);
+///
+///   v.Element build() => vdom.div(0, [vdom.t('Hello VComponent')]);
+/// }
+/// ```
+///
+/// If you want to read from the dom, just override [update()] method and
+/// call [updateFinish()] when you finish updating:
+///
+/// ```
+/// class MyComponent extends VComponent {
+///   int _childWidth = 0;
+///   ...
+///
+///   void update() {
+///     updateSubtree();
+///     readDOM().then((_) {
+///       _childWidth = _childElement.ref.width;
+///       writeDOM().then((_) {
+///         updateSubtree();
+///         updateFinish();
+///       });
+///     });
+///   }
+/// }
+///
+/// ```
 abstract class VComponent extends Component {
-  v.Element _vElement;
+  /// Reference to the top-level Virtual DOM Element.
+  v.Element vElement;
 
-  VComponent(Object key, String tagName, Component parent, {int flags: 0})
-      : super(key, html.document.createElement(tagName), parent, flags: flags);
+  /// Create a new [VComponent]
+  ///
+  /// It is necessary to specify [tag], so that we can create real
+  /// DOM Element as soon as possible and place it as a placeholder
+  /// into the DOM.
+  ///
+  /// This way we can stop at any point in [update()] method and perform
+  /// any async operation.
+  ///
+  /// Execution context: [Scheduler]:write
+  VComponent(Object key,
+      String tag,
+      Context context,
+      {int flags: 0})
+      : super(key,
+          html.document.createElement(tag),
+          context,
+          flags: flags);
 
-  /// Returns virtual tree for the current state
+  /// Build Virtual DOM tree for the current state of the [VComponent],
+  /// it should include the top-level element, that is already created
+  /// as a placeholder.
+  ///
+  /// Execution context: [Scheduler]:write
   v.Element build();
 
-  /// Update Subtree
+  /// Update Component's subtree
+  ///
+  /// NOTE: It also updates the top-level element, that is returned by
+  /// the [build()] method.
+  ///
+  /// Better name suggestions for this method?
+  ///
+  /// Execution context: [Scheduler]:write
   void updateSubtree() {
-    assert(_vElement != null);
     final newVElement = build();
-    _vElement.update(newVElement, this);
-    _vElement = newVElement;
+    if (vElement == null) {
+      newVElement.mount(element, this);
+      newVElement.render(this);
+    } else {
+      vElement.update(newVElement, this);
+    }
+    vElement = newVElement;
   }
 
+  /// Lifecycle method that is called when [Component] is rendered for
+  /// the first time.
+  ///
+  /// Execution context: [Scheduler]:write
   void render() {
-    assert(_vElement == null);
-    _vElement = build();
-    _vElement.mount(element, this);
-    _vElement.render(this);
+    assert(vElement == null);
+    update();
   }
 
+  /// Lifecycle method that is called when [Component] should be updated.
+  ///
+  /// Execution context: [Scheduler]:write
   void update() {
     updateSubtree();
     updateFinish();
   }
 
+  /// Lifecycle method that is called when [Component] is attached to the
+  /// DOM.
+  ///
+  /// Execution context: [Scheduler]:write
   void attached() {
-    if (_vElement != null) {
-      _vElement.attached();
+    if (vElement != null) {
+      vElement.attached();
     }
     super.attached();
   }
 
+  /// Lifecycle method that is called when [Component] is detached from the
+  /// DOM.
+  ///
+  /// Execution context: [Scheduler]:write
   void detached() {
-    if (_vElement != null) {
-      _vElement.detached();
+    if (vElement != null) {
+      vElement.detached();
     }
     super.detached();
   }

@@ -1,5 +1,6 @@
 part of liquid;
 
+/// TODO: rename
 typedef Component VDomInitFunction(Component component,
                                    Object key,
                                    v.Context context);
@@ -48,8 +49,4 @@ class VDomComponent extends v.Node {
         ? 'VDomComponent[stateless]'
         : 'VDomComponent[$component]';
   }
-}
-
-VDomComponent component(Object key, VDomInitFunction initFunction) {
-  return new VDomComponent(key, initFunction);
 }

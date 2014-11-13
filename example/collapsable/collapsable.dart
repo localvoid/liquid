@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Bad Example, for demonstration purposes only!
+
 import 'dart:async';
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
@@ -12,8 +14,8 @@ class Collapsable extends VComponent {
   bool collapsed = false;
   List<v.Node> _collapsableChildren;
 
-  Collapsable(Object key, Component parent, this._collapsableChildren)
-      : super(key, 'div', parent) {
+  Collapsable(Object key, Context context, this._collapsableChildren)
+      : super(key, 'div', context) {
     Zone.ROOT.run(() {
       element.onClick.listen((_) {
         collapsed = true;
@@ -39,8 +41,8 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Object key, Component parent, this._elapsed)
-      : super(key, 'p', parent);
+  BasicComponent(Object key, Context context, this._elapsed)
+      : super(key, 'p', context);
 
   void attached() {
     super.attached();
@@ -63,18 +65,18 @@ class BasicComponent extends VComponent {
     }
   }
 
-  static VDomInitFunction init(int elapsed) {
-    return (component, key, context) {
+  static VDomComponent virtual(Object key, int elapsed) {
+    return new VDomComponent(key, (component, key, context) {
       if (component == null) {
         return new BasicComponent(key, context, elapsed);
       }
       component.updateProperties(elapsed);
-    };
+    });
   }
 }
 
 main() {
-  final collapsable = new Collapsable(0, Component.ROOT,
-      [component(0, BasicComponent.init(0))]);
+  final collapsable = new Collapsable(0, null,
+      [BasicComponent.virtual(0, 0)]);
   injectComponent(collapsable, document.body);
 }

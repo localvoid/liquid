@@ -2,8 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid.components;
+part of liquid.forms;
 
+/// Virtual DOM CheckBox Element
 class CheckBox extends v.ElementBase {
   final bool _checked;
 
@@ -15,7 +16,7 @@ class CheckBox extends v.ElementBase {
        List<String> classes: null,
        Map<String, String> styles: null})
        : _checked = checked,
-         super(key, attributes: attributes, classes: classes, styles: styles);
+         super(key, attributes, classes, styles);
 
   void create(v.Context context) {
     ref = new CheckboxInputElement();

@@ -4,10 +4,9 @@
 
 part of liquid;
 
-/// Abstract base class for all Components
-class Component implements v.Context {
-  static final ROOT = new Component.root(flags: attachedFlag);
-
+/// Basic Component, that doesn't implement any method to render,
+/// or update its subtree.
+abstract class Component implements Context {
   /// Component is attached to the DOM.
   static const attachedFlag = 1;
 
@@ -17,15 +16,16 @@ class Component implements v.Context {
   /// Unique key
   final Object key;
 
-  /// Component's element
+  /// Reference to the Html Element
   final html.Element element;
 
-  /// Component's parent is used to establish parent-child relationship.
-  final Component parent;
+  /// Parent context
+  final Context context;
 
-  /// Context
+  /// Depth relative to other contexts
   final int depth;
 
+  /// Flags: [attachedFlag], [dirtyFlag]
   int flags;
 
   /// Component is attached to the DOM.
@@ -34,29 +34,44 @@ class Component implements v.Context {
   /// Component is dirty, and should be updated.
   bool get isDirty => (flags & dirtyFlag) == dirtyFlag;
 
-  /// [Component] constructor
+  /// Create a new [Component]
   ///
-  /// Execution context: [UpdateLoop]:write
-  Component(this.key, this.element, Component parent, {this.flags: 0})
-      : parent = parent == null ? ROOT : parent,
-        depth = parent.depth + 1;
+  /// It is necessary to create [element] in the constructor, so that we can
+  /// create real DOM Element as soon as possible and place it as a placeholder
+  /// into the DOM.
+  ///
+  /// This way we can stop at any point in [update()] method and perform
+  /// any async operation.
+  ///
+  /// Execution context: [Scheduler]:write
+  Component(this.key,
+      this.element,
+      Context context,
+      {this.flags: 0})
+      : context = context,
+        depth = context == null ? 0 : context.depth + 1;
 
-  Component.root({this.flags: 0}) : key = 0, element = null, parent = null, depth = 0;
+  /// Lifecycle method that is called when [Component] is rendered for
+  /// the first time.
+  ///
+  /// Execution context: [Scheduler]:write
+  void render();
 
-  void render() {}
+  /// Lifecycle method that is called when [Component] should be updated.
+  ///
+  /// Execution context: [Scheduler]:write
+  void update();
 
-  /// Update [Component]'s tag tree.
-  void update() {
-    updateFinish();
-  }
-
+  /// This method should be called when [Component] is finished updating.
+  ///
+  /// Execution context: [Scheduler]:write or [Scheduler]:read
   void updateFinish() {
     flags &= ~dirtyFlag;
   }
 
   /// Invoked when the Component is attached to the DOM.
   ///
-  /// Execution context: [UpdateLoop]:write
+  /// Execution context: [Scheduler]:write
   void attached() {
     assert(!isAttached);
     flags |= attachedFlag;
@@ -64,14 +79,14 @@ class Component implements v.Context {
 
   /// Invoked when the Component is detached from the DOM.
   ///
-  /// Execution context: [UpdateLoop]:write
+  /// Execution context: [Scheduler]:write
   void detached() {
     assert(isAttached);
     flags &= ~attachedFlag;
   }
 
-  /// Find html element that is between Component's root element and [e]
-  /// that matches [selector].
+  /// Find html element that is between Component's [element] and argument
+  /// [e] that matches [selector].
   ///
   /// TODO: rename?
   html.Element queryMatchingParent(html.Element e, String selector) {
@@ -86,7 +101,8 @@ class Component implements v.Context {
     return null;
   }
 
-  /// Add Component to the [Update]:write queue
+  /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
+  /// queue.
   void invalidate() {
     if (!isDirty) {
       flags |= Component.dirtyFlag;
@@ -103,6 +119,11 @@ class Component implements v.Context {
     }
   }
 
+  /// Returns [Future] that completes when [Scheduler] launches write
+  /// tasks for the current [Frame]
   Future writeDOM() => Scheduler.currentFrame.write(depth);
+
+  /// Returns [Future] that completes when [Scheduler] launches read
+  /// tasks for the current [Frame]
   Future readDOM() => Scheduler.currentFrame.read();
 }

@@ -35,7 +35,7 @@ class BasicComponent extends VComponent {
 
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
-  final basic = new BasicComponent(0, Component.ROOT, 0);
+  final basic = new BasicComponent(0, null, 0);
   injectComponent(basic, document.body);
 
   new Timer.periodic(new Duration(milliseconds: 50), (t) {

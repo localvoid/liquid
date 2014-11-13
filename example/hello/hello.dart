@@ -9,8 +9,8 @@ import 'package:liquid/liquid.dart';
 class HelloComponent extends VComponent {
   String name;
 
-  HelloComponent(Object key, Component parent, [this.name = 'Hello'])
-      : super(key, 'div', parent);
+  HelloComponent(Object key, Context context, [this.name = 'Hello'])
+      : super(key, 'div', context);
 
   build() {
     return vdom.div(0, [vdom.t('Hello $name')]);
@@ -18,5 +18,5 @@ class HelloComponent extends VComponent {
 }
 
 main() {
-  injectComponent(new HelloComponent(0, Component.ROOT, 'World'), document.body);
+  injectComponent(new HelloComponent(0, null, 'World'), document.body);
 }

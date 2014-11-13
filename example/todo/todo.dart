@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
-import 'package:liquid/components.dart';
+import 'package:liquid/forms.dart';
 
 class Item {
   static int __nextId = 0;
@@ -19,8 +19,8 @@ class Item {
 class TodoItem extends VComponent {
   Item item;
 
-  TodoItem(Object key, Component parent, this.item)
-      : super(key, 'li', parent);
+  TodoItem(Object key, Context context, this.item)
+      : super(key, 'li', context);
 
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
@@ -31,31 +31,31 @@ class TodoItem extends VComponent {
 
   build() => vdom.li(0, [vdom.t(item.text)]);
 
-  static VDomInitFunction init(Item item) {
-    return (component, key, context) {
+  static VDomComponent virtual(Object key, Item item) {
+    return new VDomComponent(key, (component, key, context) {
       if (component == null) {
         return new TodoItem(key, context, item);
       }
       component.updateProperties(item);
-    };
+    });
   }
 }
 
 class TodoList extends VComponent {
   List<Item> items;
 
-  TodoList(Object key, Component parent, this.items)
-      : super(key, 'ul', parent);
+  TodoList(Object key, Context context, this.items)
+      : super(key, 'ul', context);
 
-  build() => vdom.ul(0, items.map((i) => component(i.id, TodoItem.init(i))).toList());
+  build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, i)).toList());
 
-  static VDomInitFunction init(List<Item> items) {
-    return (component, key, context) {
+  static VDomComponent virtual(Object key, List<Item> items) {
+    return new VDomComponent(key, (component, key, context) {
       if (component == null) {
         return new TodoList(key, context, items);
       }
       component.update();
-    };
+    });
   }
 }
 
@@ -63,8 +63,8 @@ class TodoApp extends VComponent {
   final List<Item> items;
   String inputText = '';
 
-  TodoApp(Object key, Component parent, this.items)
-      : super(key, 'div', parent) {
+  TodoApp(Object key, Context context, this.items)
+      : super(key, 'div', context) {
     _initEventListeners();
   }
 
@@ -95,7 +95,7 @@ class TodoApp extends VComponent {
   build() {
     return vdom.div(0, [
       vdom.h3(0, [vdom.t('TODO')]),
-      component(1, TodoList.init(this.items)),
+      TodoList.virtual(1, this.items),
       vdom.form(2, [
         new TextInput(0, value: inputText),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
@@ -105,5 +105,5 @@ class TodoApp extends VComponent {
 }
 
 main() {
-  injectComponent(new TodoApp(0, Component.ROOT, []), document.body);
+  injectComponent(new TodoApp(0, null, []), document.body);
 }
