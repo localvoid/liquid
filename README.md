@@ -1,33 +1,47 @@
 # Liquid
 
-Library to build User Interfaces in Dart.
+Library to build User Interfaces in Dart with
+[Virtual DOM](https://github.com/localvoid/vdom).
 
-Documentation is missing right now, but I've created a
-[TodoMVC example](https://github.com/localvoid/todomvc-liquid) that is
-heavily commented and explains everything that is really important.
+Before you start to use this library, it is quite important to
+understand [what is Virtual DOM](https://github.com/localvoid/vdom),
+and what problems it solves.
 
-Like [VDom](https://github.com/localvoid/vdom) library, the main
-source of inspiration is the [React](http://facebook.github.io/react/)
-library.
+This library implements several useful tools that will help you build
+applications with Virtual DOM, such as Scheduler, Components, Basic
+Form Elements, etc.
 
-Like React Composite Components, it supports stateful and stateless
-Components, ownership, custom events, and even more.
+## Details
 
-The main difference is that React supports server-side rendering, and
-mounting virtual dom on top of existing dom, because of this it is
-quite hard for them to solve certain problems, that I don't have to
-deal with.
+### Scheduler
 
-And I've managed to make virtual dom diff/patch algorithm to work
-really
-fast. [Here](https://localvoid.github.io/vdom-benchmark/components.html)
-is the benchmark for Composite Components.
+In order to implement optimal read/write batching we are using the
+idea of different execution contexts. All tasks that are used to read
+or write DOM should be executed in Scheduler
+[Zone](https://www.dartlang.org/articles/zones/). Everything else, like
+event listeners should be executed outside of Scheduler zone.
 
-First case of the benchmark is demonstrating switching from one "page"
-to another. And the rest is about changes in lists, for example: chat
-window with user list or datatable.
+Scheduler provides interface to add write/read tasks to the current
+frame, or the next frame. Next frame is used if you want to add some
+task from the outside of Scheduler execution context, it is also
+useful to implement transitions/animations.
 
-## Web-Components
+### Extended VDom Context
+
+We are extending default VDom Context and using it to store depth of
+the Nodes relative to other Contexts. Depth is used in Scheduler as a
+way to prioritize write tasks, so if the parent element removes
+invalidated child, there is no need to execute write tasks for this
+removed child.
+
+### Component
+
+Component is a Virtual DOM Node, that is responsible for
+rendering/updating its subtree.
+
+## Notes
+
+### Web-Components
 
 One of the goals for this library was to make it lightweight, and make
 sure that it stays lightweight in all browsers that Dart language
