@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liquid * Library to build User Interfaces in Dart</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <style>
+    .demo {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    </style>
+
+    <script async type="application/dart" src="main.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Liquid</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="/getting-started.html">Getting Started</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/localvoid/liquid/">Source Code</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Liquid</h1>
+        <p>A Dart Library For Building User Interfaces</p>
+        <p><a class="btn btn-primary btn-lg" role="button" href="/getting-started.html">Get Started</a></p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>A Basic Virtual DOM Component</h2>
+          <p>VComponent is a basic block to build applications with Virtual DOM.
+             Each VComponent should have <code>build()</code> method that returns
+             Virtual DOM tree with the current representation of the Component.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <pre>
+import 'package:liquid/liquid.dart';
+import 'package:vdom/helpers.dart' as vdom;
+
+class HelloMessage extends VComponent {
+  final String name;
+
+  HelloMessage(Context context, this.name) : super('div', context);
+
+  // Each vdom node should have key that is unique amongst its siblings.
+  build() => vdom.div(0, [vdom.text(0, name)]);
+}
+
+main() {
+  injectComponent(new HelloMessage(null, 'World'), document.body);
+}</pre>
+        </div>
+        <div class="col-md-4">
+          <div id="demo-hello" class="demo"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <h2>A stateful Component</h2>
+          <p>In addition to taking input data as attributes, a component can maintain
+             internal state. When a component's state is changed outside of the rendering
+             execution context, a component should be invalidated with <code>invalidate()</code>
+             method.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+        <pre>
+import 'dart:async';
+import 'package:liquid/liquid.dart';
+import 'package:vdom/helpers.dart' as vdom;
+
+class TimerView extends VComponent {
+  int secondsElapsed = 0;
+  Timer _timer;
+
+  TimerView(Context context) : super('div', context);
+
+  attached() {
+    super.attached();
+    Zone.ROOT.run(() {
+      _timer = new Timer.periodic(const Duration(seconds: 1), (_) {
+        secondsElapsed++;
+        invalidate();
+      });
+    });
+  }
+
+  detached() {
+    _timer.cancel();
+    super.detached();
+  }
+
+  build() => vdom.div(0, [vdom.text(0, 'Seconds elapsed: $secondsElapsed')]);
+}
+
+main() {
+  injectComponent(new TimerView(null), document.body);
+}</pre>
+        </div>
+        <div class="col-md-4">
+          <div id="demo-timer" class="demo"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <h2>An application</h2>
+          <p>This example demonstrates how to compose components and build an application.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+        <pre>
+import 'dart:async';
+import 'package:liquid/liquid.dart';
+import 'package:liquid/forms.dart' as vdom;
+import 'package:vdom/helpers.dart' as vdom;
+import 'package:observe/observe.dart';
+
+class TodoItem {
+  static int _nextId = 0; // auto-incremental unique key
+  final int id;
+  final String title;
+
+  TodoItem(this.title) : id = _nextId++;
+}
+
+class TodoList extends VComponent {
+  final List items;
+
+  TodoList(Context context, this.items) : super('ul', context);
+
+  build() =>
+      vdom.ul(0, items.map((i) => vdom.li(i.id, [vdom.t(i.title)])).toList());
+
+  /// Constructor for Virtual DOM Nodes, it is just a convention.
+  ///
+  /// When [component] argument is null, it means that component doesn't exist
+  /// and should be created, otherwise it means that it is already exist and
+  /// its state is moved from the previous vdom tree to the new one.
+  static virtual(Object key, List items) {
+    return new VDomComponent(key, (component, context) {
+      if (component == null) {
+        return new TodoList(context, items);
+      } else {
+        component.update();
+      }
+    });
+  }
+}
+
+class TodoApp extends VComponent {
+  final ObservableList items;
+  StreamSubscription _sub;
+  vdom.TextInput _input;
+
+  TodoApp(Context context, this.items) : super('div', context) {
+    Zone.ROOT.run(() {
+      element.onClick.matches('button').listen((e) {
+        if (_input.value.isNotEmpty) {
+          items.add(new TodoItem(_input.value));
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+  }
+
+  attached() {
+    super.attached();
+    Zone.ROOT.run(() => _sub = items.changes.listen((_) => invalidate()));
+  }
+
+  detached() {
+    _sub.cancel();
+    super.detached();
+  }
+
+  build() {
+    final header = vdom.h3(#header, [vdom.t('TODO')]);
+    final list = TodoList.virtual(#list, items);
+    _input = new vdom.TextInput(#input);
+    final form = vdom.form(#form, [
+      _input,
+      vdom.button(#button, [vdom.t('Add # ${items.length + 1}')])
+    ]);
+
+    return vdom.div(0, [header, list, form]);
+  }
+}
+
+main() {
+  injectComponent(new TodoApp(null, new ObservableList()), document.body);
+}</pre>
+        </div>
+        <div class="col-md-4">
+          <div id="demo-todo" class="demo"></div>
+        </div>
+      </div>
+      <footer><p>© Liquid 2014</p></footer>
+    </div>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39594570-3', 'auto');
+  ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>

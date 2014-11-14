@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liquid * Getting Started</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Liquid</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/getting-started.html">Getting Started</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/localvoid/liquid/">Source Code</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <h2>Installation</h2>
+        <p>Requirements:</p>
+        <ul>
+          <li>Dart SDK 1.6 or greater</li>
+        </ul>
+
+        <h4>1. Create a new Dart Web Project</h4>
+
+        <h4>2. Add Liquid library in <code>pubspec.yaml</code> file:</h4>
+        <pre>
+dependencies:
+  liquid: any</pre>
+
+        <h4>3. Install it</h4>
+        <pre>
+$ pub get</pre>
+
+        <p>And now you are ready to use it, just import <code>'package:liquid/liquid.dart'</code>
+           and start writing your first application with Liquid library</p>
+      </div>
+
+      <div class="row">
+        <h2>Examples</h2>
+        <p>Here are simple examples that is build with Liquid library:</p>
+        <ul>
+          <li><a href="https://github.com/localvoid/liquid/tree/master/example/hello">Hello</a></li>
+          <li><a href="https://github.com/localvoid/liquid/tree/master/example/basic">Timer</a></li>
+          <li><a href="https://github.com/localvoid/liquid/tree/master/example/anim-100">100 Animated Boxes</a></li>
+          <li><a href="https://github.com/localvoid/liquid/tree/master/example/todo">Todo App</a></li>
+          <li><a href="https://github.com/localvoid/liquid/tree/master/example/read-dom">Read DOM</a></li>
+        </ul>
+
+        <h3>TodoMVC example</h3>
+        <p>We also created <a href="http://todomvc.com/">TodoMVC</a> application
+           [<a href="https://github.com/localvoid/todomvc-liquid">Source code</a>], it is heavily
+           commented and demonstrates many important features of this library.</p>
+      </div>
+    </div>
+    <div class="container">
+      <footer><p>© Liquid 2014</p></footer>
+    </div>
+
+    <script src="packages/browser/dart.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39594570-3', 'auto');
+  ga('send', 'pageview');
+    </script>
+  </body>
+</html>
