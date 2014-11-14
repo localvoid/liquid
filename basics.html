@@ -66,7 +66,7 @@ class MyComponent extends Component {
   static virtual(Object key, int someArg1, String someArg2) {
     return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new MyComponent(someArg1, someArg2);
+        return new MyComponent(context, someArg1, someArg2);
       } else {
         component.updateProperties(someArg1, someArg2);
       }
