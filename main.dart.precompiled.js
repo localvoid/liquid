@@ -5493,7 +5493,7 @@ w=$.aT()
 w.qB("addHandler (/|/index.html)")
 y.u(0,z,new F.em())
 v=window.location.pathname
-if(J.rY(v).nC(v,"/liquid"))C.xB.yn(v,7)
+if(J.rY(v).nC(v,"/liquid"))v=C.xB.yn(v,7)
 w.qB("handle "+v)
 u=new D.F4(y,x,!1).D9(v)
 if(u!=null){t=u.W1(0,u.pI(v))
