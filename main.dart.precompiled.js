@@ -1152,7 +1152,7 @@ if(a!=null)z=typeof a==="object"&&J.x(a)[b]
 else z=!0
 if(z)return a
 H.aE(a,b)},
-jg:function(a,b){if(!$.Tt().tg(0,a))throw H.b(H.w6(b))},
+jg:function(a,b){if(!$.jo().tg(0,a))throw H.b(H.w6(b))},
 ag:function(a){throw H.b(P.Gz("Cyclic initialization for static "+H.d(a)))},
 KT:function(a,b,c){return new H.tD(a,b,c,null)},
 N7:function(){return C.KZ},
@@ -1564,7 +1564,7 @@ oQ:{
 "^":"Tp:27;d,e",
 $1:function(a){var z
 for(z=this.e,z=H.VM(new H.a7(z,z.length,0,null),[H.Kp(z,0)]);z.G();)init.initializeLoadedHunk(z.Ff)
-if($.Tt().h(0,this.d));},
+if($.jo().h(0,this.d));},
 $isEH:true},
 Hq:{
 "^":"Tp:27;",
@@ -1775,13 +1775,13 @@ static:{j5:function(a,b,c,d){var z=H.VM(new H.bX(a,b,c),[d])
 z.Hd(a,b,c,d)
 return z}}},
 a7:{
-"^":"a;Hb,bd,QX,Ff",
+"^":"a;Hb,SW,QX,Ff",
 gl:function(){return this.Ff},
 G:function(){var z,y,x,w
 z=this.Hb
 y=J.U6(z)
 x=y.gB(z)
-if(!J.xC(this.bd,x))throw H.b(P.a4(z))
+if(!J.xC(this.SW,x))throw H.b(P.a4(z))
 w=this.QX
 if(typeof x!=="number")return H.s(x)
 if(w>=x){this.Ff=null
@@ -2650,7 +2650,7 @@ cZ:function(){var z=this.lI
 if(z!=null){this.lI=null
 z.Gv(0)}return},
 yi:[function(a){this.HQ.FC(a,this)},"$1","gwU",2,0,function(){return H.IG(function(a,b){return{func:"kA",void:true,args:[a]}},this.$receiver,"fB")}],
-SW:[function(a,b){this.MR(a,b)},"$2","gPr",4,0,36],
+Yg:[function(a,b){this.MR(a,b)},"$2","gPr",4,0,36],
 oZ:[function(){this.EC()},"$0","gos",0,0,1],
 JC:function(a,b,c,d,e,f,g){var z,y
 z=this.gwU()
@@ -4930,10 +4930,10 @@ $iszM:true,
 $aszM:null,
 $isqC:true},
 W9:{
-"^":"a;NX,vN,G3,QZ",
+"^":"a;NX,bd,G3,QZ",
 G:function(){var z,y
 z=this.G3+1
-y=this.vN
+y=this.bd
 if(z<y){this.QZ=J.UQ(this.NX,z)
 this.G3=z
 return!0}this.QZ=null
@@ -5493,10 +5493,11 @@ w=$.aT()
 w.qB("addHandler (/|/index.html)")
 y.u(0,z,new F.em())
 v=window.location.pathname
-w.qB("handle "+H.d(v))
+if(J.rY(v).nC(v,"/liquid"))C.xB.yn(v,7)
+w.qB("handle "+v)
 u=new D.F4(y,x,!1).D9(v)
 if(u!=null){t=u.W1(0,u.pI(v))
-y.t(0,u).$1(t)}else w.To("Unhandled path: "+H.d(v))},"$0","HA",0,0,1],
+y.t(0,u).$1(t)}else w.To("Unhandled path: "+v)},"$0","HA",0,0,1],
 em:{
 "^":"Tp:27;",
 $1:function(a){H.DS("home").$0().ml(new F.VW())},
@@ -5513,7 +5514,7 @@ D9:function(a){var z,y
 z=this.oB
 z=H.VM(new P.i5(z),[H.Kp(z,0)])
 y=H.VM(new H.U5(z,new D.tI(a)),[H.W8(z,"mW",0)])
-if(!y.gA(y).G())throw H.b(P.u("No handler found for "+H.d(a)))
+if(!y.gA(y).G())throw H.b(P.u("No handler found for "+a))
 return y.gFV(y)}},
 tI:{
 "^":"Tp:27;a",
@@ -5541,7 +5542,7 @@ return w.charCodeAt(0)==0?w:w},
 W1:function(a,b){return this.Uc(a,b,!1)},
 pI:function(a){var z,y,x,w
 z=this.pU.ej(a)
-if(z==null)throw H.b(P.u("no match for "+H.d(a)))
+if(z==null)throw H.b(P.u("no match for "+a))
 y=H.VM([],[P.qU])
 for(x=z.pX,w=1;w<=x.length-1;++w)y.push(x[w])
 return y},
@@ -5740,10 +5741,6 @@ y.$isa=z
 y=W.p8
 y.$isp8=z
 y.$isa=z})()
-J.NH=function(a){if(typeof a=="string")return J.O.prototype
-if(a==null)return a
-if(!(a instanceof P.a))return J.qu.prototype
-return a}
 J.Qc=function(a){if(typeof a=="number")return J.P.prototype
 if(typeof a=="string")return J.O.prototype
 if(a==null)return a
@@ -5760,6 +5757,10 @@ if(typeof a!="object")return a
 if(a instanceof P.a)return a
 return J.ks(a)}
 J.Wx=function(a){if(typeof a=="number")return J.P.prototype
+if(a==null)return a
+if(!(a instanceof P.a))return J.qu.prototype
+return a}
+J.rY=function(a){if(typeof a=="string")return J.O.prototype
 if(a==null)return a
 if(!(a instanceof P.a))return J.qu.prototype
 return a}
@@ -5798,7 +5799,7 @@ J.Lp=function(a,b){return J.RE(a).st5(a,b)}
 J.Mp=function(a){return J.w1(a).wg(a)}
 J.N1=function(a){return J.RE(a).Es(a)}
 J.NT=function(a,b,c){return J.U6(a).eM(a,b,c)}
-J.Nj=function(a,b,c){return J.NH(a).Nj(a,b,c)}
+J.Nj=function(a,b,c){return J.rY(a).Nj(a,b,c)}
 J.OG=function(a){return J.RE(a).gwd(a)}
 J.QM=function(a,b){return J.RE(a).Rg(a,b)}
 J.S0=function(a){return J.RE(a).Li(a)}
@@ -6060,7 +6061,7 @@ I.$lazy($,"nullLiteralPropertyPattern","tt","Bi",function(){return H.cM(function
 I.$lazy($,"undefinedPropertyPattern","dt","eA",function(){return H.cM(H.Mj(void 0))})
 I.$lazy($,"undefinedLiteralPropertyPattern","A7","ko",function(){return H.cM(function(){try{(void 0).$method$}catch(z){return z.message}}())})
 I.$lazy($,"_loadingLibraries","M4","Mz",function(){return P.Fl(P.qU,[P.b8,P.c8])})
-I.$lazy($,"_loadedLibraries","rY","Tt",function(){return P.Ls(null,null,null,P.qU)})
+I.$lazy($,"_loadedLibraries","NH","jo",function(){return P.Ls(null,null,null,P.qU)})
 I.$lazy($,"scheduleImmediateClosure","lI","ej",function(){return P.xg()})
 I.$lazy($,"_rootMap","ln","Zj",function(){return P.Py(null,null,null,null,null)})
 I.$lazy($,"_toStringVisiting","nM","Ex",function(){return[]})
@@ -9923,8 +9924,8 @@ if(!"name" in bX)bX.name="bX"
 $desc=$collectedClasses.bX
 if($desc instanceof Array)$desc=$desc[1]
 bX.prototype=$desc
-function a7(Hb,bd,QX,Ff){this.Hb=Hb
-this.bd=bd
+function a7(Hb,SW,QX,Ff){this.Hb=Hb
+this.SW=SW
 this.QX=QX
 this.Ff=Ff}a7.builtin$cls="a7"
 if(!"name" in a7)a7.name="a7"
@@ -11111,8 +11112,8 @@ if(!"name" in Gm)Gm.name="Gm"
 $desc=$collectedClasses.Gm
 if($desc instanceof Array)$desc=$desc[1]
 Gm.prototype=$desc
-function W9(NX,vN,G3,QZ){this.NX=NX
-this.vN=vN
+function W9(NX,bd,G3,QZ){this.NX=NX
+this.bd=bd
 this.G3=G3
 this.QZ=QZ}W9.builtin$cls="W9"
 if(!"name" in W9)W9.name="W9"
