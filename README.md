@@ -1,49 +1,45 @@
-# Liquid
+# [Liquid](https://localvoid.github.io/liquid/)
 
 Library to build User Interfaces in Dart with
 [Virtual DOM](https://github.com/localvoid/vdom).
 
-Before you start to use this library, it is quite important to
-understand [what is Virtual DOM](https://github.com/localvoid/vdom),
-and what problems it solves.
+## Installation
 
-This library implements several useful tools that will help you build
-applications with Virtual DOM, such as Scheduler, Components, Basic
-Form Elements, etc.
+Requirements:
 
-## Details
+ - Dart SDK 1.6 or greater
 
-### Scheduler
+#### 1. Create a new Dart Web Project
+#### 2. Add Liquid library in <code>pubspec.yaml</code> file:
 
-In order to implement optimal read/write batching we are using the
-idea of different execution contexts. All tasks that are used to read
-or write DOM should be executed in Scheduler
-[Zone](https://www.dartlang.org/articles/zones/). Everything else, like
-event listeners should be executed outside of Scheduler zone.
+```yaml
+dependencies:
+  liquid: any
+```
 
-Scheduler provides interface to add write/read tasks to the current
-frame, or the next frame. Next frame is used if you want to add some
-task from the outside of Scheduler execution context, it is also
-useful to implement transitions/animations.
+#### 3. Install it
 
-### Extended VDom Context
+```sh
+$ pub get
+```
 
-We are extending default VDom Context and using it to store depth of
-the Nodes relative to other Contexts. Depth is used in Scheduler as a
-way to prioritize write tasks, so if the parent element removes
-invalidated child, there is no need to execute write tasks for this
-removed child.
+And now you are ready to use it, just import
+`'package:liquid/liquid.dart'` and start writing your first
+application with Liquid library
 
-### Component
+## Examples
 
-Component is a Virtual DOM Node, that is responsible for
-rendering/updating its subtree.
+Here are simple examples that is build with Liquid library:
 
-## Notes
+- [Hello](https://github.com/localvoid/liquid/tree/master/example/hello)
+- [Timer](https://github.com/localvoid/liquid/tree/master/example/basic)
+- [100 Animated Boxes](https://github.com/localvoid/liquid/tree/master/example/anim-100)
+- [Todo App](https://github.com/localvoid/liquid/tree/master/example/todo)
+- [Read DOM](https://github.com/localvoid/liquid/tree/master/example/read-dom)
 
-### Web-Components
+### TodoMVC example
 
-One of the goals for this library was to make it lightweight, and make
-sure that it stays lightweight in all browsers that Dart language
-supports. So, there won't be any support for Web Components, until all
-major browsers start supporting them.
+We also created [TodoMVC](http://todomvc.com/) application
+[[Source Code](https://github.com/localvoid/todomvc-liquid)], it is
+heavily commented and demonstrates many important features of this
+library.
