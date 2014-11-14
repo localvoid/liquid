@@ -32,7 +32,8 @@
         <p>The first thing you should understand is the idea behind the Virtual DOM.
            And it is a simple idea that you always build your virtual dom like it doesn't
            know about any previous state of the application, and the algorithm behind it
-           will find a way how to transfer state from the old tree to the new one.</p>
+           will find a way how to transfer state from the old tree to the new one and
+           perform all necessary modification to the real DOM.</p>
         <p>With this way of DOM manipulation, it becomes so easy to perform any complex
            DOM transformations.</p>
         <p>Basic VDom Nodes, like <code>Text</code> and <code>Element</code> have simple
@@ -48,6 +49,30 @@
            <code>VDomComponent(initFunction)</code> that accepts function, and this function
            is responsible for creating new Component if Component doesn't exist in the old
            virtual dom tree, or update if it is already exist.</p>
+        <p>To make it easier to create VDom Component objects, we are using convention with
+           static <code>virtual</code> constructors.</p>
+        <pre>
+class MyComponent extends Component {
+  ...
+
+  void updateProperties(int someArg1, String someArg2) {
+    if (_someArg1 != someArg1 || _someArg2 != someArg2) {
+      _someArg1 = someArg1;
+      _someArg2 = someArg2;
+      update();
+    }
+  }
+
+  static virtual(Object key, int someArg1, String someArg2) {
+    return new VDomComponent(key, (component, context) {
+      if (component == null) {
+        return new MyComponent(someArg1, someArg2);
+      } else {
+        component.updateProperties(someArg1, someArg2);
+      }
+    });
+  }
+}</pre>
       </div>
     </div>
     <div class="container">
