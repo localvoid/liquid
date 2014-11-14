@@ -19,8 +19,7 @@ class Item {
 class TodoItem extends VComponent {
   Item item;
 
-  TodoItem(Object key, Context context, this.item)
-      : super(key, 'li', context);
+  TodoItem(Context context, this.item) : super('li', context);
 
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
@@ -32,9 +31,9 @@ class TodoItem extends VComponent {
   build() => vdom.li(0, [vdom.t(item.text)]);
 
   static VDomComponent virtual(Object key, Item item) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new TodoItem(key, context, item);
+        return new TodoItem(context, item);
       }
       component.updateProperties(item);
     });
@@ -44,15 +43,14 @@ class TodoItem extends VComponent {
 class TodoList extends VComponent {
   List<Item> items;
 
-  TodoList(Object key, Context context, this.items)
-      : super(key, 'ul', context);
+  TodoList(Context context, this.items) : super('ul', context);
 
   build() => vdom.ul(0, items.map((i) => TodoItem.virtual(i.id, i)).toList());
 
   static VDomComponent virtual(Object key, List<Item> items) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new TodoList(key, context, items);
+        return new TodoList(context, items);
       }
       component.update();
     });
@@ -63,8 +61,7 @@ class TodoApp extends VComponent {
   final List<Item> items;
   String inputText = '';
 
-  TodoApp(Object key, Context context, this.items)
-      : super(key, 'div', context) {
+  TodoApp(Context context, this.items) : super('div', context) {
     _initEventListeners();
   }
 
@@ -105,5 +102,5 @@ class TodoApp extends VComponent {
 }
 
 main() {
-  injectComponent(new TodoApp(0, null, []), document.body);
+  injectComponent(new TodoApp(null, []), document.body);
 }

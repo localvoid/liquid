@@ -2,7 +2,6 @@ part of liquid;
 
 /// TODO: rename
 typedef Component VDomInitFunction(Component component,
-                                   Object key,
                                    v.Context context);
 
 /// VDom Node for Components
@@ -17,7 +16,7 @@ class VDomComponent extends v.Node {
   void create(v.Context context) {
     assert(component == null);
     assert(ref == null);
-    component = _initFunction(null, key, context);
+    component = _initFunction(null, context);
     ref = component.element;
   }
 
@@ -33,7 +32,7 @@ class VDomComponent extends v.Node {
     // transfer component state
     other.ref = ref;
     other.component = component;
-    other._initFunction(component, key, context);
+    other._initFunction(component, context);
   }
 
   void attached() {

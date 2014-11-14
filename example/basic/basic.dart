@@ -17,8 +17,7 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Object key, Component parent, this._elapsed)
-      : super(key, 'p', parent);
+  BasicComponent(Component parent, this._elapsed) : super('p', parent);
 
   build() {
     return vdom.p(0, [vdom.t('Liquid has been successfully '
@@ -35,7 +34,7 @@ class BasicComponent extends VComponent {
 
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
-  final basic = new BasicComponent(0, null, 0);
+  final basic = new BasicComponent(null, 0);
   injectComponent(basic, document.body);
 
   new Timer.periodic(new Duration(milliseconds: 50), (t) {

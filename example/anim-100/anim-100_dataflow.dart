@@ -11,8 +11,7 @@ import 'package:liquid/liquid.dart';
 class Box extends VComponent {
   int count = 0;
 
-  Box(Object key, Context context, this.count)
-      : super(key, 'div', context);
+  Box(Context context, this.count) : super('div', context);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -39,9 +38,9 @@ class Box extends VComponent {
   }
 
   static VDomComponent virtual(Object key, int count) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new Box(key, context, count);
+        return new Box(context, count);
       }
       component.updateProperties(count);
     });
@@ -51,8 +50,7 @@ class Box extends VComponent {
 class App extends VComponent {
   List<int> items;
 
-  App(Object key, Context context, this.items)
-      : super(key, 'div', context);
+  App(Context context, this.items) : super('div', context);
 
   build() {
     final result = [];
@@ -66,7 +64,7 @@ class App extends VComponent {
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
   final items = new List<int>.filled(100, 0);
-  final app = new App(0, null, items);
+  final app = new App(null, items);
   injectComponent(app, document.body);
 
   /// I know that this is quite stupid :)

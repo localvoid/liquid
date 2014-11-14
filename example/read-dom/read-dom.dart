@@ -8,16 +8,16 @@ import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class OuterBox extends VComponent {
-  OuterBox(Object key, Context context) : super(key, 'div', context);
+  OuterBox(Context context) : super('div', context);
 
   build() {
     return vdom.div(0, [Box.virtual(0, this)], classes: ['outer-box']);
   }
 
   static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       assert(component == null);
-      return new OuterBox(key, context);
+      return new OuterBox(context);
     });
   }
 }
@@ -30,7 +30,7 @@ class Box extends VComponent {
   VDomComponent _child;
   StreamSubscription _resizeSub;
 
-  Box(Object key, Context context, this.parent) : super(key, 'div', context);
+  Box(Context context, this.parent) : super('div', context);
 
   build() {
     _child = InnerBox.virtual(0);
@@ -71,31 +71,31 @@ class Box extends VComponent {
   }
 
   static VDomComponent virtual(Object key, OuterBox parent) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       assert(component == null);
-      return new Box(key, context, parent);
+      return new Box(context, parent);
     });
   }
 }
 
 class InnerBox extends VComponent {
-  InnerBox(Object key, Context context) : super(key, 'div', context);
+  InnerBox(Context context) : super('div', context);
 
   build() {
     return vdom.div(0, [vdom.t('x')], classes: ['inner-box']);
   }
 
   static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, key, context) {
+    return new VDomComponent(key, (component, context) {
       if (component == null) {
-        return new InnerBox(key, context);
+        return new InnerBox(context);
       }
     });
   }
 }
 
 class App extends VComponent {
-  App(Object key, Context context) : super(key, 'div', context);
+  App(Context context) : super('div', context);
 
   build() {
     return vdom.div(0, [OuterBox.virtual(0),
@@ -105,5 +105,5 @@ class App extends VComponent {
 }
 
 main() {
-  injectComponent(new App(0, null), document.body);
+  injectComponent(new App(null), document.body);
 }

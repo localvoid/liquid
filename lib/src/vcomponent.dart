@@ -53,12 +53,10 @@ abstract class VComponent extends Component {
   /// any async operation.
   ///
   /// Execution context: [Scheduler]:write
-  VComponent(Object key,
-      String tag,
+  VComponent(String tag,
       Context context,
       {int flags: 0})
-      : super(key,
-          html.document.createElement(tag),
+      : super(html.document.createElement(tag),
           context,
           flags: flags);
 

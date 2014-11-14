@@ -13,9 +13,6 @@ abstract class Component implements Context {
   /// Component is dirty and should be updated in the next Update Loop
   static const dirtyFlag    = 1 << 1;
 
-  /// Unique key
-  final Object key;
-
   /// Reference to the Html Element
   final html.Element element;
 
@@ -44,8 +41,7 @@ abstract class Component implements Context {
   /// any async operation.
   ///
   /// Execution context: [Scheduler]:write
-  Component(this.key,
-      this.element,
+  Component(this.element,
       Context context,
       {this.flags: 0})
       : context = context,
