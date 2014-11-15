@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Liquid * Library to build User Interfaces in Dart</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="highlight.css">
 
     <style>
     .demo {
@@ -27,7 +28,7 @@
         </div>
         <ul class="nav navbar-nav">
           <li><a href="getting-started.html">Getting Started</a></li>
-          <li><a href="basics.html">Basics</a></li>
+          <li><a href="tutorial.html">Tutorial</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="https://github.com/localvoid/liquid/">Source Code</a></li>
@@ -51,23 +52,21 @@
         </div>
       </div>
       <div class="row">
+
         <div class="col-md-8">
-          <pre>
-import 'package:liquid/liquid.dart';
-import 'package:vdom/helpers.dart' as vdom;
+<div class="highlight"><pre><span class="k">import</span> <span class="s1">&#39;package:liquid/liquid.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:vdom/helpers.dart&#39;</span> <span class="k">as</span> <span class="n">vdom</span><span class="p">;</span>
 
-class HelloMessage extends VComponent {
-  final String name;
+<span class="kd">class</span> <span class="nc">HelloMessage</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
 
-  HelloMessage(Context context, this.name) : super('div', context);
+  <span class="n">HelloMessage</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">);</span>
 
-  // Each vdom node should have key that is unique amongst its siblings.
-  build() => vdom.div(0, [vdom.text(0, name)]);
-}
+  <span class="c1">// Each VDom Node should have key that is unique amongst its siblings.</span>
+  <span class="n">build</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">vdom</span><span class="p">.</span><span class="n">div</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">text</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="s1">&#39;Hello </span><span class="si">$</span><span class="n">name</span><span class="s1">!&#39;</span><span class="p">)]);</span>
+<span class="p">}</span>
+</pre></div>
 
-main() {
-  injectComponent(new HelloMessage(null, 'World'), document.body);
-}</pre>
         </div>
         <div class="col-md-4">
           <div id="demo-hello" class="demo"></div>
@@ -85,38 +84,36 @@ main() {
       </div>
       <div class="row">
         <div class="col-md-8">
-        <pre>
-import 'dart:async';
-import 'package:liquid/liquid.dart';
-import 'package:vdom/helpers.dart' as vdom;
 
-class TimerView extends VComponent {
-  int secondsElapsed = 0;
-  Timer _timer;
+<div class="highlight"><pre><span class="k">import</span> <span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid/liquid.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:vdom/helpers.dart&#39;</span> <span class="k">as</span> <span class="n">vdom</span><span class="p">;</span>
 
-  TimerView(Context context) : super('div', context);
+<span class="kd">class</span> <span class="nc">TimerView</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">secondsElapsed</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+  <span class="n">Timer</span> <span class="n">_timer</span><span class="p">;</span>
 
-  attached() {
-    super.attached();
-    Zone.ROOT.run(() {
-      _timer = new Timer.periodic(const Duration(seconds: 1), (_) {
-        secondsElapsed++;
-        invalidate();
-      });
-    });
-  }
+  <span class="n">TimerView</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">);</span>
 
-  detached() {
-    _timer.cancel();
-    super.detached();
-  }
+  <span class="n">attached</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">attached</span><span class="p">();</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">_timer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="p">.</span><span class="n">periodic</span><span class="p">(</span><span class="kd">const</span> <span class="n">Duration</span><span class="p">(</span><span class="nl">seconds:</span> <span class="m">1</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">secondsElapsed</span><span class="o">++</span><span class="p">;</span>
+        <span class="n">invalidate</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
 
-  build() => vdom.div(0, [vdom.text(0, 'Seconds elapsed: $secondsElapsed')]);
-}
+  <span class="n">detached</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">_timer</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">detached</span><span class="p">();</span>
+  <span class="p">}</span>
 
-main() {
-  injectComponent(new TimerView(null), document.body);
-}</pre>
+  <span class="n">build</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">vdom</span><span class="p">.</span><span class="n">div</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">text</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="s1">&#39;Seconds elapsed: </span><span class="si">$</span><span class="n">secondsElapsed</span><span class="s1">&#39;</span><span class="p">)]);</span>
+<span class="p">}</span>
+</pre></div>
+
         </div>
         <div class="col-md-4">
           <div id="demo-timer" class="demo"></div>
@@ -131,88 +128,86 @@ main() {
       </div>
       <div class="row">
         <div class="col-md-8">
-        <pre>
-import 'dart:async';
-import 'package:liquid/liquid.dart';
-import 'package:liquid/forms.dart' as vdom;
-import 'package:vdom/helpers.dart' as vdom;
-import 'package:observe/observe.dart';
 
-class TodoItem {
-  static int _nextId = 0; // auto-incremental unique key
-  final int id;
-  final String title;
+<div class="highlight"><pre><span class="k">import</span> <span class="s1">&#39;dart:async&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid/liquid.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid/forms.dart&#39;</span> <span class="k">as</span> <span class="n">vdom</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:vdom/helpers.dart&#39;</span> <span class="k">as</span> <span class="n">vdom</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:observe/observe.dart&#39;</span><span class="p">;</span>
 
-  TodoItem(this.title) : id = _nextId++;
-}
+<span class="kd">class</span> <span class="nc">TodoItem</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kt">int</span> <span class="n">_nextId</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> <span class="c1">// auto-incremental unique key</span>
+  <span class="kd">final</span> <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">title</span><span class="p">;</span>
 
-class TodoList extends VComponent {
-  final List items;
+  <span class="n">TodoItem</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">)</span> <span class="o">:</span> <span class="n">id</span> <span class="o">=</span> <span class="n">_nextId</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
 
-  TodoList(Context context, this.items) : super('ul', context);
+<span class="kd">class</span> <span class="nc">TodoList</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">List</span> <span class="n">items</span><span class="p">;</span>
 
-  build() =>
-      vdom.ul(0, items.map((i) => vdom.li(i.id, [vdom.t(i.title)])).toList());
+  <span class="n">TodoList</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">items</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">);</span>
 
-  /// Constructor for Virtual DOM Nodes, it is just a convention.
-  ///
-  /// When [component] argument is null, it means that component doesn't exist
-  /// and should be created, otherwise it means that it is already exist and
-  /// its state is moved from the previous vdom tree to the new one.
-  static virtual(Object key, List items) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new TodoList(context, items);
-      } else {
-        component.update();
-      }
-    });
-  }
-}
+  <span class="n">build</span><span class="p">()</span> <span class="o">=&gt;</span>
+      <span class="n">vdom</span><span class="p">.</span><span class="n">ul</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">items</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">vdom</span><span class="p">.</span><span class="n">li</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">t</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">title</span><span class="p">)])).</span><span class="n">toList</span><span class="p">());</span>
 
-class TodoApp extends VComponent {
-  final ObservableList items;
-  StreamSubscription _sub;
-  vdom.TextInput _input;
+  <span class="c1">/// Constructor for Virtual DOM Nodes, it is just a convention.</span>
+  <span class="c1">///</span>
+  <span class="c1">/// When [component] argument is null, it means that component doesn&#39;t exist</span>
+  <span class="c1">/// and should be created, otherwise it means that it is already exist and</span>
+  <span class="c1">/// its state is moved from the previous vdom tree to the new one.</span>
+  <span class="kd">static</span> <span class="n">virtual</span><span class="p">(</span><span class="kt">Object</span> <span class="n">key</span><span class="p">,</span> <span class="n">List</span> <span class="n">items</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">VDomComponent</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">component</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">TodoList</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">items</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">component</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-  TodoApp(Context context, this.items) : super('div', context) {
-    Zone.ROOT.run(() {
-      element.onClick.matches('button').listen((e) {
-        if (_input.value.isNotEmpty) {
-          items.add(new TodoItem(_input.value));
-        }
-        e.preventDefault();
-        e.stopPropagation();
-      });
-    });
-  }
+<span class="kd">class</span> <span class="nc">TodoApp</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">ObservableList</span> <span class="n">items</span><span class="p">;</span>
+  <span class="n">StreamSubscription</span> <span class="n">_sub</span><span class="p">;</span>
+  <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span> <span class="n">_input</span><span class="p">;</span>
 
-  attached() {
-    super.attached();
-    Zone.ROOT.run(() => _sub = items.changes.listen((_) => invalidate()));
-  }
+  <span class="n">TodoApp</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">items</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">items</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">new</span> <span class="n">TodoItem</span><span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
 
-  detached() {
-    _sub.cancel();
-    super.detached();
-  }
+  <span class="n">attached</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">attached</span><span class="p">();</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="n">_sub</span> <span class="o">=</span> <span class="n">items</span><span class="p">.</span><span class="n">changes</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">invalidate</span><span class="p">()));</span>
+  <span class="p">}</span>
 
-  build() {
-    final header = vdom.h3(#header, [vdom.t('TODO')]);
-    final list = TodoList.virtual(#list, items);
-    _input = new vdom.TextInput(#input);
-    final form = vdom.form(#form, [
-      _input,
-      vdom.button(#button, [vdom.t('Add # ${items.length + 1}')])
-    ]);
+  <span class="n">detached</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">_sub</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">detached</span><span class="p">();</span>
+  <span class="p">}</span>
 
-    return vdom.div(0, [header, list, form]);
-  }
-}
+  <span class="n">build</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">header</span> <span class="o">=</span> <span class="n">vdom</span><span class="p">.</span><span class="n">h3</span><span class="p">(</span><span class="err">#</span><span class="n">header</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">t</span><span class="p">(</span><span class="s1">&#39;TODO&#39;</span><span class="p">)]);</span>
+    <span class="kd">final</span> <span class="n">list</span> <span class="o">=</span> <span class="n">TodoList</span><span class="p">.</span><span class="n">virtual</span><span class="p">(</span><span class="err">#</span><span class="n">list</span><span class="p">,</span> <span class="n">items</span><span class="p">);</span>
+    <span class="n">_input</span> <span class="o">=</span> <span class="k">new</span> <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span><span class="p">(</span><span class="err">#</span><span class="n">input</span><span class="p">);</span>
+    <span class="kd">final</span> <span class="n">form</span> <span class="o">=</span> <span class="n">vdom</span><span class="p">.</span><span class="n">form</span><span class="p">(</span><span class="err">#</span><span class="n">form</span><span class="p">,</span> <span class="p">[</span>
+      <span class="n">_input</span><span class="p">,</span>
+      <span class="n">vdom</span><span class="p">.</span><span class="n">button</span><span class="p">(</span><span class="err">#</span><span class="n">button</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">t</span><span class="p">(</span><span class="s1">&#39;Add # </span><span class="si">${</span><span class="n">items</span><span class="p">.</span><span class="n">length</span> <span class="o">+</span> <span class="m">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)])</span>
+    <span class="p">]);</span>
 
-main() {
-  injectComponent(new TodoApp(null, new ObservableList()), document.body);
-}</pre>
+    <span class="k">return</span> <span class="n">vdom</span><span class="p">.</span><span class="n">div</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="p">[</span><span class="n">header</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="n">form</span><span class="p">]);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
         </div>
         <div class="col-md-4">
           <div id="demo-todo" class="demo"></div>

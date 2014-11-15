@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liquid * Tutorial</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="highlight.css">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="https://localvoid.github.io/liquid/">Liquid</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="getting-started.html">Getting Started</a></li>
+          <li class="active"><a href="tutorial.html">Tutorial</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/localvoid/liquid/">Source Code</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <h1>Creating a Single Page Todo App with Liquid</h1>
+        <p>Before starting this tutorial you should be familiar with
+        the Dart language.</p>
+        <p>In this tutorial I'll show how to build a simple Todo
+           application using Liquid library. The main purpose of this
+           tutorial is to demonstrate how Liquid library works, and
+           this library is all about User Interfaces, and not how to
+           properly structure and build your application.</p>
+        <p>I just don't believe in all this proposed solutions, like
+           make everything immutable, reactive etc. As a software
+           engineers we are always making tradeoffs by choosing
+           different ways how to tackle the problems, and every way
+           has its own pros and cons, so it all depends on the
+           problems we are trying to solve.</p>
+        <h2>Setup</h2>
+        <p>Make sure that you have Dart SDK installed and running, the
+           minimum version of the SDK is 1.6.</p>
+        <h3>File Structure</h3>
+        <p>File structure of our application will conform to the
+           <a href="https://www.dartlang.org/tools/pub/package-layout.html">Pub
+           Package Layout Conventions</a>.</p>
+        <pre>
+.
+├── lib
+│   ├── src
+│   │   ├── models
+│   │   │   ├── item.dart
+│   │   │   └── item_list.dart
+│   │   └── views
+│   │       ├── app.dart
+│   │       ├── header.dart
+│   │       ├── item.dart
+│   │       └── item_list.dart
+│   ├── models.dart
+│   └── views.dart
+├── pubspec.yaml
+└── web
+    ├── index.dart
+    └── index.html
+</pre>
+        <h3>Installing Packages</h3>
+        <p>Open <code>pubspec.yaml</code> file in the project root
+        directory and make sure that you have this dependencies:</p>
+        <pre>
+dependencies:
+  browser: any
+  liquid: any</pre>
+        <p>Now run <code>$ pub get</code> command from the project's
+           root directory to install all dependencies.</p>
+        <h2>Data Model</h2>
+        <p>We will start writing our application by defining Data Models.</p>
+        <h3>Item</h3>
+        <p>Item is an entry in our Todo List. It is quite simple, the
+           only important thing is that it should have unique key, so
+           we can easily find it. This key will be used in the Virtual
+           DOM to find which Node represents this item.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">models</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Item</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kt">int</span> <span class="n">_nextId</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> <span class="c1">// Used for Auto-Incremental Unique Keys</span>
+
+  <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+  <span class="kt">String</span> <span class="n">title</span><span class="p">;</span>
+
+  <span class="n">Item</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">)</span> <span class="o">:</span> <span class="n">id</span> <span class="o">=</span> <span class="n">_nextId</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h3>ItemList</h3>
+        <p>ItemList will contain all entries and will be responsible for
+           all modifications. It also provides an event stream that emits
+           events when something is changed.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">models</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ItemList</span> <span class="p">{</span>
+  <span class="c1">// Here we are creating Dart Streams to listen for notifications when</span>
+  <span class="c1">// something is changed.</span>
+  <span class="c1">//</span>
+  <span class="c1">// If you are not familiar with Dart Stream, you can read about them in this</span>
+  <span class="c1">// articles:</span>
+  <span class="c1">// https://www.dartlang.org/docs/tutorials/streams/</span>
+  <span class="c1">// https://www.dartlang.org/articles/creating-streams/</span>
+  <span class="n">StreamController</span> <span class="n">_onChangesController</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StreamController</span><span class="p">();</span>
+  <span class="n">Stream</span> <span class="kd">get</span> <span class="n">onChanges</span> <span class="o">=&gt;</span> <span class="n">_onChangesController</span><span class="p">.</span><span class="n">stream</span><span class="p">;</span>
+
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="n">items</span> <span class="o">=</span> <span class="p">[];</span>
+
+  <span class="c1">// Actions:</span>
+
+  <span class="c1">/// Create a new Todo Item</span>
+  <span class="kt">void</span> <span class="n">createItem</span><span class="p">(</span><span class="kt">String</span> <span class="n">title</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">title</span><span class="p">.</span><span class="n">trim</span><span class="p">().</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">items</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">new</span> <span class="n">Item</span><span class="p">(</span><span class="n">title</span><span class="p">));</span>
+      <span class="n">_onChangesController</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">/// Update title property for Todo item</span>
+  <span class="kt">void</span> <span class="n">updateItemTitle</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span> <span class="kt">String</span> <span class="n">newTitle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">newTitle</span><span class="p">.</span><span class="n">trim</span><span class="p">().</span><span class="n">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">items</span><span class="p">.</span><span class="n">removeWhere</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">id</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="kd">final</span> <span class="n">item</span> <span class="o">=</span> <span class="n">items</span><span class="p">.</span><span class="n">firstWhere</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">id</span><span class="p">);</span>
+      <span class="n">item</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">newTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">_onChangesController</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>Introduction to Virtual DOM</h2>
+        <p>If you ever worked with the DOM directly, you understand
+           how hard is to track what should be modified in the DOM
+           when something is changed in the data model.</p>
+        <p>There are couple solutions for this problem, and the most
+           popular is the data-binding, that is used in libraries,
+           such as Angular.</p>
+        <p>In the Liquid library we are using Virtual DOM with its
+           diff/patch algorithm to apply changes to the actual
+           DOM. When something is changed in data model, we just
+           rebuilding the Virtual DOM from the ground up and
+           diff/patch takes care of all changes.</p>
+        <h2>Header Element</h2>
+        <p>Now we will create our first Virtual DOM Node, it will be a
+           simple static element, its main purpose is to reduce work
+           for the diff algorithm.</p>
+        <p>The most important lifecycle methods for Virtual DOM Nodes
+        are:</p>
+        <ul>
+          <li><code>create(Context context)</code></li>
+          <li><code>render(Context context)</code></li>
+          <li><code>update(Context context)</code></li>
+        </ul>
+        <p>You can forget about Context for now, it is an object that
+          is used to pass data from the parents.</p>
+        <p>In <code>create</code> method you should create root-level
+           html Node and assign it to <code>ref</code> property.</p>
+        <p><code>render</code> and <code>update</code> methods for
+           rendering and updating subtree.</p>
+        <p>It isn't necessary to do this optimizations, especially
+           when you are prototyping. Our Virtual DOM diff algorithm is
+           really fast.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">views</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Header</span> <span class="kd">extends</span> <span class="n">vdom</span><span class="p">.</span><span class="n">Node</span> <span class="p">{</span>
+  <span class="n">Header</span><span class="p">(</span><span class="kt">Object</span> <span class="n">key</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+
+  <span class="kt">void</span> <span class="n">create</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h1</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;header&#39;</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">render</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ref</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;TODO Application&#39;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>Introduction to Components</h2>
+        <p>Component is just an additional state for html Element with
+           its own <code>render</code> and <code>update</code> methods
+           that are responsible for rendering and updating Component's
+           subtree. When we use them from the Virtual DOM, we just
+           delegate method calls from the VDom Nodes to Components.</p>
+        <p>Components also used as a way to reduce work for the diff
+           algorithm. When Component's state is changed and we can
+           predict that this changes doesn't affect its
+           representation, we can skip updating the whole subtree.</p>
+        <p>To insert Component into the Virtual DOM tree we have a
+           special <code>VDomComponent</code> Node, it stores
+           reference to the Component and function for creating and
+           updating Component.</p>
+        <h2>Application Component</h2>
+        <p>It is time to build Component for our Application.</p>
+        <p>This Component will be a subclass of the
+           VComponent. VComponent is a special Component that renders
+           and updates its subtree with Virtual DOM.</p>
+        <p>For the time being you can forget about zones in this code,
+          just remember that all methods in the Component class
+          except <code>invalidate</code> are executed in a special
+          "rendering" zone, and if you want for some code to work
+          outside of this zone, like with this event listeners, you
+          should register them outside of the "rendering" zone.</p>
+        <p>If you want to learn more about Dart Zones, you can read
+        <a href="https://www.dartlang.org/articles/zones/">this
+        article about Dart Zones</a>.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">views</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">App</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span> <span class="n">data</span><span class="p">;</span>
+  <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span> <span class="n">_input</span><span class="p">;</span>
+  <span class="kt">String</span> <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+
+  <span class="n">App</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Event listeners should be executed outside of the &quot;rendering&quot; zone.</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="c1">// Root-Level Html Element for this component is created at this stage,</span>
+      <span class="c1">// so we can use Event Delegation to listen for children events.</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onKeyPress</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">keyCode</span> <span class="o">==</span> <span class="n">KeyCode</span><span class="p">.</span><span class="n">ENTER</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">_title</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">data</span><span class="p">.</span><span class="n">createItem</span><span class="p">(</span><span class="n">_title</span><span class="p">);</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+            <span class="c1">// When we invalidate Component, it means that it will be updated</span>
+            <span class="c1">// on the next rendering frame.</span>
+            <span class="c1">//</span>
+            <span class="c1">// This way we can update DOM in batches, no need to update it as</span>
+            <span class="c1">// soon as possible, especially when the state can be changed</span>
+            <span class="c1">// mutiple times before browser starts to render new frame.</span>
+            <span class="n">invalidate</span><span class="p">();</span>
+          <span class="p">}</span>
+          <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+          <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onInput</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="n">build</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// textInput is a special vdom Node that is declared in &quot;liquid/forms.dart&quot;</span>
+    <span class="c1">// library.</span>
+    <span class="c1">//</span>
+    <span class="c1">// We&#39;ve created special wrappers for the Form Elements to make them work.</span>
+    <span class="c1">//</span>
+    <span class="c1">// And we are assigning it to [_input], so we can reference it from the</span>
+    <span class="c1">// event listeners. Virtual DOM diff/patch algorithm will transfer state</span>
+    <span class="c1">// from the previous tree to the new one, so that we can always access real</span>
+    <span class="c1">// dom element from the latest VDom tree.</span>
+    <span class="n">_input</span> <span class="o">=</span> <span class="n">vdom</span><span class="p">.</span><span class="n">textInput</span><span class="p">(</span><span class="err">#</span><span class="n">input</span><span class="p">,</span> <span class="nl">value:</span> <span class="n">_title</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">vdom</span><span class="p">.</span><span class="n">div</span><span class="p">(</span><span class="m">0</span><span class="p">,</span>
+        <span class="p">[</span><span class="k">new</span> <span class="n">Header</span><span class="p">(</span><span class="err">#</span><span class="n">header</span><span class="p">),</span>
+         <span class="n">ItemList</span><span class="p">.</span><span class="n">virtual</span><span class="p">(</span><span class="err">#</span><span class="n">list</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+         <span class="n">_input</span><span class="p">]);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>ItemList Component</h2>
+        <p>This Component will be quite simple, but it will
+        introduce <code>virtual</code> constructors.</p>
+        <p>Virtual Constructors is just a convention that we are using
+          in this library to create <code>VDomComponent</code>
+          wrappers.</p>
+        <p><code>VDomComponent</code> accepts two arguments, first is
+          the key as in all VDom Nodes, and the second one is the
+          function that creates and updates components.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">views</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ItemList</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span> <span class="n">data</span><span class="p">;</span>
+
+  <span class="n">ItemList</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">);</span>
+
+  <span class="n">build</span><span class="p">()</span> <span class="o">=&gt;</span>
+      <span class="n">vdom</span><span class="p">.</span><span class="n">ul</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">data</span><span class="p">.</span><span class="n">items</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">Item</span><span class="p">.</span><span class="n">virtual</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">i</span><span class="p">)).</span><span class="n">toList</span><span class="p">());</span>
+
+  <span class="kd">static</span> <span class="n">virtual</span><span class="p">(</span><span class="kt">Object</span> <span class="n">key</span><span class="p">,</span> <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">VDomComponent</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">component</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">ItemList</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="n">component</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>Item Component</h2>
+        <p>Item Component is using one more convention, that
+        is <code>updateProperties</code> method, this method is used
+        in the VDomComponent create/update function to update state
+        and update representation when it is necessary.</p>
+
+<div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">views</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Item</span> <span class="kd">extends</span> <span class="n">VComponent</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span> <span class="n">data</span><span class="p">;</span>
+  <span class="kd">final</span> <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+
+  <span class="kt">String</span> <span class="n">title</span><span class="p">;</span>
+
+  <span class="kt">bool</span> <span class="n">_editing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span> <span class="n">_input</span><span class="p">;</span>
+
+  <span class="n">Item</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onDoubleClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_editing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="n">invalidate</span><span class="p">();</span>
+        <span class="c1">// We can&#39;t focus _input Element right now, because it will be created</span>
+        <span class="c1">// on the next frame. So we can use special [after] Future and wait</span>
+        <span class="c1">// until next frame is rendered.</span>
+        <span class="n">Scheduler</span><span class="p">.</span><span class="n">nextFrame</span><span class="p">.</span><span class="n">after</span><span class="p">().</span><span class="n">then</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">ref</span> <span class="o">as</span> <span class="n">InputElement</span><span class="p">).</span><span class="n">focus</span><span class="p">();</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">});</span>
+
+      <span class="n">element</span><span class="p">.</span><span class="n">onBlur</span><span class="p">.</span><span class="n">capture</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">_editing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="n">invalidate</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="n">build</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="n">children</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_input</span> <span class="o">=</span> <span class="n">vdom</span><span class="p">.</span><span class="n">textInput</span><span class="p">(</span><span class="err">#</span><span class="n">input</span><span class="p">,</span> <span class="nl">value:</span> <span class="n">title</span><span class="p">);</span>
+      <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">_input</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">_input</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+      <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">span</span><span class="p">(</span><span class="err">#</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span><span class="n">vdom</span><span class="p">.</span><span class="n">t</span><span class="p">(</span><span class="n">title</span><span class="p">)])];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">vdom</span><span class="p">.</span><span class="n">li</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">children</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">updateProperties</span><span class="p">(</span><span class="kt">String</span> <span class="n">newTitle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">title</span> <span class="o">!=</span> <span class="n">newTitle</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="n">newTitle</span><span class="p">;</span>
+      <span class="n">update</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="n">virtual</span><span class="p">(</span><span class="kt">Object</span> <span class="n">key</span><span class="p">,</span> <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">.</span><span class="n">Item</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">VDomComponent</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">component</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">Item</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">item</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="n">item</span><span class="p">.</span><span class="n">title</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="n">component</span><span class="p">.</span><span class="n">updateProperties</span><span class="p">(</span><span class="n">item</span><span class="p">.</span><span class="n">title</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>Inserting Components into the DOM</h2>
+        <p>Now we need to insert Application Component into the DOM,
+        and we have a special method for
+        this <code>injectComponent(context, parent)</code></p>
+
+<div class="highlight"><pre><span class="k">import</span> <span class="s1">&#39;dart:html&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid/liquid.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid_tutorial/models.dart&#39;</span> <span class="k">as</span> <span class="n">models</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:liquid_tutorial/views.dart&#39;</span> <span class="k">as</span> <span class="n">views</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="n">models</span><span class="p">.</span><span class="n">ItemList</span><span class="p">();</span>
+  <span class="n">injectComponent</span><span class="p">(</span><span class="k">new</span> <span class="n">views</span><span class="p">.</span><span class="n">App</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span> <span class="n">document</span><span class="p">.</span><span class="n">body</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+        <h2>Source Code</h2>
+        <p>Source code is available
+        at <a href="https://github.com/localvoid/liquid-tutorial/">Github
+        repository</a>.</p>
+
+      </div>
+    </div>
+    <div class="container">
+      <footer><p>© Liquid 2014</p></footer>
+    </div>
+
+    <script src="packages/browser/dart.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39594570-3', 'auto');
+  ga('send', 'pageview');
+    </script>
+  </body>
+</html>
