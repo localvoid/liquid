@@ -10,7 +10,7 @@ Requirements:
  - Dart SDK 1.6 or greater
 
 #### 1. Create a new Dart Web Project
-#### 2. Add Liquid library in <code>pubspec.yaml</code> file:
+#### 2. Add Liquid library in `pubspec.yaml` file:
 
 ```yaml
 dependencies:
@@ -27,6 +27,10 @@ And now you are ready to use it, just import
 `'package:liquid/liquid.dart'` and start writing your first
 application with Liquid library
 
+You can start by going through our
+[Tutorial](https://localvoid.github.io/liquid/tutorial.html), or read
+the source code from our examples.
+
 ## Examples
 
 Here are simple examples that is build with Liquid library:
@@ -39,7 +43,7 @@ Here are simple examples that is build with Liquid library:
 
 ### TodoMVC example
 
-We also created [TodoMVC](http://todomvc.com/) application
+[TodoMVC](http://todomvc.com/) application
 [[Source Code](https://github.com/localvoid/todomvc-liquid)], it is
 heavily commented and demonstrates many important features of this
 library.
