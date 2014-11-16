@@ -4602,18 +4602,13 @@ M3:function(){return new Y.cv("div",[new Y.kJ("Hello "+this.oc+"!",0,null)],null
 Kl:{
 "^":"jx;PN,Ar,TC,FL,Lt,yt,P6",
 Es:function(a){S.jx.prototype.Es.call(this,this)
-C.NU.Gr(new M.qT(this))},
+this.Ar=P.SZ(C.vM,new M.qT(this))},
 dQ:function(a){this.Ar.Gv()
 S.jx.prototype.dQ.call(this,this)},
 M3:function(){return new Y.cv("div",[new Y.kJ("Seconds elapsed: "+this.PN,0,null)],null,null,null,0,null)}},
 qT:{
-"^":"Tp:25;a",
-$0:function(){var z=this.a
-z.Ar=P.SZ(C.vM,new M.Bq(z))},
-$isEH:true},
-Bq:{
-"^":"Tp:27;b",
-$1:function(a){var z=this.b;++z.PN
+"^":"Tp:27;a",
+$1:function(a){var z=this.a;++z.PN
 z.zB()},
 $isEH:true}}],["","",,A,{
 "^":"",
@@ -4642,7 +4637,7 @@ $isEH:true},
 yY:{
 "^":"jx;hL,Sx,pc,TC,FL,Lt,yt,P6",
 Es:function(a){S.jx.prototype.Es.call(this,this)
-C.NU.Gr(new A.FJ(this))},
+this.Sx=this.hL.gqh().Ka(new A.FJ(this))},
 dQ:function(a){this.Sx.Gv()
 S.jx.prototype.dQ.call(this,this)},
 M3:function(){var z,y,x
@@ -4651,22 +4646,16 @@ y=A.E8(C.vp,z)
 x=new S.BS(null,null,null,null,C.lQ,null)
 this.pc=x
 return new Y.cv("div",[new Y.cv("h3",[new Y.kJ("TODO",null,null)],null,null,null,C.dH,null),y,new Y.cv("form",[x,new Y.cv("button",[new Y.kJ("Add # "+(z.xN.length+1),null,null)],null,null,null,C.EB,null)],null,null,null,C.Ki,null)],null,null,null,0,null)},
-Ma:function(a,b){C.NU.Gr(new A.CW(this))},
+Ma:function(a,b){var z=J.Vg(this.FL).WO(0,"button")
+P.zK(z,new A.CW(this),null,null,!1,H.W8(z,"YR",0),H.W8(z,"YR",1))},
 static:{PQ:function(a,b){var z=document.createElement("div",null)
 z=new A.yY(b,null,null,null,z,a,0,0)
 z.Ma(a,b)
 return z}}},
 CW:{
-"^":"Tp:25;a",
-$0:function(){var z,y
-z=this.a
-y=J.Vg(z.FL).WO(0,"button")
-P.zK(y,new A.Wg(z),null,null,!1,H.W8(y,"YR",0),H.W8(y,"YR",1))},
-$isEH:true},
-Wg:{
-"^":"Tp:27;b",
+"^":"Tp:27;a",
 $1:function(a){var z,y,x
-z=this.b
+z=this.a
 y=H.Go(z.pc.nv,"$isMi").value
 if(y.length!==0){x=$.FD
 $.FD=x+1
@@ -4674,16 +4663,8 @@ z.hL.h(0,new A.yk(x,y))}J.fD(a)
 a.stopPropagation()},
 $isEH:true},
 FJ:{
-"^":"Tp:25;a",
-$0:function(){var z,y
-z=this.a
-y=z.hL.gqh().Ka(new A.x1(z))
-z.Sx=y
-return y},
-$isEH:true},
-x1:{
-"^":"Tp:27;b",
-$1:function(a){return this.b.zB()},
+"^":"Tp:27;a",
+$1:function(a){return this.a.zB()},
 $isEH:true}}],["","",,N,{
 "^":"",
 TJ:{
