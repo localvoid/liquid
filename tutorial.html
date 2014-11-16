@@ -208,6 +208,15 @@ dependencies:
         <p>This Component will be a subclass of the
            VComponent. VComponent is a special Component that renders
            and updates its subtree with Virtual DOM.</p>
+        <p>For the time being you can forget about zones in this code,
+          just remember that all methods in the Component class
+          except <code>invalidate</code> are executed in a special
+          "rendering" zone, and if you want for some code to work
+          outside of this zone, like with this event listeners, you
+          should register them outside of the "rendering" zone.</p>
+        <p>If you want to learn more about Dart Zones, you can read
+        <a href="https://www.dartlang.org/articles/zones/">this
+        article about Dart Zones</a>.</p>
 
 <div class="highlight"><pre><span class="k">part of</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">views</span><span class="p">;</span>
 
@@ -217,28 +226,31 @@ dependencies:
   <span class="kt">String</span> <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
 
   <span class="n">App</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Root-Level Html Element for this component is created at this stage,</span>
-    <span class="c1">// so we can use Event Delegation to listen for children events.</span>
-    <span class="n">element</span><span class="p">.</span><span class="n">onKeyPress</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">keyCode</span> <span class="o">==</span> <span class="n">KeyCode</span><span class="p">.</span><span class="n">ENTER</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">_title</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">data</span><span class="p">.</span><span class="n">createItem</span><span class="p">(</span><span class="n">_title</span><span class="p">);</span>
-          <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-          <span class="c1">// When we invalidate Component, it means that it will be updated</span>
-          <span class="c1">// on the next rendering frame.</span>
-          <span class="c1">//</span>
-          <span class="c1">// This way we can update DOM in batches, no need to update it as</span>
-          <span class="c1">// soon as possible, especially when the state can be changed</span>
-          <span class="c1">// mutiple times before browser starts to render new frame.</span>
-          <span class="n">invalidate</span><span class="p">();</span>
+    <span class="c1">// Event listeners should be executed outside of the &quot;rendering&quot; zone.</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="c1">// Root-Level Html Element for this component is created at this stage,</span>
+      <span class="c1">// so we can use Event Delegation to listen for children events.</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onKeyPress</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">keyCode</span> <span class="o">==</span> <span class="n">KeyCode</span><span class="p">.</span><span class="n">ENTER</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">_title</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">data</span><span class="p">.</span><span class="n">createItem</span><span class="p">(</span><span class="n">_title</span><span class="p">);</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+            <span class="c1">// When we invalidate Component, it means that it will be updated</span>
+            <span class="c1">// on the next rendering frame.</span>
+            <span class="c1">//</span>
+            <span class="c1">// This way we can update DOM in batches, no need to update it as</span>
+            <span class="c1">// soon as possible, especially when the state can be changed</span>
+            <span class="c1">// mutiple times before browser starts to render new frame.</span>
+            <span class="n">invalidate</span><span class="p">();</span>
+          <span class="p">}</span>
+          <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+          <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
         <span class="p">}</span>
+      <span class="p">});</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onInput</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
         <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
-        <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-    <span class="n">element</span><span class="p">.</span><span class="n">onInput</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">_title</span> <span class="o">=</span> <span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+      <span class="p">});</span>
     <span class="p">});</span>
   <span class="p">}</span>
 
@@ -311,32 +323,26 @@ dependencies:
   <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span> <span class="n">_input</span><span class="p">;</span>
 
   <span class="n">Item</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">element</span><span class="p">.</span><span class="n">onDoubleClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">_editing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-      <span class="n">invalidate</span><span class="p">();</span>
-      <span class="c1">// We can&#39;t focus _input Element right now, because it will be created</span>
-      <span class="c1">// on the next frame. So we can use special [after] Future and wait</span>
-      <span class="c1">// until next frame is rendered.</span>
-      <span class="n">Scheduler</span><span class="p">.</span><span class="n">nextFrame</span><span class="p">.</span><span class="n">after</span><span class="p">().</span><span class="n">then</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onDoubleClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_editing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="n">invalidate</span><span class="p">();</span>
+        <span class="c1">// We can&#39;t focus _input Element right now, because it will be created</span>
+        <span class="c1">// on the next frame. So we can use special [after] Future and wait</span>
+        <span class="c1">// until next frame is rendered.</span>
+        <span class="n">Scheduler</span><span class="p">.</span><span class="n">nextFrame</span><span class="p">.</span><span class="n">after</span><span class="p">().</span><span class="n">then</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">ref</span> <span class="o">as</span> <span class="n">InputElement</span><span class="p">).</span><span class="n">focus</span><span class="p">();</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">});</span>
+
+      <span class="n">element</span><span class="p">.</span><span class="n">onBlur</span><span class="p">.</span><span class="n">capture</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
-          <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">ref</span> <span class="o">as</span> <span class="n">InputElement</span><span class="p">).</span><span class="n">focus</span><span class="p">();</span>
+          <span class="n">_editing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="n">invalidate</span><span class="p">();</span>
         <span class="p">}</span>
       <span class="p">});</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
-    <span class="p">});</span>
-
-    <span class="n">element</span><span class="p">.</span><span class="n">onInput</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">title</span> <span class="o">=</span> <span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
-    <span class="p">});</span>
-
-    <span class="n">element</span><span class="p">.</span><span class="n">onBlur</span><span class="p">.</span><span class="n">capture</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">_editing</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">_editing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="n">data</span><span class="p">.</span><span class="n">updateItemTitle</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">);</span>
-        <span class="n">invalidate</span><span class="p">();</span>
-      <span class="p">}</span>
     <span class="p">});</span>
   <span class="p">}</span>
 

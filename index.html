@@ -97,9 +97,11 @@
 
   <span class="n">attached</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">.</span><span class="n">attached</span><span class="p">();</span>
-    <span class="n">_timer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="p">.</span><span class="n">periodic</span><span class="p">(</span><span class="kd">const</span> <span class="n">Duration</span><span class="p">(</span><span class="nl">seconds:</span> <span class="m">1</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">secondsElapsed</span><span class="o">++</span><span class="p">;</span>
-      <span class="n">invalidate</span><span class="p">();</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">_timer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="p">.</span><span class="n">periodic</span><span class="p">(</span><span class="kd">const</span> <span class="n">Duration</span><span class="p">(</span><span class="nl">seconds:</span> <span class="m">1</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">secondsElapsed</span><span class="o">++</span><span class="p">;</span>
+        <span class="n">invalidate</span><span class="p">();</span>
+      <span class="p">});</span>
     <span class="p">});</span>
   <span class="p">}</span>
 
@@ -171,18 +173,20 @@
   <span class="n">vdom</span><span class="p">.</span><span class="n">TextInput</span> <span class="n">_input</span><span class="p">;</span>
 
   <span class="n">TodoApp</span><span class="p">(</span><span class="n">Context</span> <span class="n">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">items</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">element</span><span class="p">.</span><span class="n">onClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">items</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">new</span> <span class="n">TodoItem</span><span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">));</span>
-      <span class="p">}</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
-      <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">onClick</span><span class="p">.</span><span class="n">matches</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">).</span><span class="n">listen</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">items</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">new</span> <span class="n">TodoItem</span><span class="p">(</span><span class="n">_input</span><span class="p">.</span><span class="n">value</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">preventDefault</span><span class="p">();</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">stopPropagation</span><span class="p">();</span>
+      <span class="p">});</span>
     <span class="p">});</span>
   <span class="p">}</span>
 
   <span class="n">attached</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">super</span><span class="p">.</span><span class="n">attached</span><span class="p">();</span>
-    <span class="n">_sub</span> <span class="o">=</span> <span class="n">items</span><span class="p">.</span><span class="n">changes</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">invalidate</span><span class="p">());</span>
+    <span class="n">Zone</span><span class="p">.</span><span class="n">ROOT</span><span class="p">.</span><span class="n">run</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="n">_sub</span> <span class="o">=</span> <span class="n">items</span><span class="p">.</span><span class="n">changes</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">invalidate</span><span class="p">()));</span>
   <span class="p">}</span>
 
   <span class="n">detached</span><span class="p">()</span> <span class="p">{</span>
