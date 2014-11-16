@@ -1,6 +1,6 @@
 name: liquid
 description: Library to build User Interfaces [Virtual DOM]
-version: 0.1.2
+version: 0.1.3
 author: Boris Kaul <localvoid@gmail.com>
 homepage: https://github.com/localvoid/liquid
 environment:
