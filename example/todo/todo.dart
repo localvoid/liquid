@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
@@ -66,22 +65,20 @@ class TodoApp extends VComponent {
   }
 
   void _initEventListeners() {
-    Zone.ROOT.run(() {
-      element.onClick.matches('.add-button').listen((e) {
-        if (inputText.isNotEmpty) {
-          _addItem(inputText);
-          inputText = '';
-          invalidate();
-        }
-        e.preventDefault();
-        e.stopPropagation();
-      });
+    element.onClick.matches('.add-button').listen((e) {
+      if (inputText.isNotEmpty) {
+        _addItem(inputText);
+        inputText = '';
+        invalidate();
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    });
 
-      element.onChange.matches('input').listen((e) {
-        InputElement element = e.matchingTarget;
-        inputText = element.value;
-        e.stopPropagation();
-      });
+    element.onChange.matches('input').listen((e) {
+      InputElement element = e.matchingTarget;
+      inputText = element.value;
+      e.stopPropagation();
     });
   }
 

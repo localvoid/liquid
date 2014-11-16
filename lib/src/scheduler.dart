@@ -97,6 +97,7 @@ class Frame {
 class Scheduler {
   static Scheduler _instance = new Scheduler();
 
+  bool _running = false;
   ZoneSpecification _zoneSpec;
   Zone _zone;
   Queue<Function> _currentTasks = new Queue<Function>();
@@ -124,7 +125,11 @@ class Scheduler {
   }
 
   void _scheduleMicrotask(Zone self, ZoneDelegate parent, Zone zone, void f()) {
-    _currentTasks.add(f);
+    if (_running) {
+      _currentTasks.add(f);
+    } else {
+      parent.scheduleMicrotask(zone, f);
+    }
   }
 
   void _runTasks() {
@@ -143,6 +148,7 @@ class Scheduler {
     _rafId = 0;
 
     _zone.run(() {
+      _running = true;
       _currentFrame = _nextFrame;
       _nextFrame = null;
       final wq = _currentFrame.writeQueue;
@@ -167,7 +173,9 @@ class Scheduler {
         _runTasks();
         _currentFrame.afterCompleter = null;
       }
+      _running = false;
     });
+
   }
 
   /// [Scheduler]'s Zone

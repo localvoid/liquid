@@ -15,11 +15,9 @@ class Collapsable extends VComponent {
   List<v.Node> _collapsableChildren;
 
   Collapsable(Context context, this._collapsableChildren) : super('div', context) {
-    Zone.ROOT.run(() {
-      element.onClick.listen((_) {
-        collapsed = true;
-        invalidate();
-      });
+    element.onClick.listen((_) {
+      collapsed = true;
+      invalidate();
     });
   }
 

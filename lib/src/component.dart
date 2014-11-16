@@ -102,9 +102,13 @@ abstract class Component implements Context {
   void invalidate() {
     if (!isDirty) {
       flags |= Component.dirtyFlag;
-      Scheduler.zone.run(() {
+      if (identical(Zone.current, Scheduler.zone)) {
         Scheduler.nextFrame.write(depth).then(_update);
-      });
+      } else {
+        Scheduler.zone.run(() {
+          Scheduler.nextFrame.write(depth).then(_update);
+        });
+      }
     }
   }
 

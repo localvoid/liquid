@@ -44,10 +44,8 @@ class Box extends VComponent {
   }
 
   void attached() {
-    Zone.ROOT.run(() {
-      _resizeSub = window.onResize.listen((_) {
-        invalidate();
-      });
+    _resizeSub = window.onResize.listen((_) {
+      invalidate();
     });
     super.attached();
   }
