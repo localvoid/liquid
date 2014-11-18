@@ -41,7 +41,7 @@ part of liquid;
 /// ```
 abstract class VComponent extends Component {
   /// Reference to the top-level Virtual DOM Element.
-  v.Element vElement;
+  v.Node vElement;
 
   /// Create a new [VComponent]
   ///
@@ -65,7 +65,7 @@ abstract class VComponent extends Component {
   /// as a placeholder.
   ///
   /// Execution context: [Scheduler]:write
-  v.Element build();
+  v.Node build();
 
   /// Update Component's subtree
   ///
