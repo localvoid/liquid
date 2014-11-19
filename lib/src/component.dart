@@ -103,18 +103,19 @@ abstract class Component implements Context {
     if (!isDirty) {
       flags |= Component.dirtyFlag;
       if (identical(Zone.current, Scheduler.zone)) {
-        Scheduler.nextFrame.write(depth).then(_update);
+        Scheduler.nextFrame.write(depth).then(_invalidatedUpdate);
       } else {
         Scheduler.zone.run(() {
-          Scheduler.nextFrame.write(depth).then(_update);
+          Scheduler.nextFrame.write(depth).then(_invalidatedUpdate);
         });
       }
     }
   }
 
-  /// TODO: expose this in API in a better way.
-  void _update(_) {
-    if (isAttached && isDirty) {
+  bool shouldComponentUpdate() => (isAttached && isDirty);
+
+  void _invalidatedUpdate(_) {
+    if (shouldComponentUpdate()) {
       update();
     }
   }
