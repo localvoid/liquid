@@ -5,9 +5,8 @@
 library liquid;
 
 import 'dart:async';
-import 'dart:collection';
 import 'dart:html' as html;
-import 'package:collection/priority_queue.dart';
+import 'package:dom_scheduler/dom_scheduler.dart';
 import 'package:vdom/vdom.dart' as v;
 
 part 'package:liquid/src/vdom/component.dart';
@@ -15,5 +14,4 @@ part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';
-part 'package:liquid/src/scheduler.dart';
 part 'package:liquid/src/main.dart';

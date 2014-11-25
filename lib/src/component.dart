@@ -7,10 +7,10 @@ part of liquid;
 /// Basic Component, that doesn't implement any method to render,
 /// or update its subtree.
 abstract class Component implements Context {
-  /// Component is attached to the DOM.
+  /// Component is attached to the attached Context.
   static const attachedFlag = 1;
 
-  /// Component is dirty and should be updated in the next Update Loop
+  /// Component is dirty and should be updated at the next frame
   static const dirtyFlag    = 1 << 1;
 
   /// Reference to the Html Element
@@ -81,11 +81,8 @@ abstract class Component implements Context {
     flags &= ~attachedFlag;
   }
 
-  /// Find html element that is between Component's [element] and argument
-  /// [e] that matches [selector].
-  ///
-  /// TODO: rename?
-  html.Element queryMatchingParent(html.Element e, String selector) {
+  /// Find [e] ancestor that matches [selector].
+  html.Element closest(html.Element e, String selector) {
     final sentinel = element.parent;
     do {
       if (e.matches(selector)) {
@@ -102,11 +99,11 @@ abstract class Component implements Context {
   void invalidate() {
     if (!isDirty) {
       flags |= Component.dirtyFlag;
-      if (identical(Zone.current, Scheduler.zone)) {
-        Scheduler.nextFrame.write(depth).then(_invalidatedUpdate);
+      if (identical(Zone.current, domScheduler.zone)) {
+        domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
       } else {
-        Scheduler.zone.run(() {
-          Scheduler.nextFrame.write(depth).then(_invalidatedUpdate);
+        domScheduler.zone.run(() {
+          domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
         });
       }
     }
@@ -120,11 +117,11 @@ abstract class Component implements Context {
     }
   }
 
-  /// Returns [Future] that completes when [Scheduler] launches write
+  /// Returns [Future] that completes when [domScheduler] launches write
   /// tasks for the current [Frame]
-  Future writeDOM() => Scheduler.currentFrame.write(depth);
+  Future writeDOM() => domScheduler.currentFrame.write(depth);
 
-  /// Returns [Future] that completes when [Scheduler] launches read
+  /// Returns [Future] that completes when [domScheduler] launches read
   /// tasks for the current [Frame]
-  Future readDOM() => Scheduler.currentFrame.read();
+  Future readDOM() => domScheduler.currentFrame.read();
 }

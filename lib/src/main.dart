@@ -4,10 +4,13 @@
 
 part of liquid;
 
+/// DOM Scheduler
+final DOMScheduler domScheduler = new DOMScheduler();
+
 /// Inject Component into the DOM
 void injectComponent(Component component, html.Element parent) {
-  Scheduler.zone.run(() {
-    Scheduler.nextFrame.write(0).then((_) {
+  domScheduler.zone.run(() {
+    domScheduler.nextFrame.write(0).then((_) {
       parent.append(component.element);
       component.attached();
       component.render();
