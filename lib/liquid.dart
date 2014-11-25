@@ -12,6 +12,7 @@ import 'package:vdom/vdom.dart' as v;
 part 'package:liquid/src/vdom/component.dart';
 part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';
+part 'package:liquid/src/component_base.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';
 part 'package:liquid/src/main.dart';
