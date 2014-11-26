@@ -40,7 +40,7 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   /// Reference to the root-level Virtual DOM Element.
   VRootElement<T> vRoot;
 
-  html.Node get root => element;
+  html.Node get container => element;
 
   /// Create a new [VComponent]
   ///
@@ -60,11 +60,11 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
           flags: flags);
 
   void insertBefore(vdom.Node node, html.Node nextRef) {
-    vdom.injectBefore(node, root, nextRef, this);
+    vdom.injectBefore(node, container, nextRef, this);
   }
 
   void move(vdom.Node node, html.Node nextRef) {
-    root.insertBefore(node.ref, nextRef);
+    container.insertBefore(node.ref, nextRef);
   }
 
   void removeChild(vdom.Node node) {
