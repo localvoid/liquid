@@ -4,22 +4,19 @@
 
 part of liquid;
 
-/// Component that builds and updates its subtree using Virtual DOM.
-///
-/// It implements special method [updateSubtree] that updates the view
-/// of the subtree.
+/// Component that renders and updates itself using Virtual DOM.
 ///
 /// ```
 /// class MyComponent extends VComponent {
 ///   MyComponent(Object key, Context context)
-///       : super(key, 'div', context);
+///       : super(key, new html.DivElement(), context);
 ///
-///   v.Element build() => vdom.div(0, [vdom.t('Hello VComponent')]);
+///   RootElement build() => new RootElement([vdom.t('Hello VComponent')]);
 /// }
 /// ```
 ///
-/// If you want to read from the dom, just override [update()] method and
-/// call [updateFinish()] when you finish updating:
+/// If you want to read from the DOM, just override [update] method and
+/// call [updateFinish] when you finish updating:
 ///
 /// ```
 /// class MyComponent extends VComponent {
@@ -27,11 +24,11 @@ part of liquid;
 ///   ...
 ///
 ///   void update() {
-///     updateSubtree();
+///     updateVirtual(build());
 ///     readDOM().then((_) {
 ///       _childWidth = _childElement.ref.width;
 ///       writeDOM().then((_) {
-///         updateSubtree();
+///         updateVirtual(build());
 ///         updateFinish();
 ///       });
 ///     });
@@ -40,8 +37,10 @@ part of liquid;
 ///
 /// ```
 abstract class VComponent<T extends html.Element> extends Component<T> {
-  /// Reference to the top-level Virtual DOM Element.
-  v.Node<T> vElement;
+  /// Reference to the root-level Virtual DOM Element.
+  VRootElement<T> vRoot;
+
+  html.Node get root => element;
 
   /// Create a new [VComponent]
   ///
@@ -53,37 +52,41 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   /// any async operation.
   ///
   /// Execution context: [Scheduler]:write
-  VComponent(String tag,
+  VComponent(T element,
       Context context,
       {int flags: 0})
-      : super(html.document.createElement(tag),
+      : super(element,
           context,
           flags: flags);
 
-  /// Build Virtual DOM tree for the current state of the [VComponent],
-  /// it should include the top-level element, that is already created
-  /// as a placeholder.
-  ///
-  /// Execution context: [Scheduler]:write
-  v.Node<T> build();
+  void insertBefore(vdom.Node node, html.Node nextRef) {
+    vdom.injectBefore(node, root, nextRef, this);
+  }
 
-  /// Update Component's subtree
-  ///
-  /// NOTE: It also updates the top-level element, that is returned by
-  /// the [build()] method.
-  ///
-  /// Better name suggestions for this method?
+  void move(vdom.Node node, html.Node nextRef) {
+    root.insertBefore(node.ref, nextRef);
+  }
+
+  void removeChild(vdom.Node node) {
+    node.dispose(this);
+  }
+
+  /// Build Virtual DOM for the current state of the [VComponent].
   ///
   /// Execution context: [Scheduler]:write
-  void updateSubtree() {
-    final newVElement = build();
-    if (vElement == null) {
-      newVElement.mount(element, this);
-      newVElement.render(this);
+  VRootElement<T> build();
+
+  /// Update [VComponent] using Virtual DOM.
+  ///
+  /// Execution context: [Scheduler]:write
+  void updateVirtual(VRootElement<T> newVRoot) {
+    if (vRoot == null) {
+      newVRoot.mount(this);
+      newVRoot.render(this);
     } else {
-      vElement.update(newVElement, this);
+      vRoot.update(newVRoot, this);
     }
-    vElement = newVElement;
+    vRoot = newVRoot;
   }
 
   /// Lifecycle method that is called when [Component] is rendered for
@@ -91,7 +94,7 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   ///
   /// Execution context: [Scheduler]:write
   void render() {
-    assert(vElement == null);
+    assert(vRoot == null);
     update();
   }
 
@@ -99,7 +102,7 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   ///
   /// Execution context: [Scheduler]:write
   void update() {
-    updateSubtree();
+    updateVirtual(build());
     updateFinish();
   }
 
@@ -108,8 +111,8 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   ///
   /// Execution context: [Scheduler]:write
   void attached() {
-    if (vElement != null) {
-      vElement.attached();
+    if (vRoot != null) {
+      vRoot.attached();
     }
     super.attached();
   }
@@ -119,8 +122,8 @@ abstract class VComponent<T extends html.Element> extends Component<T> {
   ///
   /// Execution context: [Scheduler]:write
   void detached() {
-    if (vElement != null) {
-      vElement.detached();
+    if (vRoot != null) {
+      vRoot.detached();
     }
     super.detached();
   }

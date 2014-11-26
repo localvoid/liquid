@@ -2,10 +2,10 @@ part of liquid;
 
 /// TODO: rename
 typedef Component VDomInitFunction(Component component,
-                                   v.Context context);
+                                   vdom.Context context);
 
 /// VDom Node for Components
-class VDomComponent extends v.Node {
+class VDomComponent extends vdom.Node {
   VDomInitFunction _initFunction;
   Component component = null;
 
@@ -13,20 +13,20 @@ class VDomComponent extends v.Node {
     assert(_initFunction != null);
   }
 
-  void create(v.Context context) {
+  void create(vdom.Context context) {
     assert(component == null);
     assert(ref == null);
     component = _initFunction(null, context);
     ref = component.element;
   }
 
-  void render(v.Context context) {
+  void render(vdom.Context context) {
     assert(component != null);
     assert(ref != null);
     component.render();
   }
 
-  void update(VDomComponent other, v.Context context) {
+  void update(VDomComponent other, vdom.Context context) {
     assert(other != null);
 
     // transfer component state

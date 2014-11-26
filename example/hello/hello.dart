@@ -6,13 +6,13 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class HelloComponent extends VComponent {
+class HelloComponent extends VComponent<DivElement> {
   String name;
 
-  HelloComponent(Context context, this.name) : super('div', context);
+  HelloComponent(Context context, this.name) : super(new DivElement(), context);
 
   build() {
-    return vdom.div(0, [vdom.t('Hello $name')]);
+    return new VRootElement([vdom.t('Hello $name')]);
   }
 }
 

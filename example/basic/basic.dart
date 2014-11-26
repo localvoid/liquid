@@ -17,10 +17,10 @@ class BasicComponent extends VComponent {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Component parent, this._elapsed) : super('p', parent);
+  BasicComponent(Component parent, this._elapsed) : super(new ParagraphElement(), parent);
 
   build() {
-    return vdom.p(0, [vdom.t('Liquid has been successfully '
+    return new VRootElement([vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
 

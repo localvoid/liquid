@@ -5,21 +5,74 @@
 part of liquid;
 
 /// Abstract Component
-abstract class Component<T extends html.Element> extends ComponentBase<T> {
-  /// Create a new [Component]
-  ///
-  /// It is necessary to create [element] in the constructor, so that we can
-  /// create real DOM Element as soon as possible and place it as a placeholder
-  /// into the DOM.
-  ///
-  /// This way we can stop at any point in [update()] method and perform
-  /// any async operation.
+abstract class Component<T extends html.Element> implements Context {
+  /// Component is attached to the attached Context.
+  static const attachedFlag = 1;
+
+  /// Component is dirty and should be updated at the next frame
+  static const dirtyFlag = 1 << 1;
+
+  /// Reference to the Html Element
+  final T element;
+
+  /// Parent context
+  final Context context;
+
+  /// Depth relative to other contexts
+  final int depth;
+
+  /// Flags: [attachedFlag], [dirtyFlag]
+  int flags;
+
+  /// Component is attached to the DOM.
+  bool get isAttached => (flags & attachedFlag) == attachedFlag;
+
+  /// Component is dirty, and should be updated.
+  bool get isDirty => (flags & dirtyFlag) == dirtyFlag;
+
+  /// Create a new [ComponentBase]
   ///
   /// Execution context: [Scheduler]:write
-  Component(T node,
-      Context context,
-      {int flags: 0})
-      : super(node, context, flags: flags);
+  Component(this.element, Context context, {this.flags: 0})
+      : context = context,
+        depth = context == null ? 0 : context.depth + 1;
+
+  /// Invoked when the Component is attached to the DOM.
+  ///
+  /// Execution context: [Scheduler]:write
+  void attached() {
+    assert(!isAttached);
+    flags |= attachedFlag;
+  }
+
+  /// Invoked when the Component is detached from the DOM.
+  ///
+  /// Execution context: [Scheduler]:write
+  void detached() {
+    assert(isAttached);
+    flags &= ~attachedFlag;
+  }
+
+  /// Find [e] ancestor that matches [selector].
+  html.Element closest(html.Element e, String selector) {
+    final sentinel = element.parent;
+    do {
+      if (e.matches(selector)) {
+        return e;
+      }
+      e = e.parent;
+    } while (e != null || identical(e, sentinel));
+
+    return null;
+  }
+
+  /// Returns [Future] that completes when [domScheduler] launches write
+  /// tasks for the current [Frame]
+  Future writeDOM() => domScheduler.currentFrame.write(depth);
+
+  /// Returns [Future] that completes when [domScheduler] launches read
+  /// tasks for the current [Frame]
+  Future readDOM() => domScheduler.currentFrame.read();
 
   /// Lifecycle method that is called when [Component] is rendered for
   /// the first time.
@@ -36,14 +89,14 @@ abstract class Component<T extends html.Element> extends ComponentBase<T> {
   ///
   /// Execution context: [Scheduler]:write or [Scheduler]:read
   void updateFinish() {
-    flags &= ~ComponentBase.dirtyFlag;
+    flags &= ~dirtyFlag;
   }
 
   /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
   /// queue.
   void invalidate() {
     if (!isDirty) {
-      flags |= ComponentBase.dirtyFlag;
+      flags |= dirtyFlag;
       if (identical(Zone.current, domScheduler.zone)) {
         domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
       } else {

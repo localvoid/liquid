@@ -7,12 +7,12 @@ library liquid;
 import 'dart:async';
 import 'dart:html' as html;
 import 'package:dom_scheduler/dom_scheduler.dart';
-import 'package:vdom/vdom.dart' as v;
+import 'package:vdom/vdom.dart' as vdom;
 
 part 'package:liquid/src/vdom/component.dart';
+part 'package:liquid/src/vdom/root_element.dart';
 part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';
-part 'package:liquid/src/component_base.dart';
 part 'package:liquid/src/component.dart';
 part 'package:liquid/src/vcomponent.dart';
 part 'package:liquid/src/main.dart';

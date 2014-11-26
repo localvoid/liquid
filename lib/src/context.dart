@@ -7,7 +7,7 @@ part of liquid;
 /// [Context] that is used to propagate information through Virtual DOM.
 ///
 /// [Component]'s implement this interface.
-abstract class Context implements v.Context {
+abstract class Context implements vdom.Context {
   /// Parent is attached to the DOM
   bool get isAttached;
 

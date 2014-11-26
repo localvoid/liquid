@@ -11,7 +11,7 @@ import 'package:liquid/liquid.dart';
 class Box extends VComponent {
   int count = 0;
 
-  Box(Context context, this.count) : super('div', context);
+  Box(Context context, this.count) : super(new DivElement(), context);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -19,7 +19,7 @@ class Box extends VComponent {
     final color = count % 255;
     final content = count % 100;
 
-    return vdom.div(0, [
+    return new VRootElement([
       vdom.div(0, [vdom.t(content.toString())],
         classes: ['box'],
         styles: {
@@ -50,14 +50,14 @@ class Box extends VComponent {
 class App extends VComponent {
   List<int> items;
 
-  App(Context context, this.items) : super('div', context);
+  App(Context context, this.items) : super(new DivElement(), context);
 
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
       result.add(Box.virtual(i, items[i]));
     }
-    return vdom.div(0, result, classes: ['grid']);
+    return new VRootElement(result, classes: ['grid']);
   }
 }
 

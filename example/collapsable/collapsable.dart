@@ -10,11 +10,12 @@ import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class Collapsable extends VComponent {
+class Collapsable extends VComponent<DivElement> {
   bool collapsed = false;
   List<v.Node> _collapsableChildren;
 
-  Collapsable(Context context, this._collapsableChildren) : super('div', context) {
+  Collapsable(Context context, this._collapsableChildren)
+      : super(new DivElement(), context) {
     element.onClick.listen((_) {
       collapsed = true;
       invalidate();
@@ -28,17 +29,18 @@ class Collapsable extends VComponent {
     } else {
       classes.add('collapsable-close');
     }
-    return vdom.div(0, _collapsableChildren, classes: classes);
+    return new VRootElement(_collapsableChildren, classes: classes);
   }
 }
 
-class BasicComponent extends VComponent {
+class BasicComponent extends VComponent<ParagraphElement> {
   int _elapsed;
   int get elapsed => _elapsed;
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Context context, this._elapsed) : super('p', context);
+  BasicComponent(Context context, this._elapsed)
+      : super(new ParagraphElement(), context);
 
   void attached() {
     super.attached();
@@ -50,7 +52,7 @@ class BasicComponent extends VComponent {
   }
 
   build() {
-    return vdom.p(0, [vdom.t('Liquid has been successfully '
+    return new VRootElement([vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
 

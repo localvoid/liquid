@@ -7,11 +7,11 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class OuterBox extends VComponent {
-  OuterBox(Context context) : super('div', context);
+class OuterBox extends VComponent<DivElement> {
+  OuterBox(Context context) : super(new DivElement(), context);
 
   build() {
-    return vdom.div(0, [Box.virtual(0, this)], classes: ['outer-box']);
+    return new VRootElement([Box.virtual(0, this)], classes: ['outer-box']);
   }
 
   static VDomComponent virtual(Object key) {
@@ -22,7 +22,7 @@ class OuterBox extends VComponent {
   }
 }
 
-class Box extends VComponent {
+class Box extends VComponent<DivElement> {
   final OuterBox parent;
   int _state = 0;
   int _outerWidth = 0;
@@ -30,16 +30,17 @@ class Box extends VComponent {
   VDomComponent _child;
   StreamSubscription _resizeSub;
 
-  Box(Context context, this.parent) : super('div', context);
+  Box(Context context, this.parent) : super(new DivElement(), context);
 
   build() {
     _child = InnerBox.virtual(0);
     if (_state == 0) {
-      return vdom.div(0, [_child], classes: ['box']);
+      return new VRootElement([_child], classes: ['box']);
     } else {
-      return vdom.div(0, [vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
-                          vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
-                          _child], classes: ['box']);
+      return new VRootElement([vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
+                               vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
+                               _child],
+                              classes: ['box']);
     }
   }
 
@@ -56,13 +57,13 @@ class Box extends VComponent {
   }
 
   void update() {
-    updateSubtree();
+    updateVirtual(build());
     readDOM().then((_) {
       _outerWidth = parent.element.clientWidth;
       _innerWidth = (_child.ref as Element).clientWidth;
       _state = 1;
       writeDOM().then((_) {
-        updateSubtree();
+        updateVirtual(build());
         updateFinish();
       });
     });
@@ -76,11 +77,11 @@ class Box extends VComponent {
   }
 }
 
-class InnerBox extends VComponent {
-  InnerBox(Context context) : super('div', context);
+class InnerBox extends VComponent<DivElement> {
+  InnerBox(Context context) : super(new DivElement(), context);
 
   build() {
-    return vdom.div(0, [vdom.t('x')], classes: ['inner-box']);
+    return new VRootElement([vdom.t('x')], classes: ['inner-box']);
   }
 
   static VDomComponent virtual(Object key) {
@@ -92,13 +93,13 @@ class InnerBox extends VComponent {
   }
 }
 
-class App extends VComponent {
-  App(Context context) : super('div', context);
+class App extends VComponent<DivElement> {
+  App(Context context) : super(new DivElement(), context);
 
   build() {
-    return vdom.div(0, [OuterBox.virtual(0),
-                        OuterBox.virtual(1),
-                        OuterBox.virtual(2)]);
+    return new VRootElement([OuterBox.virtual(0),
+                             OuterBox.virtual(1),
+                             OuterBox.virtual(2)]);
   }
 }
 
