@@ -138,7 +138,7 @@ abstract class Component<T extends html.Element> implements Context {
   ///
   /// Execution context: [Scheduler]:write
   void update() {
-    updateVirtual(build());
+    updateVRoot(build());
     updateFinish();
   }
 
@@ -182,7 +182,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Update [Component] using Virtual DOM.
   ///
   /// Execution context: [Scheduler]:write
-  void updateVirtual(VRootElement<T> newVRoot) {
+  void updateVRoot(VRootElement<T> newVRoot) {
     if (vRoot == null) {
       newVRoot.mount(this);
       newVRoot.render(this);

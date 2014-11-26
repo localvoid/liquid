@@ -57,13 +57,13 @@ class Box extends Component<DivElement> {
   }
 
   void update() {
-    updateVirtual(build());
+    updateVRoot(build());
     readDOM().then((_) {
       _outerWidth = parent.element.clientWidth;
       _innerWidth = (_child.ref as Element).clientWidth;
       _state = 1;
       writeDOM().then((_) {
-        updateVirtual(build());
+        updateVRoot(build());
         updateFinish();
       });
     });

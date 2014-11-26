@@ -4,7 +4,7 @@
   container.
 - added new Virtual DOM Node `VRootNode` that should be used as a
   root-level element in `Component`s virtual tree.
-- `updateSubtree()` replaced with `updateVirtual(VRootNode)`.
+- `updateSubtree()` replaced with `updateVRoot(VRootNode)`.
 - `vdom.Node build()` replaced with `VRootNode build()`.
 - `Scheduler` moved to separate package `dom_scheduler`. Global
   instance of the scheduler is available at `scheduler` variable.
