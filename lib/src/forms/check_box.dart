@@ -5,10 +5,10 @@
 part of liquid.forms;
 
 /// Virtual DOM CheckBox Element
-class CheckBox extends v.ElementBase {
+class CheckBox extends v.ElementBase<CheckboxInputElement> {
   final bool _checked;
 
-  bool get checked => (ref as CheckboxInputElement).checked;
+  bool get checked => ref.checked;
 
   CheckBox(Object key,
       {bool checked: null,
@@ -25,15 +25,14 @@ class CheckBox extends v.ElementBase {
   void render(v.Context context) {
     super.render(context);
     if (_checked != null) {
-      (ref as CheckboxInputElement).checked = _checked;
+      ref.checked = _checked;
     }
   }
 
   void update(CheckBox other, v.Context context) {
     super.update(other, context);
-    final CheckboxInputElement e = ref;
-    if (e.checked != other._checked) {
-      e.checked = other._checked;
+    if (other._checked != null && ref.checked != other._checked) {
+      ref.checked = other._checked;
     }
   }
 }

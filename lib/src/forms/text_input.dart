@@ -5,10 +5,10 @@
 part of liquid.forms;
 
 /// Virtual DOM Text Input Element
-class TextInput extends v.ElementBase {
+class TextInput extends v.ElementBase<InputElement> {
   final String _value;
 
-  String get value => (ref as InputElement).value;
+  String get value => ref.value;
 
   TextInput(Object key,
       {String value: null,
@@ -25,15 +25,14 @@ class TextInput extends v.ElementBase {
   void render(v.Context context) {
     super.render(context);
     if (_value != null) {
-      (ref as InputElement).value = _value;
+      ref.value = _value;
     }
   }
 
   void update(TextInput other, v.Context context) {
     super.update(other, context);
-    final InputElement e = ref;
-    if (e.value != other._value) {
-      e.value = other._value;
+    if (other._value != null && ref.value != other._value) {
+      ref.value = other._value;
     }
   }
 }
