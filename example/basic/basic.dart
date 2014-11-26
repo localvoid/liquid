@@ -7,7 +7,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class BasicComponent extends VComponent {
+class BasicComponent extends Component<ParagraphElement> {
   int _elapsed;
   int get elapsed => _elapsed;
   set elapsed(int v) {

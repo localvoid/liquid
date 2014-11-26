@@ -6,7 +6,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class HelloComponent extends VComponent<DivElement> {
+class HelloComponent extends Component<DivElement> {
   String name;
 
   HelloComponent(Context context, this.name) : super(new DivElement(), context);

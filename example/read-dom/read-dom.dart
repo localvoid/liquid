@@ -7,7 +7,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class OuterBox extends VComponent<DivElement> {
+class OuterBox extends Component<DivElement> {
   OuterBox(Context context) : super(new DivElement(), context);
 
   build() {
@@ -22,7 +22,7 @@ class OuterBox extends VComponent<DivElement> {
   }
 }
 
-class Box extends VComponent<DivElement> {
+class Box extends Component<DivElement> {
   final OuterBox parent;
   int _state = 0;
   int _outerWidth = 0;
@@ -77,7 +77,7 @@ class Box extends VComponent<DivElement> {
   }
 }
 
-class InnerBox extends VComponent<DivElement> {
+class InnerBox extends Component<DivElement> {
   InnerBox(Context context) : super(new DivElement(), context);
 
   build() {
@@ -93,7 +93,7 @@ class InnerBox extends VComponent<DivElement> {
   }
 }
 
-class App extends VComponent<DivElement> {
+class App extends Component<DivElement> {
   App(Context context) : super(new DivElement(), context);
 
   build() {

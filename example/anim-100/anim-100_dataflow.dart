@@ -8,7 +8,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class Box extends VComponent {
+class Box extends Component<DivElement> {
   int count = 0;
 
   Box(Context context, this.count) : super(new DivElement(), context);
@@ -47,7 +47,7 @@ class Box extends VComponent {
   }
 }
 
-class App extends VComponent {
+class App extends Component<DivElement> {
   List<int> items;
 
   App(Context context, this.items) : super(new DivElement(), context);

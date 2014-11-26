@@ -1,12 +1,14 @@
+- `VComponent` merged into `Component`. If you want to use raw DOM,
+  just overload render and update methods. It will be much easier to
+  create reusable Components that can work as a virtual dom or raw dom
+  container.
 - added new Virtual DOM Node `VRootNode` that should be used as a
-  root-level element in `VComponent`s.
+  root-level element in `Component`s virtual tree.
 - `updateSubtree()` replaced with `updateVirtual(VRootNode)`.
 - `vdom.Node build()` replaced with `VRootNode build()`.
-- `tag` argument in `VComponent` constructor replaced with `element`
-  argument that accepts `html.Element`.
 - `Scheduler` moved to separate package `dom_scheduler`. Global
   instance of the scheduler is available at `scheduler` variable.
-- added `insertBefore`, `move`, `removeChild` methods to `VComponent`
+- added `insertBefore`, `move`, `removeChild` methods to `Component`
   class, they're called when there are modifications in `VRootNode`
   children list.
 - changed semantics of `attached` and `detached`, they're called when

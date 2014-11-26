@@ -1,7 +1,7 @@
 part of liquid;
 
 class VRootElement<T extends html.Element> extends vdom.ElementContainerBase<T> {
-  VComponent<T> component;
+  Component<T> component;
 
   VRootElement(List<vdom.Node> children, {
       Map<String, String> attributes: null,
@@ -14,7 +14,7 @@ class VRootElement<T extends html.Element> extends vdom.ElementContainerBase<T> 
         ' should mount it on top of the existing Element');
   }
 
-  void mount(VComponent<T> component) {
+  void mount(Component<T> component) {
     this.component = component;
     ref = component.element;
   }

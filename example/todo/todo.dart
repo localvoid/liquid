@@ -15,7 +15,7 @@ class Item {
   Item([this.text = '']) : id = __nextId++;
 }
 
-class TodoItem extends VComponent<LIElement> {
+class TodoItem extends Component<LIElement> {
   Item item;
 
   TodoItem(Context context, this.item) : super(new LIElement(), context);
@@ -39,7 +39,7 @@ class TodoItem extends VComponent<LIElement> {
   }
 }
 
-class TodoList extends VComponent<UListElement> {
+class TodoList extends Component<UListElement> {
   List<Item> items;
 
   TodoList(Context context, this.items) : super(new UListElement(), context);
@@ -56,7 +56,7 @@ class TodoList extends VComponent<UListElement> {
   }
 }
 
-class TodoApp extends VComponent<DivElement> {
+class TodoApp extends Component<DivElement> {
   final List<Item> items;
   String inputText = '';
 

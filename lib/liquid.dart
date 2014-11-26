@@ -14,5 +14,4 @@ part 'package:liquid/src/vdom/root_element.dart';
 part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';
 part 'package:liquid/src/component.dart';
-part 'package:liquid/src/vcomponent.dart';
 part 'package:liquid/src/main.dart';

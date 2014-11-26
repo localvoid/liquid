@@ -10,7 +10,7 @@ import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class Collapsable extends VComponent<DivElement> {
+class Collapsable extends Component<DivElement> {
   bool collapsed = false;
   List<v.Node> _collapsableChildren;
 
@@ -33,7 +33,7 @@ class Collapsable extends VComponent<DivElement> {
   }
 }
 
-class BasicComponent extends VComponent<ParagraphElement> {
+class BasicComponent extends Component<ParagraphElement> {
   int _elapsed;
   int get elapsed => _elapsed;
 

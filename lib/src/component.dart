@@ -4,7 +4,37 @@
 
 part of liquid;
 
-/// Abstract Component
+/// Component that support rendering and updating with Virtual DOM.
+///
+/// ```
+/// class MyComponent extends Component<html.DivElement> {
+///   MyComponent(Context context) : super(new html.DivElement(), context);
+///
+///   RootElement build() => new RootElement([vdom.t('Hello VComponent')]);
+/// }
+/// ```
+///
+/// If you want to read from the DOM, just override [update] method and
+/// call [updateFinish] when you finish updating:
+///
+/// ```
+/// class MyComponent extends Component<html.DivElement> {
+///   int _childWidth = 0;
+///   ...
+///
+///   void update() {
+///     updateVirtual(build());
+///     readDOM().then((_) {
+///       _childWidth = _childElement.ref.width;
+///       writeDOM().then((_) {
+///         updateVirtual(build());
+///         updateFinish();
+///       });
+///     });
+///   }
+/// }
+///
+/// ```
 abstract class Component<T extends html.Element> implements Context {
   /// Component is attached to the attached Context.
   static const attachedFlag = 1;
@@ -30,26 +60,47 @@ abstract class Component<T extends html.Element> implements Context {
   /// Component is dirty, and should be updated.
   bool get isDirty => (flags & dirtyFlag) == dirtyFlag;
 
-  /// Create a new [ComponentBase]
+  /// Reference to the root-level Virtual DOM Element.
+  VRootElement<T> vRoot;
+
+  /// Container for children nodes.
+  html.Node get container => element;
+
+  /// Create a new [Component]
+  ///
+  /// It is necessary to create html Element in the constructor, so we can
+  /// place it as a placeholder into the Document and execute async operations
+  /// when we render it.
+  ///
+  /// Component's depth is automatically determined from the parent [context],
+  /// if it is null, then the depth is 0, otherwise it is incremented by one.
   ///
   /// Execution context: [Scheduler]:write
   Component(this.element, Context context, {this.flags: 0})
       : context = context,
         depth = context == null ? 0 : context.depth + 1;
 
-  /// Invoked when the Component is attached to the DOM.
+  /// Lifecycle method that is called when [Component] is attached to the
+  /// attached [context].
   ///
   /// Execution context: [Scheduler]:write
   void attached() {
     assert(!isAttached);
     flags |= attachedFlag;
+    if (vRoot != null) {
+      vRoot.attached();
+    }
   }
 
-  /// Invoked when the Component is detached from the DOM.
+  /// Lifecycle method that is called when [Component] is detached from the
+  /// attached [context].
   ///
   /// Execution context: [Scheduler]:write
   void detached() {
     assert(isAttached);
+    if (vRoot != null) {
+      vRoot.detached();
+    }
     flags &= ~attachedFlag;
   }
 
@@ -78,12 +129,18 @@ abstract class Component<T extends html.Element> implements Context {
   /// the first time.
   ///
   /// Execution context: [Scheduler]:write
-  void render();
+  void render() {
+    assert(vRoot == null);
+    update();
+  }
 
   /// Lifecycle method that is called when [Component] should be updated.
   ///
   /// Execution context: [Scheduler]:write
-  void update();
+  void update() {
+    updateVirtual(build());
+    updateFinish();
+  }
 
   /// This method should be called when [Component] is finished updating.
   ///
@@ -113,5 +170,37 @@ abstract class Component<T extends html.Element> implements Context {
     if (shouldComponentUpdate()) {
       update();
     }
+  }
+
+  /// Build Virtual DOM for the current state of the [VComponent].
+  ///
+  /// Execution context: [Scheduler]:write
+  VRootElement<T> build() {
+    throw new UnimplementedError('build method is not implemented');
+  }
+
+  /// Update [Component] using Virtual DOM.
+  ///
+  /// Execution context: [Scheduler]:write
+  void updateVirtual(VRootElement<T> newVRoot) {
+    if (vRoot == null) {
+      newVRoot.mount(this);
+      newVRoot.render(this);
+    } else {
+      vRoot.update(newVRoot, this);
+    }
+    vRoot = newVRoot;
+  }
+
+  void insertBefore(vdom.Node node, html.Node nextRef) {
+    vdom.injectBefore(node, container, nextRef, this);
+  }
+
+  void move(vdom.Node node, html.Node nextRef) {
+    container.insertBefore(node.ref, nextRef);
+  }
+
+  void removeChild(vdom.Node node) {
+    node.dispose(this);
   }
 }
