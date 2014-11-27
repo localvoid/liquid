@@ -87,6 +87,9 @@ abstract class Component<T extends html.Element> implements Context {
   void attached() {
     assert(!isAttached);
     flags |= attachedFlag;
+    if (shouldComponentUpdate()) {
+      update();
+    }
     if (vRoot != null) {
       vRoot.attached();
     }
@@ -138,14 +141,10 @@ abstract class Component<T extends html.Element> implements Context {
   ///
   /// Execution context: [Scheduler]:write
   void update() {
-    updateVRoot(build());
-    updateFinish();
-  }
-
-  /// This method should be called when [Component] is finished updating.
-  ///
-  /// Execution context: [Scheduler]:write or [Scheduler]:read
-  void updateFinish() {
+    final newVRoot = build();
+    if (newVRoot != null) {
+      updateVRoot(newVRoot);
+    }
     flags &= ~dirtyFlag;
   }
 
@@ -175,9 +174,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Build Virtual DOM for the current state of the [VComponent].
   ///
   /// Execution context: [Scheduler]:write
-  VRootElement<T> build() {
-    throw new UnimplementedError('build method is not implemented');
-  }
+  VRootElement<T> build() => null;
 
   /// Update [Component] using Virtual DOM.
   ///
