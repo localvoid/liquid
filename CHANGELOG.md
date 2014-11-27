@@ -18,3 +18,6 @@
   transitions.
 - Added `VComponentBase`, `VComponent` and `VComponentContainer`
   abstract virtual dom nodes. `VDomComponent` removed.
+- `updateFinish` method removed.
+- When `build` method returns `null`, it means that there is no need
+  to update using virtual dom.
