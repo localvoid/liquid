@@ -1,5 +1,51 @@
 part of liquid;
 
+abstract class VComponent<C extends Component<T>, T extends html.Element>
+    extends vdom.ElementBase<T> {
+  C component = null;
+
+  VComponent(Object key,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles)
+      : super(key, attributes, classes, styles);
+
+  void create(Context context);
+
+  void render(Context context) {
+    component.render();
+  }
+
+  void update(VComponent<C, T> other, Context context) {
+    other.ref = ref;
+    other.component = component;
+  }
+
+  void attached() {
+    component.attached();
+  }
+
+  void detached() {
+    component.detached();
+  }
+
+  String toString() => (component == null) ?
+      'VComponent[stateless]' : 'VComponent[$component]';
+}
+
+abstract class VComponentContainer<C extends Component<T>, T extends html.Element>
+    extends VComponent<C, T> {
+  List<vdom.Node> children;
+
+  VComponentContainer(Object key,
+      this.children,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles)
+      : super(key, attributes, classes, styles);
+}
+
+
 /// TODO: rename
 typedef Component VDomInitFunction(Component component,
                                    vdom.Context context);

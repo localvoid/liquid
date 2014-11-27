@@ -36,14 +36,26 @@ class Box extends Component<DivElement> {
       update();
     }
   }
+}
 
-  static VDomComponent virtual(Object key, int count) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new Box(context, count);
-      }
-      component.updateProperties(count);
-    });
+class VBox extends VComponent<Box, DivElement> {
+  int count;
+
+  VBox(Object key,
+      this.count,
+      {Map<String, String> attributes: null,
+       List<String> classes: null,
+       Map<String, String> styles: null})
+      : super(key, attributes, classes, styles);
+
+  void create(Context context) {
+    component = new Box(context, count);
+    ref = component.element;
+  }
+
+  void update(VBox other, Context context) {
+    super.update(other, context);
+    component.updateProperties(other.count);
   }
 }
 
@@ -55,7 +67,7 @@ class App extends Component<DivElement> {
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
-      result.add(Box.virtual(i, items[i]));
+      result.add(new VBox(i, items[i]));
     }
     return new VRootElement(result, classes: ['grid']);
   }
