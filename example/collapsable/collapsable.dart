@@ -62,18 +62,25 @@ class BasicComponent extends Component<ParagraphElement> {
       update();
     }
   }
+}
 
-  static VDomComponent virtual(Object key, int elapsed) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new BasicComponent(context, elapsed);
-      }
-      component.updateProperties(elapsed);
-    });
+class VBasicComponent extends VComponentBase<BasicComponent, ParagraphElement> {
+  int elapsed;
+
+  VBasicComponent(Object key, this.elapsed) : super(key);
+
+  void create(Context context) {
+    component = new BasicComponent(context, elapsed);
+    ref = component.element;
+  }
+
+  void update(VBasicComponent other, Context context) {
+    super.update(other, context);
+    component.updateProperties(other.elapsed);
   }
 }
 
 main() {
-  final collapsable = new Collapsable(null, [BasicComponent.virtual(0, 0)]);
+  final collapsable = new Collapsable(null, [new VBasicComponent(0, 0)]);
   injectComponent(collapsable, document.body);
 }

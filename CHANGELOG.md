@@ -16,3 +16,5 @@
   is detached, it doesn't mean that its real dom element is detached
   from the document. This way is much better for implementing
   transitions.
+- Added `VComponentBase`, `VComponent` and `VComponentContainer`
+  abstract virtual dom nodes. `VDomComponent` removed.

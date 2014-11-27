@@ -11,14 +11,16 @@ class OuterBox extends Component<DivElement> {
   OuterBox(Context context) : super(new DivElement(), context);
 
   build() {
-    return new VRootElement([Box.virtual(0, this)], classes: ['outer-box']);
+    return new VRootElement([new VBox(0, this)], classes: ['outer-box']);
   }
+}
 
-  static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, context) {
-      assert(component == null);
-      return new OuterBox(context);
-    });
+class VOuterBox extends VComponentBase<OuterBox, DivElement> {
+  VOuterBox(Object key) : super(key);
+
+  void create(Context context) {
+    component = new OuterBox(context);
+    ref = component.element;
   }
 }
 
@@ -27,13 +29,13 @@ class Box extends Component<DivElement> {
   int _state = 0;
   int _outerWidth = 0;
   int _innerWidth = 0;
-  VDomComponent _child;
+  VComponentBase _child;
   StreamSubscription _resizeSub;
 
   Box(Context context, this.parent) : super(new DivElement(), context);
 
   build() {
-    _child = InnerBox.virtual(0);
+    _child = new VInnerBox(0);
     if (_state == 0) {
       return new VRootElement([_child], classes: ['box']);
     } else {
@@ -68,12 +70,16 @@ class Box extends Component<DivElement> {
       });
     });
   }
+}
 
-  static VDomComponent virtual(Object key, OuterBox parent) {
-    return new VDomComponent(key, (component, context) {
-      assert(component == null);
-      return new Box(context, parent);
-    });
+class VBox extends VComponentBase<Box, DivElement> {
+  OuterBox parent;
+
+  VBox(Object key, this.parent) : super(key);
+
+  void create(Context context) {
+    component = new Box(context, parent);
+    ref = component.element;
   }
 }
 
@@ -83,13 +89,14 @@ class InnerBox extends Component<DivElement> {
   build() {
     return new VRootElement([vdom.t('x')], classes: ['inner-box']);
   }
+}
 
-  static VDomComponent virtual(Object key) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new InnerBox(context);
-      }
-    });
+class VInnerBox extends VComponentBase<InnerBox, DivElement> {
+  VInnerBox(Object key) : super(key);
+
+  void create(Context context) {
+    component = new InnerBox(context);
+    ref = component.element;
   }
 }
 
@@ -97,9 +104,9 @@ class App extends Component<DivElement> {
   App(Context context) : super(new DivElement(), context);
 
   build() {
-    return new VRootElement([OuterBox.virtual(0),
-                             OuterBox.virtual(1),
-                             OuterBox.virtual(2)]);
+    return new VRootElement([new VOuterBox(0),
+                             new VOuterBox(1),
+                             new VOuterBox(2)]);
   }
 }
 

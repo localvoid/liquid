@@ -28,14 +28,20 @@ class TodoItem extends Component<LIElement> {
   }
 
   build() => new VRootElement([vdom.t(item.text)]);
+}
 
-  static VDomComponent virtual(Object key, Item item) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new TodoItem(context, item);
-      }
-      component.updateProperties(item);
-    });
+class VTodoItem extends VComponentBase<TodoItem, LIElement> {
+  Item item;
+  VTodoItem(Object key, this.item) : super(key);
+
+  void create(Context context) {
+    component = new TodoItem(context, item);
+    ref = component.element;
+  }
+
+  void update(VTodoItem other, Context context) {
+    super.update(other, context);
+    component.updateProperties(other.item);
   }
 }
 
@@ -44,15 +50,22 @@ class TodoList extends Component<UListElement> {
 
   TodoList(Context context, this.items) : super(new UListElement(), context);
 
-  build() => new VRootElement(items.map((i) => TodoItem.virtual(i.id, i)).toList());
+  build() => new VRootElement(items.map((i) => new VTodoItem(i.id, i)).toList());
+}
 
-  static VDomComponent virtual(Object key, List<Item> items) {
-    return new VDomComponent(key, (component, context) {
-      if (component == null) {
-        return new TodoList(context, items);
-      }
-      component.update();
-    });
+class VTodoList extends VComponentBase<TodoList, UListElement> {
+  List<Item> items;
+
+  VTodoList(Object key, this.items) : super(key);
+
+  void create(Context context) {
+    component = new TodoList(context, items);
+    ref = component.element;
+  }
+
+  void update(VTodoList other, Context context) {
+    super.update(other, context);
+    component.update();
   }
 }
 
@@ -89,7 +102,7 @@ class TodoApp extends Component<DivElement> {
   build() {
     return new VRootElement([
       vdom.h3(0, [vdom.t('TODO')]),
-      TodoList.virtual(1, this.items),
+      new VTodoList(1, this.items),
       vdom.form(2, [
         new TextInput(0, value: inputText),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])

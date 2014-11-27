@@ -38,15 +38,10 @@ class Box extends Component<DivElement> {
   }
 }
 
-class VBox extends VComponent<Box, DivElement> {
+class VBox extends VComponentBase<Box, DivElement> {
   int count;
 
-  VBox(Object key,
-      this.count,
-      {Map<String, String> attributes: null,
-       List<String> classes: null,
-       Map<String, String> styles: null})
-      : super(key, attributes, classes, styles);
+  VBox(Object key, this.count) : super(key);
 
   void create(Context context) {
     component = new Box(context, count);
