@@ -85,6 +85,16 @@ abstract class VComponentContainer<C extends Component<T>, T extends html.Elemen
       Map<String, String> styles)
       : super(key, attributes, classes, styles);
 
+  void render(Context context) {
+    super.render(context);
+    renderChildren(children, context);
+  }
+
+  void update(VComponentContainer<C, T> other, Context context) {
+    super.update(other, context);
+    updateChildren(children, other.children, context);
+  }
+
   void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
   }
