@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Bad Example, for demonstration purposes only!
-
 import 'dart:async';
 import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
@@ -12,10 +10,8 @@ import 'package:liquid/liquid.dart';
 
 class Collapsable extends Component<DivElement> {
   bool collapsed = false;
-  List<v.Node> _collapsableChildren;
 
-  Collapsable(Context context, this._collapsableChildren)
-      : super(new DivElement(), context) {
+  Collapsable(Context context) : super(new DivElement(), context) {
     element.onClick.listen((_) {
       collapsed = true;
       invalidate();
@@ -29,7 +25,21 @@ class Collapsable extends Component<DivElement> {
     } else {
       classes.add('collapsable-close');
     }
-    return new VRootElement(_collapsableChildren, classes: classes);
+    return new VRootDecorator(const [], classes: classes);
+  }
+}
+
+class VCollapsable extends VComponentContainer<Collapsable, DivElement> {
+  VCollapsable(Object key,
+      List<v.Node> children,
+      {Map<String, String> attributes: null,
+       List<String> classes: null,
+       Map<String, String> styles: null})
+       : super(key, children, attributes, classes, styles);
+
+  void create(Context context) {
+    component = new Collapsable(context);
+    ref = component.element;
   }
 }
 
@@ -80,7 +90,14 @@ class VBasicComponent extends VComponentBase<BasicComponent, ParagraphElement> {
   }
 }
 
+class App extends Component<DivElement> {
+  App(Context context) : super(new DivElement(), context);
+
+  build() {
+    return new VRootElement([new VCollapsable(#collapsable, [new VBasicComponent(0, 0)])]);
+  }
+}
+
 main() {
-  final collapsable = new Collapsable(null, [new VBasicComponent(0, 0)]);
-  injectComponent(collapsable, document.body);
+  injectComponent(new App(null), document.body);
 }

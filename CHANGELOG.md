@@ -5,7 +5,7 @@
 - added new Virtual DOM Node `VRootNode` that should be used as a
   root-level element in `Component`s virtual tree.
 - `updateSubtree()` replaced with `updateVRoot(VRootNode)`.
-- `vdom.Node build()` replaced with `VRootNode build()`.
+- `vdom.Node build()` replaced with `VRootBase build()`.
 - `Scheduler` moved to separate package `dom_scheduler`. Global
   instance of the scheduler is available at `scheduler` variable.
 - added `insertBefore`, `move`, `removeChild` methods to `Component`
@@ -21,3 +21,5 @@
 - `updateFinish` method removed.
 - When `build` method returns `null`, it means that there is no need
   to update using virtual dom.
+- Added `VRootDecorator` that can be used to implement Decorator
+  components.

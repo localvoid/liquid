@@ -61,7 +61,7 @@ abstract class Component<T extends html.Element> implements Context {
   bool get isDirty => (flags & dirtyFlag) == dirtyFlag;
 
   /// Reference to the root-level Virtual DOM Element.
-  VRootElement<T> vRoot;
+  VRootBase<T> vRoot;
 
   /// Container for children nodes.
   html.Node get container => element;
@@ -174,12 +174,12 @@ abstract class Component<T extends html.Element> implements Context {
   /// Build Virtual DOM for the current state of the [VComponent].
   ///
   /// Execution context: [Scheduler]:write
-  VRootElement<T> build() => null;
+  VRootBase<T> build() => null;
 
   /// Update [Component] using Virtual DOM.
   ///
   /// Execution context: [Scheduler]:write
-  void updateVRoot(VRootElement<T> newVRoot) {
+  void updateVRoot(VRootBase<T> newVRoot) {
     if (vRoot == null) {
       newVRoot.mount(this);
       newVRoot.render(this);
