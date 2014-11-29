@@ -29,3 +29,5 @@
   constructors. By default `Component`s will create `DivElement` as a
   root-level element, if you want to override this behavior, just
   override `create` method.
+- Added function to create `VComponent` factories:
+  `vComponentFactory(Type componentType)`.
