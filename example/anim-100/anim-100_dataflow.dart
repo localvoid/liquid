@@ -11,7 +11,7 @@ import 'package:liquid/liquid.dart';
 class Box extends Component<DivElement> {
   int count = 0;
 
-  Box(Context context, this.count) : super(new DivElement(), context);
+  Box(Context context, this.count) : super(context);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -57,7 +57,7 @@ class VBox extends VComponentBase<Box, DivElement> {
 class App extends Component<DivElement> {
   List<int> items;
 
-  App(Context context, this.items) : super(new DivElement(), context);
+  App(Context context, this.items) : super(context);
 
   build() {
     final result = [];

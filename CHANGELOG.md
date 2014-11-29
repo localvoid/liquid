@@ -1,3 +1,5 @@
+# 0.2.0
+
 - `VComponent` merged into `Component`. If you want to use raw DOM,
   just overload render and update methods. It will be much easier to
   create reusable Components that can work as a virtual dom or raw dom
@@ -23,3 +25,7 @@
   to update using virtual dom.
 - Added `VRootDecorator` that can be used to implement Decorator
   components.
+- It is no longer required to create html Element in `Component`
+  constructors. By default `Component`s will create `DivElement` as a
+  root-level element, if you want to override this behavior, just
+  override `create` method.

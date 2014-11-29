@@ -18,7 +18,11 @@ class Item {
 class TodoItem extends Component<LIElement> {
   Item item;
 
-  TodoItem(Context context, this.item) : super(new LIElement(), context);
+  TodoItem(Context context, this.item) : super(context);
+
+  void create() {
+    element = new LIElement();
+  }
 
   void updateProperties(Item newItem) {
     if (item.text != newItem.text) {
@@ -48,7 +52,11 @@ class VTodoItem extends VComponentBase<TodoItem, LIElement> {
 class TodoList extends Component<UListElement> {
   List<Item> items;
 
-  TodoList(Context context, this.items) : super(new UListElement(), context);
+  TodoList(Context context, this.items) : super(context);
+
+  void create() {
+    element = new UListElement();
+  }
 
   build() => new VRootElement(items.map((i) => new VTodoItem(i.id, i)).toList());
 }
@@ -73,7 +81,10 @@ class TodoApp extends Component<DivElement> {
   final List<Item> items;
   String inputText = '';
 
-  TodoApp(Context context, this.items) : super(new DivElement(), context) {
+  TodoApp(Context context, this.items) : super(context);
+
+  void create() {
+    super.create();
     _initEventListeners();
   }
 

@@ -11,7 +11,7 @@ import 'package:liquid/liquid.dart';
 class Collapsable extends Component<DivElement> {
   bool collapsed = false;
 
-  Collapsable(Context context) : super(new DivElement(), context) {
+  Collapsable(Context context) : super(context) {
     element.onClick.listen((_) {
       collapsed = true;
       invalidate();
@@ -49,8 +49,11 @@ class BasicComponent extends Component<ParagraphElement> {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Context context, this._elapsed)
-      : super(new ParagraphElement(), context);
+  BasicComponent(Context context, this._elapsed) : super(context);
+
+  void create() {
+    element = new ParagraphElement();
+  }
 
   void attached() {
     super.attached();
@@ -91,7 +94,7 @@ class VBasicComponent extends VComponentBase<BasicComponent, ParagraphElement> {
 }
 
 class App extends Component<DivElement> {
-  App(Context context) : super(new DivElement(), context);
+  App(Context context) : super(context);
 
   build() {
     return new VRootElement([new VCollapsable(#collapsable, [new VBasicComponent(0, 0)])]);

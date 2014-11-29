@@ -9,7 +9,7 @@ import 'package:liquid/liquid.dart';
 class HelloComponent extends Component<DivElement> {
   String name;
 
-  HelloComponent(Context context, this.name) : super(new DivElement(), context);
+  HelloComponent(Context context, this.name) : super(context);
 
   build() {
     return new VRootElement([vdom.t('Hello $name')]);

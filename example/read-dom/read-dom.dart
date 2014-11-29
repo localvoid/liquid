@@ -8,7 +8,7 @@ import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class OuterBox extends Component<DivElement> {
-  OuterBox(Context context) : super(new DivElement(), context);
+  OuterBox(Context context) : super(context);
 
   build() {
     return new VRootElement([new VBox(0, this)], classes: ['outer-box']);
@@ -32,7 +32,7 @@ class Box extends Component<DivElement> {
   VComponentBase _child;
   StreamSubscription _resizeSub;
 
-  Box(Context context, this.parent) : super(new DivElement(), context);
+  Box(Context context, this.parent) : super(context);
 
   build() {
     _child = new VInnerBox(0);
@@ -83,7 +83,7 @@ class VBox extends VComponentBase<Box, DivElement> {
 }
 
 class InnerBox extends Component<DivElement> {
-  InnerBox(Context context) : super(new DivElement(), context);
+  InnerBox(Context context) : super(context);
 
   build() {
     return new VRootElement([vdom.t('x')], classes: ['inner-box']);
@@ -100,7 +100,7 @@ class VInnerBox extends VComponentBase<InnerBox, DivElement> {
 }
 
 class App extends Component<DivElement> {
-  App(Context context) : super(new DivElement(), context);
+  App(Context context) : super(context);
 
   build() {
     return new VRootElement([new VOuterBox(0),

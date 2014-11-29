@@ -17,7 +17,11 @@ class BasicComponent extends Component<ParagraphElement> {
 
   String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Component parent, this._elapsed) : super(new ParagraphElement(), parent);
+  BasicComponent(Component parent, this._elapsed) : super(parent);
+
+  void create() {
+    element = new ParagraphElement();
+  }
 
   build() {
     return new VRootElement([vdom.t('Liquid has been successfully '

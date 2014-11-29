@@ -43,7 +43,7 @@ abstract class Component<T extends html.Element> implements Context {
   static const dirtyFlag = 1 << 1;
 
   /// Reference to the Html Element
-  final T element;
+  T element;
 
   /// Parent context
   final Context context;
@@ -68,17 +68,22 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Create a new [Component]
   ///
-  /// It is necessary to create html Element in the constructor, so we can
-  /// place it as a placeholder into the Document and execute async operations
-  /// when we render it.
-  ///
   /// Component's depth is automatically determined from the parent [context],
   /// if it is null, then the depth is 0, otherwise it is incremented by one.
   ///
   /// Execution context: [Scheduler]:write
-  Component(this.element, Context context, {this.flags: 0})
+  Component(Context context, {this.flags: 0})
       : context = context,
-        depth = context == null ? 0 : context.depth + 1;
+        depth = context == null ? 0 : context.depth + 1 {
+    create();
+  }
+
+  /// Create a root-level [element].
+  ///
+  /// Execution context: [Scheduler]:write
+  void create() {
+    element = new html.Element.tag('div') as T;
+  }
 
   /// Lifecycle method that is called when [Component] is attached to the
   /// attached [context].
