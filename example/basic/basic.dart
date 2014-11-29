@@ -24,7 +24,7 @@ class BasicComponent extends Component<ParagraphElement> {
   }
 
   build() {
-    return new VRootElement([vdom.t('Liquid has been successfully '
+    return new VRoot([vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
 

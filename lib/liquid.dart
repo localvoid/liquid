@@ -10,7 +10,7 @@ import 'package:dom_scheduler/dom_scheduler.dart';
 import 'package:vdom/vdom.dart' as vdom;
 
 part 'package:liquid/src/vdom/component.dart';
-part 'package:liquid/src/vdom/root_element.dart';
+part 'package:liquid/src/vdom/root.dart';
 part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';
 part 'package:liquid/src/component.dart';

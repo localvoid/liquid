@@ -7,11 +7,13 @@ import 'dart:math' as math;
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
+import 'package:liquid/dynamic.dart';
 
 class Box extends Component<DivElement> {
+  @property
   int count = 0;
 
-  Box(Context context, this.count) : super(context);
+  Box(Context context) : super(context);
 
   build() {
     final top = math.sin(count / 10) * 10;
@@ -19,7 +21,7 @@ class Box extends Component<DivElement> {
     final color = count % 255;
     final content = count % 100;
 
-    return new VRootElement([
+    return new VRoot([
       vdom.div(0, [vdom.t(content.toString())],
         classes: ['box'],
         styles: {
@@ -29,30 +31,9 @@ class Box extends Component<DivElement> {
       })],
       classes: ['box-view']);
   }
-
-  void updateProperties(int newCount) {
-    if (count != newCount) {
-      count = newCount;
-      update();
-    }
-  }
 }
 
-class VBox extends VComponentBase<Box, DivElement> {
-  int count;
-
-  VBox(Object key, this.count) : super(key);
-
-  void create(Context context) {
-    component = new Box(context, count);
-    ref = component.element;
-  }
-
-  void update(VBox other, Context context) {
-    super.update(other, context);
-    component.updateProperties(other.count);
-  }
-}
+final vBox = vComponentFactory(Box);
 
 class App extends Component<DivElement> {
   List<int> items;
@@ -62,9 +43,9 @@ class App extends Component<DivElement> {
   build() {
     final result = [];
     for (var i = 0; i < items.length; i++) {
-      result.add(new VBox(i, items[i]));
+      result.add(vBox(i, {#count: items[i]}));
     }
-    return new VRootElement(result, classes: ['grid']);
+    return new VRoot(result, classes: ['grid']);
   }
 }
 

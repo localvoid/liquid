@@ -12,7 +12,7 @@ class HelloComponent extends Component<DivElement> {
   HelloComponent(Context context, this.name) : super(context);
 
   build() {
-    return new VRootElement([vdom.t('Hello $name')]);
+    return new VRoot([vdom.t('Hello $name')]);
   }
 }
 

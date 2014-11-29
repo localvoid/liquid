@@ -1,37 +1,62 @@
 part of liquid.dynamic;
 
-class VDynamicComponentElement extends VComponentBase {
+class _Property {
+  const _Property();
+}
+
+const _Property property = const _Property();
+
+class VDynamicComponent extends VComponent {
   ClassMirror _typeMirror;
   InstanceMirror _instanceMirror;
-  List _args;
-  Map<Symbol, dynamic> _kwargs;
+  Map<Symbol, dynamic> _properties;
 
-  VDynamicComponentElement(this._typeMirror,
+  VDynamicComponent(this._typeMirror,
       Object key,
-      [this._args = const [],
-       this._kwargs])
-    : super(key);
+      this._properties,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles)
+    : super(key, attributes, classes, styles);
 
   void create(Context context) {
-    final args = [context];
-    args.addAll(_args);
-    _instanceMirror = _typeMirror.newInstance(const Symbol(''), args, _kwargs);
+    _instanceMirror = _typeMirror.newInstance(const Symbol(''), [context]);
+    _setProperties(_properties);
     component = _instanceMirror.reflectee;
     ref = component.element;
   }
 
-  void update(VDynamicComponentElement other, Context context) {
+  void update(VDynamicComponent other, Context context) {
     super.update(other, context);
-    if (other._args.isNotEmpty || other._kwargs != null) {
-      _instanceMirror.invoke(#updateProperties, other._args, other._kwargs);
+    other._instanceMirror = _instanceMirror;
+    _setProperties(other._properties);
+    _instanceMirror.invoke(#update, const []);
+  }
+
+  void _setProperties(Map<Symbol, dynamic> properties) {
+    if (_properties != null) {
+      _properties.forEach((k, v) {
+        if (v != null) {
+          _instanceMirror.setField(k, v);
+        }
+      });
     }
   }
 }
 
+typedef VDynamicComponent ComponentFactoryFunction(Object key,
+                                                   Map<Symbol, dynamic> args,
+                                                   {Map<String, String> attributes,
+                                                    List<String> classes,
+                                                    Map<String, String> styles});
+
 Function vComponentFactory(Type componentType) {
   ClassMirror c = reflectClass(componentType);
 
-  return (Object key, [List args = const [], Map<Symbol, dynamic> kwargs]) {
-    return new VDynamicComponentElement(c, key, args, kwargs);
+  return (Object key, Map<Symbol, dynamic> properties,
+      {Map<String, String> attributes,
+       List<String> classes,
+       Map<String, String> styles}) {
+    return new VDynamicComponent(c, key, properties, attributes, classes, styles);
   };
 }

@@ -6,6 +6,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 import 'package:liquid/forms.dart';
+import 'package:liquid/dynamic.dart';
 
 class Item {
   static int __nextId = 0;
@@ -16,66 +17,33 @@ class Item {
 }
 
 class TodoItem extends Component<LIElement> {
+  @property
   Item item;
 
-  TodoItem(Context context, this.item) : super(context);
+  TodoItem(Context context) : super(context);
 
   void create() {
     element = new LIElement();
   }
 
-  void updateProperties(Item newItem) {
-    if (item.text != newItem.text) {
-      item = newItem;
-      update();
-    }
-  }
-
-  build() => new VRootElement([vdom.t(item.text)]);
-}
-
-class VTodoItem extends VComponentBase<TodoItem, LIElement> {
-  Item item;
-  VTodoItem(Object key, this.item) : super(key);
-
-  void create(Context context) {
-    component = new TodoItem(context, item);
-    ref = component.element;
-  }
-
-  void update(VTodoItem other, Context context) {
-    super.update(other, context);
-    component.updateProperties(other.item);
-  }
+  build() => new VRoot([vdom.t(item.text)]);
 }
 
 class TodoList extends Component<UListElement> {
+  @property
   List<Item> items;
 
-  TodoList(Context context, this.items) : super(context);
+  TodoList(Context context) : super(context);
 
   void create() {
     element = new UListElement();
   }
 
-  build() => new VRootElement(items.map((i) => new VTodoItem(i.id, i)).toList());
+  build() => new VRoot(items.map((i) => vTodoItem(i.id, {#item: i})).toList());
 }
 
-class VTodoList extends VComponentBase<TodoList, UListElement> {
-  List<Item> items;
-
-  VTodoList(Object key, this.items) : super(key);
-
-  void create(Context context) {
-    component = new TodoList(context, items);
-    ref = component.element;
-  }
-
-  void update(VTodoList other, Context context) {
-    super.update(other, context);
-    component.update();
-  }
-}
+final vTodoItem = vComponentFactory(TodoItem);
+final vTodoList = vComponentFactory(TodoList);
 
 class TodoApp extends Component<DivElement> {
   final List<Item> items;
@@ -111,9 +79,9 @@ class TodoApp extends Component<DivElement> {
   }
 
   build() {
-    return new VRootElement([
+    return new VRoot([
       vdom.h3(0, [vdom.t('TODO')]),
-      new VTodoList(1, this.items),
+      vTodoList(1, {#items: items}),
       vdom.form(2, [
         new TextInput(0, value: inputText),
         vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])

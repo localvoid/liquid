@@ -89,8 +89,8 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   }
 }
 
-class VRootElement<T extends html.Element> extends VRootBase<T> {
-  VRootElement(List<vdom.Node> children, {
+class VRoot<T extends html.Element> extends VRootBase<T> {
+  VRoot(List<vdom.Node> children, {
       Map<String, String> attributes: null,
       List<String> classes: null,
       Map<String, String> styles: null})

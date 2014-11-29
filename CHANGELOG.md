@@ -31,3 +31,4 @@
   override `create` method.
 - Added function to create `VComponent` factories:
   `vComponentFactory(Type componentType)`.
+- Added `@property` annotation for `Component` properties.

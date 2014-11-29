@@ -72,9 +72,10 @@ abstract class Component<T extends html.Element> implements Context {
   /// if it is null, then the depth is 0, otherwise it is incremented by one.
   ///
   /// Execution context: [Scheduler]:write
-  Component(Context context, {this.flags: 0})
+  Component(Context context)
       : context = context,
-        depth = context == null ? 0 : context.depth + 1 {
+        depth = context == null ? 0 : context.depth + 1,
+        flags = 0 {
     create();
   }
 

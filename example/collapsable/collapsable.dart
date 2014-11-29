@@ -7,6 +7,7 @@ import 'dart:html';
 import 'package:vdom/vdom.dart' as v;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
+import 'package:liquid/dynamic.dart';
 
 class Collapsable extends Component<DivElement> {
   bool collapsed = false;
@@ -44,12 +45,12 @@ class VCollapsable extends VComponentContainer<Collapsable, DivElement> {
 }
 
 class BasicComponent extends Component<ParagraphElement> {
-  int _elapsed;
-  int get elapsed => _elapsed;
+  @property
+  int elapsed;
 
-  String get elapsedSeconds => '${(_elapsed / 1000).toStringAsFixed(1)}';
+  String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Context context, this._elapsed) : super(context);
+  BasicComponent(Context context) : super(context);
 
   void create() {
     element = new ParagraphElement();
@@ -59,45 +60,24 @@ class BasicComponent extends Component<ParagraphElement> {
     super.attached();
     final start = new DateTime.now().millisecondsSinceEpoch;
     new Timer.periodic(new Duration(milliseconds: 50), (t) {
-      _elapsed = new DateTime.now().millisecondsSinceEpoch - start;
+      elapsed = new DateTime.now().millisecondsSinceEpoch - start;
       invalidate();
     });
   }
 
   build() {
-    return new VRootElement([vdom.t('Liquid has been successfully '
+    return new VRoot([vdom.t('Liquid has been successfully '
         'running for $elapsedSeconds seconds.')]);
   }
-
-  void updateProperties(int newElapsed) {
-    if (elapsed != newElapsed) {
-      _elapsed = newElapsed;
-      update();
-    }
-  }
 }
 
-class VBasicComponent extends VComponentBase<BasicComponent, ParagraphElement> {
-  int elapsed;
-
-  VBasicComponent(Object key, this.elapsed) : super(key);
-
-  void create(Context context) {
-    component = new BasicComponent(context, elapsed);
-    ref = component.element;
-  }
-
-  void update(VBasicComponent other, Context context) {
-    super.update(other, context);
-    component.updateProperties(other.elapsed);
-  }
-}
+final vBasicComponent = vComponentFactory(BasicComponent);
 
 class App extends Component<DivElement> {
   App(Context context) : super(context);
 
   build() {
-    return new VRootElement([new VCollapsable(#collapsable, [new VBasicComponent(0, 0)])]);
+    return new VRoot([new VCollapsable(#collapsable, [vBasicComponent(0, {#elapsed: 0})])]);
   }
 }
 

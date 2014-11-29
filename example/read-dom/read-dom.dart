@@ -6,43 +6,39 @@ import 'dart:async';
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
+import 'package:liquid/dynamic.dart';
 
 class OuterBox extends Component<DivElement> {
   OuterBox(Context context) : super(context);
 
   build() {
-    return new VRootElement([new VBox(0, this)], classes: ['outer-box']);
+    return new VRoot([vBox(0, {#parent: this})], classes: ['outer-box']);
   }
 }
 
-class VOuterBox extends VComponentBase<OuterBox, DivElement> {
-  VOuterBox(Object key) : super(key);
-
-  void create(Context context) {
-    component = new OuterBox(context);
-    ref = component.element;
-  }
-}
+final vOuterBox = vComponentFactory(OuterBox);
 
 class Box extends Component<DivElement> {
-  final OuterBox parent;
+  @property
+  OuterBox parent;
+
   int _state = 0;
   int _outerWidth = 0;
   int _innerWidth = 0;
   VComponentBase _child;
   StreamSubscription _resizeSub;
 
-  Box(Context context, this.parent) : super(context);
+  Box(Context context) : super(context);
 
   build() {
-    _child = new VInnerBox(0);
+    _child = vInnerBox(0, null);
     if (_state == 0) {
-      return new VRootElement([_child], classes: ['box']);
+      return new VRoot([_child], classes: ['box']);
     } else {
-      return new VRootElement([vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
-                               vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
-                               _child],
-                              classes: ['box']);
+      return new VRoot([vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
+                        vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
+                        _child],
+                        classes: ['box']);
     }
   }
 
@@ -71,41 +67,25 @@ class Box extends Component<DivElement> {
   }
 }
 
-class VBox extends VComponentBase<Box, DivElement> {
-  OuterBox parent;
-
-  VBox(Object key, this.parent) : super(key);
-
-  void create(Context context) {
-    component = new Box(context, parent);
-    ref = component.element;
-  }
-}
+final vBox = vComponentFactory(Box);
 
 class InnerBox extends Component<DivElement> {
   InnerBox(Context context) : super(context);
 
   build() {
-    return new VRootElement([vdom.t('x')], classes: ['inner-box']);
+    return new VRoot([vdom.t('x')], classes: ['inner-box']);
   }
 }
 
-class VInnerBox extends VComponentBase<InnerBox, DivElement> {
-  VInnerBox(Object key) : super(key);
-
-  void create(Context context) {
-    component = new InnerBox(context);
-    ref = component.element;
-  }
-}
+final vInnerBox = vComponentFactory(InnerBox);
 
 class App extends Component<DivElement> {
   App(Context context) : super(context);
 
   build() {
-    return new VRootElement([new VOuterBox(0),
-                             new VOuterBox(1),
-                             new VOuterBox(2)]);
+    return new VRoot([vOuterBox(0, null),
+                      vOuterBox(1, null),
+                      vOuterBox(2, null)]);
   }
 }
 
