@@ -73,6 +73,15 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   }
 
   void update(VRootDecorator<T> other, Context context) {
+    if (parent == null) {
+      container = ref;
+    } else {
+      if (parent.innerContainer == null) {
+        container = parent.container;
+      } else {
+        container = parent.innerContainer.ref;
+      }
+    }
     super.update(other, context);
     if (_next != null) {
       _next.update(other._next, context);
