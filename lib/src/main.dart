@@ -11,6 +11,7 @@ final DOMScheduler domScheduler = new DOMScheduler();
 void injectComponent(Component component, html.Element parent) {
   domScheduler.zone.run(() {
     domScheduler.nextFrame.write(0).then((_) {
+      component.create();
       parent.append(component.element);
       component.attached();
       component.render();

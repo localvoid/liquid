@@ -22,6 +22,7 @@ class VDynamicComponent extends VComponent {
   void create(Context context) {
     _instanceMirror = _typeMirror.newInstance(const Symbol(''), [context]);
     _setProperties(_properties);
+    _instanceMirror.invoke(#create, const []);
     component = _instanceMirror.reflectee;
     ref = component.element;
   }
@@ -34,8 +35,8 @@ class VDynamicComponent extends VComponent {
   }
 
   void _setProperties(Map<Symbol, dynamic> properties) {
-    if (_properties != null) {
-      _properties.forEach((k, v) {
+    if (properties != null) {
+      properties.forEach((k, v) {
         if (v != null) {
           _instanceMirror.setField(k, v);
         }

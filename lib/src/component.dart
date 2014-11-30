@@ -75,9 +75,7 @@ abstract class Component<T extends html.Element> implements Context {
   Component(Context context)
       : context = context,
         depth = context == null ? 0 : context.depth + 1,
-        flags = 0 {
-    create();
-  }
+        flags = 0;
 
   /// Create a root-level [element].
   ///

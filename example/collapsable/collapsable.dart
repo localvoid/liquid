@@ -10,7 +10,10 @@ class Collapsable extends Component<DivElement> {
   @property
   bool collapsed = false;
 
-  Collapsable(Context context) : super(context) {
+  Collapsable(Context context) : super(context);
+
+  void create() {
+    super.create();
     element.classes.add('collapsable');
     element.onClick.listen((_) {
       collapsed = true;
