@@ -4,49 +4,27 @@
 
 import 'dart:async';
 import 'dart:html';
-import 'package:vdom/vdom.dart' as v;
-import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
-import 'package:liquid/dynamic.dart';
 
 class Collapsable extends Component<DivElement> {
+  @property
   bool collapsed = false;
 
   Collapsable(Context context) : super(context) {
+    element.classes.add('collapsable');
     element.onClick.listen((_) {
       collapsed = true;
       invalidate();
     });
   }
 
-  build() {
-    final classes = ['collapsable'];
-    if (!collapsed) {
-      classes.add('collapsable-open');
-    } else {
-      classes.add('collapsable-close');
-    }
-    return new VRootDecorator(const [], classes: classes);
-  }
-}
-
-class VCollapsable extends VComponentContainer<Collapsable, DivElement> {
-  VCollapsable(Object key,
-      List<v.Node> children,
-      {Map<String, String> attributes: null,
-       List<String> classes: null,
-       Map<String, String> styles: null})
-       : super(key, children, attributes, classes, styles);
-
-  void create(Context context) {
-    component = new Collapsable(context);
-    ref = component.element;
-  }
+  build() => vRootDecorator(
+      classes: collapsed ? const ['collapsable-close'] : const ['collapsable-open']);
 }
 
 class BasicComponent extends Component<ParagraphElement> {
   @property
-  int elapsed;
+  int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
@@ -65,19 +43,22 @@ class BasicComponent extends Component<ParagraphElement> {
     });
   }
 
-  build() {
-    return new VRoot([vdom.t('Liquid has been successfully '
-        'running for $elapsedSeconds seconds.')]);
-  }
+  build() =>
+      vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
+final vCollapsable = vComponentContainerFactory(Collapsable);
 final vBasicComponent = vComponentFactory(BasicComponent);
 
 class App extends Component<DivElement> {
   App(Context context) : super(context);
 
   build() {
-    return new VRoot([new VCollapsable(#collapsable, [vBasicComponent(0, {#elapsed: 0})])]);
+    return vRoot()(
+        vCollapsable(null, null)(
+            vBasicComponent(null, {#elapsed: 0})
+        )
+    );
   }
 }
 

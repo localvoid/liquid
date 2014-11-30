@@ -6,7 +6,6 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 import 'package:liquid/forms.dart';
-import 'package:liquid/dynamic.dart';
 
 class Item {
   static int __nextId = 0;
@@ -26,7 +25,7 @@ class TodoItem extends Component<LIElement> {
     element = new LIElement();
   }
 
-  build() => new VRoot([vdom.t(item.text)]);
+  build() => vRoot()(item.text);
 }
 
 class TodoList extends Component<UListElement> {
@@ -39,11 +38,12 @@ class TodoList extends Component<UListElement> {
     element = new UListElement();
   }
 
-  build() => new VRoot(items.map((i) => vTodoItem(i.id, {#item: i})).toList());
+  build() => vRoot()(items.map((i) => vTodoItem(i.id, {#item: i})).toList());
 }
 
 final vTodoItem = vComponentFactory(TodoItem);
 final vTodoList = vComponentFactory(TodoList);
+
 
 class TodoApp extends Component<DivElement> {
   final List<Item> items;
@@ -79,14 +79,14 @@ class TodoApp extends Component<DivElement> {
   }
 
   build() {
-    return new VRoot([
-      vdom.h3(0, [vdom.t('TODO')]),
+    return vRoot()([
+      vdom.h2(0)('TODO'),
       vTodoList(1, {#items: items}),
-      vdom.form(2, [
+      vdom.form(2)([
         new TextInput(0, value: inputText),
-        vdom.button(1, [vdom.t('Add item')], classes: ['add-button'])
-        ])
-      ]);
+        vdom.button(1, classes: ['add-button'])('Add item')
+      ])
+    ]);
   }
 }
 

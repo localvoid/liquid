@@ -44,11 +44,70 @@ class VDynamicComponent extends VComponent {
   }
 }
 
-typedef VDynamicComponent ComponentFactoryFunction(Object key,
-                                                   Map<Symbol, dynamic> args,
-                                                   {Map<String, String> attributes,
-                                                    List<String> classes,
-                                                    Map<String, String> styles});
+class VDynamicComponentContainer extends VDynamicComponent with vdom.Container {
+  List<vdom.Node> children;
+
+  html.Node get container => component.container;
+
+  VDynamicComponentContainer(
+      ClassMirror typeMirror,
+      Object key,
+      Map<Symbol, dynamic> properties,
+      this.children,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles)
+      : super(typeMirror, key, properties, attributes, classes, styles);
+
+  VDynamicComponentContainer call(children) {
+    if (children is List) {
+      this.children = children;
+    } else if (children is String) {
+      this.children = [new vdom.Text(null, children)];
+    } else {
+      this.children = [children];
+    }
+    return this;
+  }
+
+  void render(Context context) {
+    super.render(context);
+    renderChildren(children, context);
+  }
+
+  void update(VDynamicComponentContainer other, Context context) {
+    super.update(other, context);
+    updateChildren(children, other.children, context);
+  }
+
+  void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
+    component.insertBefore(node, nextRef);
+  }
+
+  void move(vdom.Node node, html.Node nextRef, Context context) {
+    component.move(node, nextRef);
+  }
+
+  void removeChild(vdom.Node node, Context context) {
+    component.removeChild(node);
+  }
+
+}
+
+typedef VDynamicComponent
+ComponentFactoryFunction(Object key,
+                         Map<Symbol, dynamic> properties,
+                         {Map<String, String> attributes,
+                          List<String> classes,
+                          Map<String, String> styles});
+
+typedef VDynamicComponentContainer
+ComponentContainerFactoryFunction(Object key,
+                                  Map<Symbol, dynamic> properties,
+                                  {List<vdom.Node> children,
+                                   Map<String, String> attributes,
+                                   List<String> classes,
+                                   Map<String, String> styles});
 
 Function vComponentFactory(Type componentType) {
   ClassMirror c = reflectClass(componentType);
@@ -58,5 +117,17 @@ Function vComponentFactory(Type componentType) {
        List<String> classes,
        Map<String, String> styles}) {
     return new VDynamicComponent(c, key, properties, attributes, classes, styles);
+  };
+}
+
+Function vComponentContainerFactory(Type componentType) {
+  ClassMirror c = reflectClass(componentType);
+
+  return (Object key, Map<Symbol, dynamic> properties,
+      {List<vdom.Node> children,
+       Map<String, String> attributes,
+       List<String> classes,
+       Map<String, String> styles}) {
+    return new VDynamicComponentContainer(c, key, properties, children, attributes, classes, styles);
   };
 }

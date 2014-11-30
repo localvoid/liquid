@@ -6,13 +6,12 @@ import 'dart:async';
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
-import 'package:liquid/dynamic.dart';
 
 class OuterBox extends Component<DivElement> {
   OuterBox(Context context) : super(context);
 
   build() {
-    return new VRoot([vBox(0, {#parent: this})], classes: ['outer-box']);
+    return vRoot(classes: ['outer-box'])(vBox(0, {#parent: this}));
   }
 }
 
@@ -33,12 +32,12 @@ class Box extends Component<DivElement> {
   build() {
     _child = vInnerBox(0, null);
     if (_state == 0) {
-      return new VRoot([_child], classes: ['box']);
+      return vRoot(classes: ['box'])(_child);
     } else {
-      return new VRoot([vdom.div(10, [vdom.t('Outer: $_outerWidth')]),
-                        vdom.div(11, [vdom.t('Inner: $_innerWidth')]),
-                        _child],
-                        classes: ['box']);
+      return vRoot(classes: ['box'])([
+        vdom.div(10)('Outer: $_outerWidth'),
+        vdom.div(11)('Inner: $_innerWidth'),
+        _child]);
     }
   }
 
@@ -73,7 +72,7 @@ class InnerBox extends Component<DivElement> {
   InnerBox(Context context) : super(context);
 
   build() {
-    return new VRoot([vdom.t('x')], classes: ['inner-box']);
+    return vRoot(classes: ['inner-box'])('x');
   }
 }
 
@@ -83,9 +82,9 @@ class App extends Component<DivElement> {
   App(Context context) : super(context);
 
   build() {
-    return new VRoot([vOuterBox(0, null),
-                      vOuterBox(1, null),
-                      vOuterBox(2, null)]);
+    return vRoot()([vOuterBox(0, null),
+                    vOuterBox(1, null),
+                    vOuterBox(2, null)]);
   }
 }
 

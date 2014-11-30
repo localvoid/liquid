@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html';
-import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class HelloComponent extends Component<DivElement> {
@@ -12,7 +11,7 @@ class HelloComponent extends Component<DivElement> {
   HelloComponent(Context context, this.name) : super(context);
 
   build() {
-    return new VRoot([vdom.t('Hello $name')]);
+    return vRoot()('Hello $name');
   }
 }
 

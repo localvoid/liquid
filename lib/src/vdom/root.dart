@@ -27,17 +27,18 @@ abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBa
   }
 }
 
+// TODO: doesn't work properly, use double-linked lists
 class VRootDecorator<T extends html.Element> extends VRootBase<T> {
-  VRootDecorator<T> parent = null;
-  VRootBase<T> _next = null;
+  VRootDecorator<T> parent;
+  VRootBase<T> _next;
   html.Node container;
   vdom.Node innerContainer;
 
-  VRootDecorator(List<vdom.Node> children, {
-      this.innerContainer: null,
-      Map<String, String> attributes: null,
-      List<String> classes: null,
-      Map<String, String> styles: null})
+  VRootDecorator({List<vdom.Node> children,
+      this.innerContainer,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles})
       : super(children, attributes, classes, styles);
 
   void decorate(VRootBase<T> root) {
@@ -90,10 +91,10 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
 }
 
 class VRoot<T extends html.Element> extends VRootBase<T> {
-  VRoot(List<vdom.Node> children, {
-      Map<String, String> attributes: null,
-      List<String> classes: null,
-      Map<String, String> styles: null})
+  VRoot({List<vdom.Node> children,
+      Map<String, String> attributes,
+      List<String> classes,
+      Map<String, String> styles})
       : super(children, attributes, classes, styles);
 
   void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
@@ -107,4 +108,32 @@ class VRoot<T extends html.Element> extends VRootBase<T> {
   void removeChild(vdom.Node node, Context context) {
     component.removeChild(node);
   }
+}
+
+VRootDecorator vRootDecorator({
+  List<vdom.Node> children,
+  vdom.Node innerContainer,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VRootDecorator(
+      children: children,
+      innerContainer: innerContainer,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+VRoot vRoot({
+  List<vdom.Node> children,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VRoot(
+      children: children,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
 }

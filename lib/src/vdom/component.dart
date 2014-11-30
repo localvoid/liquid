@@ -85,6 +85,17 @@ abstract class VComponentContainer<C extends Component<T>, T extends html.Elemen
       Map<String, String> styles)
       : super(key, attributes, classes, styles);
 
+  VComponentContainer<C, T> call(children) {
+    if (children is List) {
+      this.children = children;
+    } else if (children is String) {
+      this.children = [new vdom.Text(null, children)];
+    } else {
+      this.children = [children];
+    }
+    return this;
+  }
+
   void render(Context context) {
     super.render(context);
     renderChildren(children, context);

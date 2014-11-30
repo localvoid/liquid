@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
-import 'package:liquid/dynamic.dart';
 
 class Box extends Component<DivElement> {
   @property
@@ -15,21 +14,24 @@ class Box extends Component<DivElement> {
 
   Box(Context context) : super(context);
 
+  void create() {
+    super.create();
+    element.classes.add('box-view');
+  }
+
   build() {
     final top = math.sin(count / 10) * 10;
     final left = math.cos(count / 10) * 10;
     final color = count % 255;
     final content = count % 100;
 
-    return new VRoot([
-      vdom.div(0, [vdom.t(content.toString())],
-        classes: ['box'],
-        styles: {
-          'top': '${top}px',
-          'left': '${left}px',
-          'background': 'rgb(0, 0, $color)'
-      })],
-      classes: ['box-view']);
+    return vRoot()(
+      vdom.div(null, classes: ['box'],
+               styles: {
+                 'top': '${top}px',
+                 'left': '${left}px',
+                 'background': 'rgb(0, 0, $color)'})(content.toString())
+    );
   }
 }
 
@@ -45,7 +47,7 @@ class App extends Component<DivElement> {
     for (var i = 0; i < items.length; i++) {
       result.add(vBox(i, {#count: items[i]}));
     }
-    return new VRoot(result, classes: ['grid']);
+    return vRoot(classes: ['grid'])(result);
   }
 }
 
