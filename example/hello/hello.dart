@@ -6,9 +6,9 @@ import 'dart:html';
 import 'package:liquid/liquid.dart';
 
 class HelloComponent extends Component<DivElement> {
-  String name;
+  @property String name;
 
-  HelloComponent(Context context, this.name) : super(context);
+  HelloComponent(Context context) : super(context);
 
   build() {
     return vRoot()('Hello $name');
@@ -16,5 +16,5 @@ class HelloComponent extends Component<DivElement> {
 }
 
 main() {
-  injectComponent(new HelloComponent(null, 'World'), document.body);
+  injectComponent(new HelloComponent(null)..name = 'World', document.body);
 }

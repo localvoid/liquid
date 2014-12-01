@@ -12,7 +12,7 @@ class BasicComponent extends Component<ParagraphElement> {
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Component parent) : super(parent);
+  BasicComponent(Context context) : super(context);
 
   void create() {
     element = new ParagraphElement();

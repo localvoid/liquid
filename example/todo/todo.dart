@@ -42,7 +42,7 @@ class TodoApp extends Component<DivElement> {
   @property List<Item> items;
   String inputText = '';
 
-  TodoApp(Context context, this.items) : super(context);
+  TodoApp(Context context) : super(context);
 
   void create() {
     super.create();
@@ -84,5 +84,5 @@ class TodoApp extends Component<DivElement> {
 }
 
 main() {
-  injectComponent(new TodoApp(null, []), document.body);
+  injectComponent(new TodoApp(null)..items = [], document.body);
 }

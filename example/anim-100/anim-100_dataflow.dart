@@ -37,9 +37,9 @@ class Box extends Component<DivElement> {
 final vBox = vComponentFactory(Box);
 
 class App extends Component<DivElement> {
-  List<int> items;
+  @property List<int> items;
 
-  App(Context context, this.items) : super(context);
+  App(Context context) : super(context);
 
   build() {
     var i = 0;
@@ -53,7 +53,7 @@ class App extends Component<DivElement> {
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
   final items = new List<int>.filled(100, 0);
-  final app = new App(null, items);
+  final app = new App(null)..items = items;
   injectComponent(app, document.body);
 
   /// I know that this is quite stupid :)
