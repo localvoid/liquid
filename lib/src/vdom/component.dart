@@ -89,7 +89,7 @@ abstract class VComponentContainer<C extends Component<T>, T extends html.Elemen
     if (children is List) {
       this.children = children;
     } else if (children is String) {
-      this.children = [new vdom.Text(null, children)];
+      this.children = [new vdom.Text(children)];
     } else {
       this.children = [children];
     }

@@ -12,8 +12,8 @@ class VDynamicComponent extends VComponent {
   Map<Symbol, dynamic> _properties;
 
   VDynamicComponent(this._typeMirror,
-      Object key,
       this._properties,
+      Object key,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
@@ -64,7 +64,7 @@ class VDynamicComponentContainer extends VDynamicComponent with vdom.Container {
     if (children is List) {
       this.children = children;
     } else if (children is String) {
-      this.children = [new vdom.Text(null, children)];
+      this.children = [new vdom.Text(children)];
     } else {
       this.children = [children];
     }
@@ -92,34 +92,37 @@ class VDynamicComponentContainer extends VDynamicComponent with vdom.Container {
   void removeChild(vdom.Node node, Context context) {
     component.removeChild(node);
   }
-
 }
 
-typedef VDynamicComponent
-ComponentFactoryFunction(Object key,
-                         Map<Symbol, dynamic> properties,
-                         {Map<String, String> attributes,
-                          List<String> classes,
-                          Map<String, String> styles});
+class VDynamicComponentFactory extends Function {
+  Type _componentType;
+  ClassMirror _classMirror;
 
-typedef VDynamicComponentContainer
-ComponentContainerFactoryFunction(Object key,
-                                  Map<Symbol, dynamic> properties,
-                                  {List<vdom.Node> children,
-                                   Map<String, String> attributes,
-                                   List<String> classes,
-                                   Map<String, String> styles});
+  VDynamicComponentFactory(this._componentType) {
+    _classMirror = reflectClass(_componentType);
+  }
 
-Function vComponentFactory(Type componentType) {
-  ClassMirror c = reflectClass(componentType);
+  _create([Map args]) {
+    if (args == null) {
+      return new VDynamicComponent(_classMirror, null, null, null, null, null);
+    }
+    final properties = new Map.from(args);
+    final key = properties.remove(#key);
+    final attributes = properties.remove(#attributes);
+    final classes = properties.remove(#classes);
+    final styles = properties.remove(#styles);
+    return new VDynamicComponent(_classMirror, properties, key, attributes, classes, styles);
+  }
 
-  return (Object key, Map<Symbol, dynamic> properties,
-      {Map<String, String> attributes,
-       List<String> classes,
-       Map<String, String> styles}) {
-    return new VDynamicComponent(c, key, properties, attributes, classes, styles);
-  };
+  call() => _create();
+
+  noSuchMethod(Invocation invocation) {
+    final arguments = invocation.namedArguments;
+    return _create(arguments);
+  }
 }
+
+Function vComponentFactory(Type componentType) => new VDynamicComponentFactory(componentType);
 
 Function vComponentContainerFactory(Type componentType) {
   ClassMirror c = reflectClass(componentType);

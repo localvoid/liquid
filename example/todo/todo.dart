@@ -16,37 +16,30 @@ class Item {
 }
 
 class TodoItem extends Component<LIElement> {
-  @property
-  Item item;
+  @property Item item;
 
   TodoItem(Context context) : super(context);
 
-  void create() {
-    element = new LIElement();
-  }
+  void create() { element = new LIElement(); }
 
   build() => vRoot()(item.text);
 }
 
 class TodoList extends Component<UListElement> {
-  @property
-  List<Item> items;
+  @property List<Item> items;
 
   TodoList(Context context) : super(context);
 
-  void create() {
-    element = new UListElement();
-  }
+  void create() { element = new UListElement(); }
 
-  build() => vRoot()(items.map((i) => vTodoItem(i.id, {#item: i})).toList());
+  build() => vRoot()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
 }
 
 final vTodoItem = vComponentFactory(TodoItem);
 final vTodoList = vComponentFactory(TodoList);
 
-
 class TodoApp extends Component<DivElement> {
-  final List<Item> items;
+  @property List<Item> items;
   String inputText = '';
 
   TodoApp(Context context, this.items) : super(context);
@@ -80,11 +73,11 @@ class TodoApp extends Component<DivElement> {
 
   build() {
     return vRoot()([
-      vdom.h2(0)('TODO'),
-      vTodoList(1, {#items: items}),
-      vdom.form(2)([
+      vdom.h2()('TODO'),
+      vTodoList(items: items),
+      vdom.form()([
         new TextInput(0, value: inputText),
-        vdom.button(1, classes: ['add-button'])('Add item')
+        vdom.button(classes: ['add-button'])('Add item')
       ])
     ]);
   }

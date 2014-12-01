@@ -9,8 +9,7 @@ import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 class Box extends Component<DivElement> {
-  @property
-  int count = 0;
+  @property int count = 0;
 
   Box(Context context) : super(context);
 
@@ -26,7 +25,7 @@ class Box extends Component<DivElement> {
     final content = count % 100;
 
     return vRoot()(
-      vdom.div(null, classes: ['box'],
+      vdom.div(classes: ['box'],
                styles: {
                  'top': '${top}px',
                  'left': '${left}px',
@@ -43,11 +42,11 @@ class App extends Component<DivElement> {
   App(Context context, this.items) : super(context);
 
   build() {
-    final result = [];
-    for (var i = 0; i < items.length; i++) {
-      result.add(vBox(i, {#count: items[i]}));
-    }
-    return vRoot(classes: ['grid'])(result);
+    var i = 0;
+
+    return vRoot(classes: ['grid'])(
+        items.map((item) => vBox(key: i++, count: item)).toList()
+    );
   }
 }
 

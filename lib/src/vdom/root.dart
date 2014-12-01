@@ -3,11 +3,12 @@ part of liquid;
 abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBase<T> {
   Component<T> component;
 
+  // TODO: add id property
   VRootBase(List<vdom.Node> children,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(0, children, attributes, classes, styles);
+      : super(null, children, null, attributes, classes, styles);
 
   void create(vdom.Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'

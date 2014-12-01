@@ -10,13 +10,14 @@ class TextInput extends v.ElementBase<InputElement> {
 
   String get value => ref.value;
 
+  // TODO: add id
   TextInput(Object key,
       {String value: null,
        Map<String, String> attributes: null,
        List<String> classes: null,
        Map<String, String> styles: null})
        : _value = value,
-         super(key, attributes, classes, styles);
+         super(key, null, attributes, classes, styles);
 
   void create(v.Context context) {
     ref = new InputElement(type: 'text');

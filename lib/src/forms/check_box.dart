@@ -10,13 +10,14 @@ class CheckBox extends v.ElementBase<CheckboxInputElement> {
 
   bool get checked => ref.checked;
 
+  // TODO: add id
   CheckBox(Object key,
       {bool checked: null,
        Map<String, String> attributes: null,
        List<String> classes: null,
        Map<String, String> styles: null})
        : _checked = checked,
-         super(key, attributes, classes, styles);
+         super(key, null, attributes, classes, styles);
 
   void create(v.Context context) {
     ref = new CheckboxInputElement();
