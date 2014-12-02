@@ -173,7 +173,12 @@ abstract class Component<T extends html.Element> implements Context {
   }
 
   void insertBefore(vdom.Node node, html.Node nextRef) {
-    vdom.injectBefore(node, container, nextRef, this);
+    node.create(this);
+    container.insertBefore(node.ref, nextRef);
+    if (isAttached){
+      node.attached();
+    }
+    node.render(this);
   }
 
   void move(vdom.Node node, html.Node nextRef) {
