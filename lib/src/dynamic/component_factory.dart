@@ -14,6 +14,7 @@ class VDynamicComponent extends VComponent {
   VDynamicComponent(this._typeMirror,
       this._properties,
       Object key,
+      String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
@@ -56,10 +57,11 @@ class VDynamicComponentContainer extends VDynamicComponent with vdom.Container {
       Object key,
       Map<Symbol, dynamic> properties,
       this.children,
+      String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(typeMirror, key, properties, attributes, classes, styles);
+      : super(typeMirror, properties, key, id, attributes, classes, styles);
 
   VDynamicComponentContainer call(children) {
     if (children is List) {
@@ -105,14 +107,15 @@ class VDynamicComponentFactory extends Function {
 
   _create([Map args]) {
     if (args == null) {
-      return new VDynamicComponent(_classMirror, null, null, null, null, null);
+      return new VDynamicComponent(_classMirror, null, null, null, null, null, null);
     }
     final properties = new Map.from(args);
     final key = properties.remove(#key);
+    final id = properties.remove(#id);
     final attributes = properties.remove(#attributes);
     final classes = properties.remove(#classes);
     final styles = properties.remove(#styles);
-    return new VDynamicComponent(_classMirror, properties, key, attributes, classes, styles);
+    return new VDynamicComponent(_classMirror, properties, key, id, attributes, classes, styles);
   }
 
   call() => _create();
@@ -133,6 +136,6 @@ Function vComponentContainerFactory(Type componentType) {
        Map<String, String> attributes,
        List<String> classes,
        Map<String, String> styles}) {
-    return new VDynamicComponentContainer(c, key, properties, children, attributes, classes, styles);
+    return new VDynamicComponentContainer(c, key, properties, children, null, attributes, classes, styles);
   };
 }
