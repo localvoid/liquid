@@ -8,13 +8,9 @@ import 'package:liquid/liquid.dart';
 class HelloComponent extends Component<DivElement> {
   @property String name;
 
-  HelloComponent(Context context) : super(context);
-
-  build() {
-    return vRoot()('Hello $name');
-  }
+  build() => vRoot()('Hello $name');
 }
 
 main() {
-  injectComponent(new HelloComponent(null)..name = 'World', document.body);
+  injectComponent(new HelloComponent()..name = 'World', document.body);
 }

@@ -18,11 +18,11 @@ abstract class VComponentBase<C extends Component<T>, T extends html.Element>
   }
 
   void attached() {
-    component.attached();
+    component.attach();
   }
 
   void detached() {
-    component.detached();
+    component.detach();
   }
 
   String toString() => (component == null) ?

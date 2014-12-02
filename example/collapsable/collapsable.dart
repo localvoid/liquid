@@ -6,14 +6,12 @@ import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
 
+final vCollapsable = vComponentContainerFactory(Collapsable);
 class Collapsable extends Component<DivElement> {
-  @property
-  bool collapsed = false;
-
-  Collapsable(Context context) : super(context);
+  @property bool collapsed = false;
 
   void create() {
-    super.create();
+    element = new DivElement();
     element.classes.add('collapsable');
     element.onClick.listen((_) {
       collapsed = true;
@@ -21,17 +19,15 @@ class Collapsable extends Component<DivElement> {
     });
   }
 
-  build() => vRootDecorator(
-      classes: collapsed ? const ['collapsable-close'] : const ['collapsable-open']);
+  build() =>
+      vRootDecorator(classes: collapsed ? ['collapsable-close'] : ['collapsable-open']);
 }
 
+final vBasicComponent = vComponentFactory(BasicComponent);
 class BasicComponent extends Component<ParagraphElement> {
-  @property
-  int elapsed = 0;
+  @property int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
-
-  BasicComponent(Context context) : super(context);
 
   void create() {
     element = new ParagraphElement();
@@ -46,16 +42,10 @@ class BasicComponent extends Component<ParagraphElement> {
     });
   }
 
-  build() =>
-      vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
+  build() => vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
-final vCollapsable = vComponentContainerFactory(Collapsable);
-final vBasicComponent = vComponentFactory(BasicComponent);
-
 class App extends Component<DivElement> {
-  App(Context context) : super(context);
-
   build() {
     return vRoot()(
         vCollapsable(null, null)(
@@ -66,5 +56,5 @@ class App extends Component<DivElement> {
 }
 
 main() {
-  injectComponent(new App(null), document.body);
+  injectComponent(new App(), document.body);
 }

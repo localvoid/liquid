@@ -13,7 +13,7 @@ void injectComponent(Component component, html.Element parent) {
     domScheduler.nextFrame.write(0).then((_) {
       component.create();
       parent.append(component.element);
-      component.attached();
+      component.attach();
       component.render();
     });
   });

@@ -18,8 +18,6 @@ class Item {
 class TodoItem extends Component<LIElement> {
   @property Item item;
 
-  TodoItem(Context context) : super(context);
-
   void create() { element = new LIElement(); }
 
   build() => vRoot()(item.text);
@@ -27,8 +25,6 @@ class TodoItem extends Component<LIElement> {
 
 class TodoList extends Component<UListElement> {
   @property List<Item> items;
-
-  TodoList(Context context) : super(context);
 
   void create() { element = new UListElement(); }
 
@@ -41,8 +37,6 @@ final vTodoList = vComponentFactory(TodoList);
 class TodoApp extends Component<DivElement> {
   @property List<Item> items;
   String inputText = '';
-
-  TodoApp(Context context) : super(context);
 
   void create() {
     super.create();
@@ -84,5 +78,5 @@ class TodoApp extends Component<DivElement> {
 }
 
 main() {
-  injectComponent(new TodoApp(null)..items = [], document.body);
+  injectComponent(new TodoApp()..items = [], document.body);
 }

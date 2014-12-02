@@ -7,16 +7,12 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
+final vOuterBox = vComponentFactory(OuterBox);
 class OuterBox extends Component<DivElement> {
-  OuterBox(Context context) : super(context);
-
-  build() {
-    return vRoot(classes: ['outer-box'])(vBox(parent: this));
-  }
+  build() => vRoot(classes: ['outer-box'])(vBox(parent: this));
 }
 
-final vOuterBox = vComponentFactory(OuterBox);
-
+final vBox = vComponentFactory(Box);
 class Box extends Component<DivElement> {
   @property OuterBox parent;
 
@@ -25,10 +21,8 @@ class Box extends Component<DivElement> {
   VComponentBase _child;
   StreamSubscription _resizeSub;
 
-  Box(Context context) : super(context);
-
   build() {
-    _child = vInnerBox(0, null);
+    _child = vInnerBox();
 
     return vRoot(classes: ['box'])([
       vdom.div()('Outer: $_outerWidth'),
@@ -41,12 +35,10 @@ class Box extends Component<DivElement> {
     _resizeSub = window.onResize.listen((_) {
       invalidate();
     });
-    super.attached();
   }
 
   void detached() {
     _resizeSub.cancel();
-    super.detached();
   }
 
   void update() {
@@ -61,28 +53,20 @@ class Box extends Component<DivElement> {
   }
 }
 
-final vBox = vComponentFactory(Box);
-
+final vInnerBox = vComponentFactory(InnerBox);
 class InnerBox extends Component<DivElement> {
-  InnerBox(Context context) : super(context);
-
-  build() {
-    return vRoot(classes: ['inner-box'])('x');
-  }
+  build() => vRoot(classes: ['inner-box'])('x');
 }
 
-final vInnerBox = vComponentFactory(InnerBox);
 
 class App extends Component<DivElement> {
-  App(Context context) : super(context);
-
-  build() {
-    return vRoot()([vOuterBox(),
-                    vOuterBox(),
-                    vOuterBox()]);
-  }
+  build() => vRoot()([
+      vOuterBox(),
+      vOuterBox(),
+      vOuterBox()
+  ]);
 }
 
 main() {
-  injectComponent(new App(null), document.body);
+  injectComponent(new App(), document.body);
 }

@@ -20,10 +20,11 @@ class VDynamicComponent extends VComponent {
     : super(key, attributes, classes, styles);
 
   void create(Context context) {
-    _instanceMirror = _typeMirror.newInstance(const Symbol(''), [context]);
+    _instanceMirror = _typeMirror.newInstance(const Symbol(''), const []);
+    component = _instanceMirror.reflectee
+      ..context = context;
     _setProperties(_properties);
-    _instanceMirror.invoke(#create, const []);
-    component = _instanceMirror.reflectee;
+    component.create();
     ref = component.element;
   }
 

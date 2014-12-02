@@ -46,13 +46,18 @@ abstract class Component<T extends html.Element> implements Context {
   T element;
 
   /// Parent context
-  final Context context;
+  Context _context;
+  Context get context => _context;
+  void set context(Context newContext) {
+    _context = newContext;
+    depth = newContext.depth + 1;
+  }
 
   /// Depth relative to other contexts
-  final int depth;
+  int depth = 0;
 
   /// Flags: [attachedFlag], [dirtyFlag]
-  int flags;
+  int flags = 0;
 
   /// Component is attached to the DOM.
   bool get isAttached => (flags & attachedFlag) == attachedFlag;
@@ -66,17 +71,6 @@ abstract class Component<T extends html.Element> implements Context {
   /// Container for children nodes.
   html.Node get container => element;
 
-  /// Create a new [Component]
-  ///
-  /// Component's depth is automatically determined from the parent [context],
-  /// if it is null, then the depth is 0, otherwise it is incremented by one.
-  ///
-  /// Execution context: [Scheduler]:write
-  Component(Context context)
-      : context = context,
-        depth = context == null ? 0 : context.depth + 1,
-        flags = 0;
-
   /// Create a root-level [element].
   ///
   /// Execution context: [Scheduler]:write
@@ -88,28 +82,13 @@ abstract class Component<T extends html.Element> implements Context {
   /// attached [context].
   ///
   /// Execution context: [Scheduler]:write
-  void attached() {
-    assert(!isAttached);
-    flags |= attachedFlag;
-    if (shouldComponentUpdate()) {
-      update();
-    }
-    if (vRoot != null) {
-      vRoot.attached();
-    }
-  }
+  void attached() {}
 
   /// Lifecycle method that is called when [Component] is detached from the
   /// attached [context].
   ///
   /// Execution context: [Scheduler]:write
-  void detached() {
-    assert(isAttached);
-    if (vRoot != null) {
-      vRoot.detached();
-    }
-    flags &= ~attachedFlag;
-  }
+  void detached() {}
 
   /// Find [e] ancestor that matches [selector].
   html.Element closest(html.Element e, String selector) {
@@ -203,5 +182,26 @@ abstract class Component<T extends html.Element> implements Context {
 
   void removeChild(vdom.Node node) {
     node.dispose(this);
+  }
+
+  void attach() {
+    assert(!isAttached);
+    attached();
+    flags |= attachedFlag;
+    if (shouldComponentUpdate()) {
+      update();
+    }
+    if (vRoot != null) {
+      vRoot.attached();
+    }
+  }
+
+  void detach() {
+    assert(isAttached);
+    if (vRoot != null) {
+      vRoot.detached();
+    }
+    flags &= ~attachedFlag;
+    detached();
   }
 }

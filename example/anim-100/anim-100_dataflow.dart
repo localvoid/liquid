@@ -11,8 +11,6 @@ import 'package:liquid/liquid.dart';
 class Box extends Component<DivElement> {
   @property int count = 0;
 
-  Box(Context context) : super(context);
-
   void create() {
     super.create();
     element.classes.add('box-view');
@@ -29,7 +27,9 @@ class Box extends Component<DivElement> {
                styles: {
                  'top': '${top}px',
                  'left': '${left}px',
-                 'background': 'rgb(0, 0, $color)'})(content.toString())
+                 'background': 'rgb(0, 0, $color)'})(
+          content.toString()
+      )
     );
   }
 }
@@ -39,11 +39,8 @@ final vBox = vComponentFactory(Box);
 class App extends Component<DivElement> {
   @property List<int> items;
 
-  App(Context context) : super(context);
-
   build() {
     var i = 0;
-
     return vRoot(classes: ['grid'])(
         items.map((item) => vBox(key: i++, count: item)).toList()
     );
@@ -53,7 +50,7 @@ class App extends Component<DivElement> {
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
   final items = new List<int>.filled(100, 0);
-  final app = new App(null)..items = items;
+  final app = new App()..items = items;
   injectComponent(app, document.body);
 
   /// I know that this is quite stupid :)

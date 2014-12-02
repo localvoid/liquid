@@ -12,19 +12,14 @@ class BasicComponent extends Component<ParagraphElement> {
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
-  BasicComponent(Context context) : super(context);
+  void create() { element = new ParagraphElement(); }
 
-  void create() {
-    element = new ParagraphElement();
-  }
-
-  build() =>
-      vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
+  build() => vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
 main() {
   final start = new DateTime.now().millisecondsSinceEpoch;
-  final basic = new BasicComponent(null);
+  final basic = new BasicComponent();
   injectComponent(basic, document.body);
 
   new Timer.periodic(new Duration(milliseconds: 50), (t) {
