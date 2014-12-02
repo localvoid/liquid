@@ -15,24 +15,10 @@ class Item {
   Item([this.text = '']) : id = __nextId++;
 }
 
-class TodoItem extends Component<LIElement> {
-  @property Item item;
-
-  void create() { element = new LIElement(); }
-
-  build() => vRoot()(item.text);
-}
-
-class TodoList extends Component<UListElement> {
-  @property List<Item> items;
-
-  void create() { element = new UListElement(); }
-
-  build() => vRoot()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
-}
-
-final vTodoItem = vComponentFactory(TodoItem);
-final vTodoList = vComponentFactory(TodoList);
+final vTodoItem = vStaticTreeFactory(({item}) => vdom.li()(item.text));
+final vTodoList = vStaticTreeFactory(({items}) {
+  return vdom.ul()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
+});
 
 class TodoApp extends Component<DivElement> {
   @property List<Item> items;
@@ -70,7 +56,7 @@ class TodoApp extends Component<DivElement> {
       vdom.h2()('TODO'),
       vTodoList(items: items),
       vdom.form()([
-        new TextInput(0, value: inputText),
+        vTextInput(value: inputText),
         vdom.button(classes: ['add-button'])('Add item')
       ])
     ]);

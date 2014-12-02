@@ -4,24 +4,41 @@
 
 part of liquid.forms;
 
-/// Virtual DOM CheckBox Element
-class CheckBox extends v.ElementBase<CheckboxInputElement> {
+/// Creates a new [VCheckbox] element.
+VCheckbox vCheckbox({
+  Object key,
+  bool checked,
+  String id,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VCheckbox(
+      key: key,
+      checked: checked,
+      id: id,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Virtual DOM Checkbox Element
+class VCheckbox extends v.ElementBase<CheckboxInputElement> {
   final bool _checked;
 
   bool get checked => ref.checked;
 
-  // TODO: add id
-  CheckBox(Object key,
-      {bool checked: null,
-       Map<String, String> attributes: null,
-       List<String> classes: null,
-       Map<String, String> styles: null})
-       : _checked = checked,
-         super(key, null, attributes, classes, styles);
+  VCheckbox({
+    Object key,
+    bool checked,
+    String id,
+    Map<String, String> attributes,
+    List<String> classes,
+    Map<String, String> styles})
+    : _checked = checked,
+      super(key, id, attributes, classes, styles);
 
-  void create(v.Context context) {
-    ref = new CheckboxInputElement();
-  }
+  void create(v.Context context) { ref = new CheckboxInputElement(); }
 
   void render(v.Context context) {
     super.render(context);
@@ -30,7 +47,7 @@ class CheckBox extends v.ElementBase<CheckboxInputElement> {
     }
   }
 
-  void update(CheckBox other, v.Context context) {
+  void update(VCheckbox other, v.Context context) {
     super.update(other, context);
     if (other._checked != null && ref.checked != other._checked) {
       ref.checked = other._checked;

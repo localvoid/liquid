@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:html';
+import 'package:vdom/vdom.dart' as vdom;
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
@@ -12,13 +13,15 @@ class OuterBox extends Component<DivElement> {
   build() => vRoot(classes: ['outer-box'])(vBox(parent: this));
 }
 
+final vInnerBox = vStaticTreeFactory(() => vdom.div(classes: ['inner-box'])('x'));
+
 final vBox = vComponentFactory(Box);
 class Box extends Component<DivElement> {
   @property OuterBox parent;
 
   int _outerWidth = 0;
   int _innerWidth = 0;
-  VComponentBase _child;
+  vdom.Node _child;
   StreamSubscription _resizeSub;
 
   build() {
@@ -52,12 +55,6 @@ class Box extends Component<DivElement> {
     });
   }
 }
-
-final vInnerBox = vComponentFactory(InnerBox);
-class InnerBox extends Component<DivElement> {
-  build() => vRoot(classes: ['inner-box'])('x');
-}
-
 
 class App extends Component<DivElement> {
   build() => vRoot()([

@@ -4,24 +4,41 @@
 
 part of liquid.forms;
 
+/// Creates a new [VTextInput] element.
+VTextInput vTextInput({
+  Object key,
+  String value,
+  String id,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VTextInput(
+      key: key,
+      value: value,
+      id: id,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
 /// Virtual DOM Text Input Element
-class TextInput extends v.ElementBase<InputElement> {
+class VTextInput extends v.ElementBase<InputElement> {
   final String _value;
 
   String get value => ref.value;
 
-  // TODO: add id
-  TextInput(Object key,
-      {String value: null,
-       Map<String, String> attributes: null,
-       List<String> classes: null,
-       Map<String, String> styles: null})
-       : _value = value,
-         super(key, null, attributes, classes, styles);
+  VTextInput({
+    Object key,
+    String value,
+    String id,
+    Map<String, String> attributes,
+    List<String> classes,
+    Map<String, String> styles})
+    : _value = value,
+      super(key, id, attributes, classes, styles);
 
-  void create(v.Context context) {
-    ref = new InputElement(type: 'text');
-  }
+  void create(v.Context context) { ref = new InputElement(type: 'text'); }
 
   void render(v.Context context) {
     super.render(context);
@@ -30,7 +47,7 @@ class TextInput extends v.ElementBase<InputElement> {
     }
   }
 
-  void update(TextInput other, v.Context context) {
+  void update(VTextInput other, v.Context context) {
     super.update(other, context);
     if (other._value != null && ref.value != other._value) {
       ref.value = other._value;

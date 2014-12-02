@@ -29,9 +29,7 @@ class BasicComponent extends Component<ParagraphElement> {
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
-  void create() {
-    element = new ParagraphElement();
-  }
+  void create() { element = new ParagraphElement(); }
 
   void attached() {
     super.attached();
