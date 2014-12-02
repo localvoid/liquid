@@ -8,33 +8,22 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-class Box extends Component<DivElement> {
-  @property int count = 0;
+final vBox = vStaticTreeFactory(({count: 0}) {
+  final top = math.sin(count / 10) * 10;
+  final left = math.cos(count / 10) * 10;
+  final color = count % 255;
+  final content = count % 100;
 
-  void create() {
-    super.create();
-    element.classes.add('box-view');
-  }
-
-  build() {
-    final top = math.sin(count / 10) * 10;
-    final left = math.cos(count / 10) * 10;
-    final color = count % 255;
-    final content = count % 100;
-
-    return vRoot()(
-      vdom.div(classes: ['box'],
-               styles: {
-                 'top': '${top}px',
-                 'left': '${left}px',
-                 'background': 'rgb(0, 0, $color)'})(
-          content.toString()
-      )
-    );
-  }
-}
-
-final vBox = vComponentFactory(Box);
+  return vdom.div(classes: ['box-view'])(
+    vdom.div(classes: ['box'],
+             styles: {
+               'top': '${top}px',
+               'left': '${left}px',
+               'background': 'rgb(0, 0, $color)'})(
+        content.toString()
+    )
+  );
+});
 
 class App extends Component<DivElement> {
   @property List<int> items;
