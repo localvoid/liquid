@@ -36,7 +36,7 @@ part of liquid;
 ///
 /// ```
 abstract class Component<T extends html.Element> implements Context {
-  /// Component is attached to the attached Context.
+  /// Component is attached to the document.
   static const _attachedFlag = 1;
 
   /// Component is dirty and should be updated at the next frame
@@ -78,13 +78,13 @@ abstract class Component<T extends html.Element> implements Context {
   }
 
   /// Lifecycle method that is called when [Component] is attached to the
-  /// attached [context].
+  /// document.
   ///
   /// Execution context: [Scheduler]:write
   void attached() {}
 
   /// Lifecycle method that is called when [Component] is detached from the
-  /// attached [context].
+  /// document.
   ///
   /// Execution context: [Scheduler]:write
   void detached() {}
