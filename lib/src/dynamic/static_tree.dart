@@ -31,7 +31,6 @@ class VStaticTree extends vdom.ElementBase {
   void attached() { _vTree.attached(); }
   void detached() { _vTree.detached(); }
   void attach() { _vTree.attach(); }
-  void detach() { _vTree.detach(); }
 }
 
 class VStaticTreeFactory extends Function {

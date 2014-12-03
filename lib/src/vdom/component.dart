@@ -8,22 +8,18 @@ abstract class VComponentBase<C extends Component<T>, T extends html.Element>
 
   void create(Context context);
 
-  void render(Context context) {
-    component.render();
-  }
+  void init() { component.init(); }
+
+  void render(Context context) { component.update(); }
 
   void update(VComponentBase<C, T> other, Context context) {
     other.ref = ref;
     other.component = component;
   }
 
-  void attached() {
-    component.attach();
-  }
+  void attached() { component.attach(); }
 
-  void detached() {
-    component.detach();
-  }
+  void detached() { component.detach(); }
 
   String toString() => (component == null) ?
       'VComponentBase[stateless]' : 'VComponentBase[$component]';

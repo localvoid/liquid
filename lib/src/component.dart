@@ -42,6 +42,12 @@ abstract class Component<T extends html.Element> implements Context {
   /// Component is dirty and should be updated at the next frame
   static const _dirtyFlag = 1 << 1;
 
+  /// Component is rendered.
+  static const _renderedFlag = 1 << 2;
+
+  /// Component is mounted.
+  static const _mountedFlag = 1 << 3;
+
   /// Reference to the Html Element
   T element;
 
@@ -64,6 +70,12 @@ abstract class Component<T extends html.Element> implements Context {
   /// Component is dirty, and should be updated.
   bool get isDirty => (_flags & _dirtyFlag) == _dirtyFlag;
 
+  /// Component is rendered.
+  bool get isRendered => (_flags & _renderedFlag) == _renderedFlag;
+
+  /// Component is mounted.
+  bool get isMounted => (_flags & _mountedFlag) == _mountedFlag;
+
   /// Reference to the root-level Virtual DOM Element.
   VRootBase<T> vRoot;
 
@@ -73,9 +85,20 @@ abstract class Component<T extends html.Element> implements Context {
   /// Create a root-level [element].
   ///
   /// Execution context: [Scheduler]:write
-  void create() {
-    element = new html.Element.tag('div') as T;
+  void create() { element = new html.Element.tag('div') as T; }
+
+  /// Mount component on top of existing html
+  ///
+  /// Execution context: [Scheduler]:write
+  void mount(T node) {
+    _flags |= _mountedFlag;
+    element = node;
   }
+
+  /// Initialize
+  ///
+  /// Execution context: [Scheduler]:write
+  void init() {}
 
   /// Lifecycle method that is called when [Component] is attached to the
   /// document.
@@ -110,25 +133,39 @@ abstract class Component<T extends html.Element> implements Context {
   /// tasks for the current [Frame]
   Future readDOM() => domScheduler.currentFrame.read();
 
-  /// Lifecycle method that is called when [Component] is rendered for
-  /// the first time.
-  ///
-  /// Execution context: [Scheduler]:write
-  void render() {
-    assert(vRoot == null);
-    update();
-  }
-
-  /// Lifecycle method that is called when [Component] should be updated.
+  /// Lifecycle method to update [Component].
   ///
   /// Execution context: [Scheduler]:write
   void update() {
+    internalUpdate();
+    updated();
+  }
+
+  void internalUpdate() {
     final newVRoot = build();
-    if (newVRoot != null) {
-      updateVRoot(newVRoot);
+    if (!isRendered) {
+      if (isMounted) {
+        if (newVRoot != null) {
+          mountVRoot(newVRoot);
+        }
+        mounted();
+      } else {
+        if (newVRoot != null) {
+          updateVRoot(newVRoot);
+        }
+      }
+      rendered();
+    } else {
+      if (newVRoot != null) {
+        updateVRoot(newVRoot);
+      }
     }
     _flags &= ~_dirtyFlag;
   }
+
+  void mounted() { _flags &= ~_mountedFlag; }
+  void rendered() { _flags &= ~_renderedFlag; }
+  void updated() {}
 
   /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
   /// queue.
@@ -163,11 +200,18 @@ abstract class Component<T extends html.Element> implements Context {
   /// Execution context: [Scheduler]:write
   void updateVRoot(VRootBase<T> newVRoot) {
     if (vRoot == null) {
-      newVRoot.mount(this);
+      newVRoot.mountComponent(this);
       newVRoot.render(this);
     } else {
       vRoot.update(newVRoot, this);
     }
+    vRoot = newVRoot;
+  }
+
+  /// Execution context: [Scheduler]:write
+  void mountVRoot(VRootBase<T> newVRoot) {
+    newVRoot.mountComponent(this);
+    newVRoot.mount(element, this);
     vRoot = newVRoot;
   }
 
@@ -192,9 +236,6 @@ abstract class Component<T extends html.Element> implements Context {
     assert(!isAttached);
     attached();
     _flags |= _attachedFlag;
-    if (shouldComponentUpdate()) {
-      update();
-    }
     if (vRoot != null) {
       vRoot.attach();
     }

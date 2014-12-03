@@ -17,7 +17,7 @@ abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBa
 
   void link(VRootDecorator<T> parent) {}
 
-  void mount(Component<T> component) {
+  void mountComponent(Component<T> component) {
     this.component = component;
     ref = component.element;
   }
@@ -51,10 +51,10 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
     this.parent = parent;
   }
 
-  void mount(Component<T> component) {
-    super.mount(component);
+  void mountComponent(Component<T> component) {
+    super.mountComponent(component);
     if (_next != null) {
-      _next.mount(component);
+      _next.mountComponent(component);
     }
   }
 

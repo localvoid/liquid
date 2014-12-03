@@ -14,7 +14,7 @@ void injectComponent(Component component, html.Element parent) {
       component.create();
       parent.append(component.element);
       component.attach();
-      component.render();
+      component.update();
     });
   });
 }
