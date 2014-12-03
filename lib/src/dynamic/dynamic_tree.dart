@@ -6,21 +6,21 @@ class VDynamicTree extends VStaticTree {
   VDynamicTree(
       this._propertyTypes,
       Function buildFunction,
-      Map<Symbol, dynamic> namedArgs,
+      Map<Symbol, dynamic> properties,
       Object key,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(buildFunction, namedArgs, key, id, attributes, classes, styles);
+      : super(buildFunction, properties, key, id, attributes, classes, styles);
 
   void update(VStaticTree other, Context context) {
     super.update(other, context);
     other._vTree = other.build();
     var dirty = false;
-    for (var k in _namedArgs.keys) {
-      if (other._namedArgs.containsKey(k) &&
-          !_propertyTypes[k].equal(_namedArgs[k], other._namedArgs[k])) {
+    for (var k in _properties.keys) {
+      if (other._properties.containsKey(k) &&
+          !_propertyTypes[k].equal(_properties[k], other._properties[k])) {
         dirty = true;
         break;
       }
@@ -34,30 +34,18 @@ class VDynamicTree extends VStaticTree {
 class VDynamicTreeFactory extends Function {
   Function _buildFunction;
   ClosureMirror _closureMirror;
-  HashMap<Symbol, _Property> _propertyTypes = new HashMap<Symbol, _Property>();
+  HashMap<Symbol, _Property> _propertyTypes;
 
   VDynamicTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
-     for (var p in _closureMirror.function.parameters) {
-       _Property type;
-       for (var m in p.metadata) {
-         if (m.reflectee is _Property) {
-           type = m.reflectee;
-           break;
-         }
-       }
-       if (type == null) {
-         type = const _Property();
-       }
-       _propertyTypes[p.simpleName] = type;
-     }
+     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
   }
 
   VDynamicTree _create([Map args]) {
     if (args == null) {
       return new VDynamicTree(_propertyTypes, _buildFunction, null, null, null, null, null, null);
     }
-    final properties = new Map.from(args);
+    final properties = new HashMap.from(args);
     final key = properties.remove(#key);
     final id = properties.remove(#id);
     final attributes = properties.remove(#attributes);

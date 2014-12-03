@@ -3,11 +3,11 @@ part of liquid.dynamic;
 class VStaticTree extends vdom.ElementBase {
   vdom.Node _vTree;
   Function _buildFunction;
-  Map<Symbol, dynamic> _namedArgs;
+  Map<Symbol, dynamic> _properties;
 
   VStaticTree(
       this._buildFunction,
-      this._namedArgs,
+      this._properties,
       Object key,
       String id,
       Map<String, String> attributes,
@@ -26,7 +26,7 @@ class VStaticTree extends vdom.ElementBase {
     _vTree.render(context);
   }
 
-  vdom.Node build() => Function.apply(_buildFunction, const [], _namedArgs);
+  vdom.Node build() => Function.apply(_buildFunction, const [], _properties);
 
   void attached() { _vTree.attached(); }
   void detached() { _vTree.detached(); }
@@ -43,7 +43,7 @@ class VStaticTreeFactory extends Function {
     if (args == null) {
       return new VStaticTree(_buildFunction, null, null, null, null, null, null);
     }
-    final properties = new Map.from(args);
+    final properties = new HashMap.from(args);
     final key = properties.remove(#key);
     final id = properties.remove(#id);
     final attributes = properties.remove(#attributes);
