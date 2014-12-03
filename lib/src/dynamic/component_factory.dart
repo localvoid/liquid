@@ -2,9 +2,18 @@ part of liquid.dynamic;
 
 class _Property {
   const _Property();
+
+  bool equal(a, b) => false;
+}
+
+class _ImmutableProperty extends _Property {
+  const _ImmutableProperty();
+
+  bool equal(a, b) => a == b;
 }
 
 const _Property property = const _Property();
+const _ImmutableProperty immutable = const _ImmutableProperty();
 
 class VDynamicComponent extends VComponent {
   ClassMirror _typeMirror;

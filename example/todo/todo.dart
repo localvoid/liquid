@@ -16,7 +16,7 @@ class Item {
 }
 
 final vTodoItem = vStaticTreeFactory(({item}) => vdom.li()(item.text));
-final vTodoList = vStaticTreeFactory(({items}) {
+final vTodoList = vDynamicTreeFactory(({items}) {
   return vdom.ul()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
 });
 

@@ -8,7 +8,7 @@ import 'dart:html';
 import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
-final vBox = vStaticTreeFactory(({count: 0}) {
+final vBox = vDynamicTreeFactory(({count: 0}) {
   final top = math.sin(count / 10) * 10;
   final left = math.cos(count / 10) * 10;
   final color = count % 255;

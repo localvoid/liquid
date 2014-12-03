@@ -5,9 +5,10 @@ class VStaticTree extends vdom.ElementBase {
   Function _buildFunction;
   Map<Symbol, dynamic> _namedArgs;
 
-  VStaticTree(Object key,
+  VStaticTree(
       this._buildFunction,
       this._namedArgs,
+      Object key,
       String id,
       Map<String, String> attributes,
       List<String> classes,
@@ -27,12 +28,6 @@ class VStaticTree extends vdom.ElementBase {
 
   vdom.Node build() => Function.apply(_buildFunction, const [], _namedArgs);
 
-  void update(VStaticTree other, Context context) {
-    super.update(other, context);
-    other._vTree = other.build();
-    _vTree.update(other._vTree, context);
-  }
-
   void attached() { _vTree.attached(); }
   void detached() { _vTree.detached(); }
   void attach() { _vTree.attach(); }
@@ -44,9 +39,9 @@ class VStaticTreeFactory extends Function {
 
   VStaticTreeFactory(this._buildFunction);
 
-  _create([Map args]) {
+  VStaticTree _create([Map args]) {
     if (args == null) {
-      return new VStaticTree(null, _buildFunction, null, null, null, null, null);
+      return new VStaticTree(_buildFunction, null, null, null, null, null, null);
     }
     final properties = new Map.from(args);
     final key = properties.remove(#key);
@@ -54,12 +49,12 @@ class VStaticTreeFactory extends Function {
     final attributes = properties.remove(#attributes);
     final classes = properties.remove(#classes);
     final styles = properties.remove(#styles);
-    return new VStaticTree(key, _buildFunction, properties, id, attributes, classes, styles);
+    return new VStaticTree(_buildFunction, properties, key, id, attributes, classes, styles);
   }
 
-  call() => _create();
+  VStaticTree call() => _create();
 
-  noSuchMethod(Invocation invocation) => _create(invocation.namedArguments);
+  VStaticTree noSuchMethod(Invocation invocation) => _create(invocation.namedArguments);
 }
 
 Function vStaticTreeFactory(Function buildFunction) => new VStaticTreeFactory(buildFunction);

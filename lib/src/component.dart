@@ -197,7 +197,7 @@ abstract class Component<T extends html.Element> implements Context {
       update();
     }
     if (vRoot != null) {
-      vRoot.attached();
+      vRoot.attach();
     }
   }
 
