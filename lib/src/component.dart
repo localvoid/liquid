@@ -37,33 +37,32 @@ part of liquid;
 /// ```
 abstract class Component<T extends html.Element> implements Context {
   /// Component is attached to the attached Context.
-  static const attachedFlag = 1;
+  static const _attachedFlag = 1;
 
   /// Component is dirty and should be updated at the next frame
-  static const dirtyFlag = 1 << 1;
+  static const _dirtyFlag = 1 << 1;
 
   /// Reference to the Html Element
   T element;
 
   /// Parent context
   Context _context;
-  Context get context => _context;
   void set context(Context newContext) {
     _context = newContext;
-    depth = newContext.depth + 1;
+    _depth = newContext._depth + 1;
   }
 
   /// Depth relative to other contexts
-  int depth = 0;
+  int _depth = 0;
 
-  /// Flags: [attachedFlag], [dirtyFlag]
-  int flags = 0;
+  /// Flags: [_attachedFlag], [_dirtyFlag]
+  int _flags = 0;
 
   /// Component is attached to the DOM.
-  bool get isAttached => (flags & attachedFlag) == attachedFlag;
+  bool get isAttached => (_flags & _attachedFlag) == _attachedFlag;
 
   /// Component is dirty, and should be updated.
-  bool get isDirty => (flags & dirtyFlag) == dirtyFlag;
+  bool get isDirty => (_flags & _dirtyFlag) == _dirtyFlag;
 
   /// Reference to the root-level Virtual DOM Element.
   VRootBase<T> vRoot;
@@ -105,7 +104,7 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Returns [Future] that completes when [domScheduler] launches write
   /// tasks for the current [Frame]
-  Future writeDOM() => domScheduler.currentFrame.write(depth);
+  Future writeDOM() => domScheduler.currentFrame.write(_depth);
 
   /// Returns [Future] that completes when [domScheduler] launches read
   /// tasks for the current [Frame]
@@ -128,19 +127,19 @@ abstract class Component<T extends html.Element> implements Context {
     if (newVRoot != null) {
       updateVRoot(newVRoot);
     }
-    flags &= ~dirtyFlag;
+    _flags &= ~_dirtyFlag;
   }
 
   /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
   /// queue.
   void invalidate() {
     if (!isDirty) {
-      flags |= dirtyFlag;
+      _flags |= _dirtyFlag;
       if (identical(Zone.current, domScheduler.zone)) {
-        domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
+        domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
       } else {
         domScheduler.zone.run(() {
-          domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
+          domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
         });
       }
     }
@@ -192,7 +191,7 @@ abstract class Component<T extends html.Element> implements Context {
   void attach() {
     assert(!isAttached);
     attached();
-    flags |= attachedFlag;
+    _flags |= _attachedFlag;
     if (shouldComponentUpdate()) {
       update();
     }
@@ -206,7 +205,7 @@ abstract class Component<T extends html.Element> implements Context {
     if (vRoot != null) {
       vRoot.detached();
     }
-    flags &= ~attachedFlag;
+    _flags &= ~_attachedFlag;
     detached();
   }
 }

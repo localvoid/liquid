@@ -14,5 +14,5 @@ abstract class Context implements vdom.Context {
   /// Depth relative to other Contexts, it is used to sort write tasks by
   /// its depth, so the lowest depth have the highest priority and will
   /// be executed first.
-  int get depth;
+  int get _depth;
 }
