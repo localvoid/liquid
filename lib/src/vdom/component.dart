@@ -10,7 +10,7 @@ abstract class VComponentBase<C extends Component<T>, T extends html.Element>
 
   void init() { component.init(); }
 
-  void render(Context context) { component.update(); }
+  void render(Context context) { component.internalUpdate(); }
 
   void update(VComponentBase<C, T> other, Context context) {
     other.ref = ref;

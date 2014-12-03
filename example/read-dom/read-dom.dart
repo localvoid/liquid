@@ -44,13 +44,12 @@ class Box extends Component<DivElement> {
     _resizeSub.cancel();
   }
 
-  void update() {
-    super.update();
-    readDOM().then((_) {
+  Future update() {
+    return readDOM().then((_) {
       _outerWidth = parent.element.clientWidth;
       _innerWidth = _child.ref.clientWidth;
-      writeDOM().then((_) {
-        super.update();
+      return writeDOM().then((_) {
+        updateVRoot(build());
       });
     });
   }

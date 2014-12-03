@@ -46,7 +46,7 @@ class VGenericComponent extends VComponent {
         }
       });
       if (dirty) {
-        _instanceMirror.invoke(#update, const []);
+        _instanceMirror.invoke(#internalUpdate, const []);
       }
     }
   }

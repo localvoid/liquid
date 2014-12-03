@@ -4,33 +4,28 @@
 
 part of liquid;
 
-/// Component that support rendering and updating with Virtual DOM.
+/// Liquid Component is a base class for all Components.
 ///
 /// ```
-/// class MyComponent extends Component<html.DivElement> {
-///   MyComponent(Context context) : super(new html.DivElement(), context);
-///
-///   RootElement build() => new RootElement([vdom.t('Hello VComponent')]);
+/// class MyComponent extends Component {
+///   build() => vRoot()('Hello Component');
 /// }
 /// ```
 ///
-/// If you want to read from the DOM, just override [update] method and
-/// call [updateFinish] when you finish updating:
+/// If you want to read from the DOM, just override [update] method, it is
+/// called right after it Component is rendered, mounted and each time after
+/// initial VRoot update:
 ///
 /// ```
-/// class MyComponent extends Component<html.DivElement> {
+/// class MyComponent extends Component {
 ///   int _childWidth = 0;
 ///   ...
 ///
-///   void update() {
-///     updateVirtual(build());
-///     readDOM().then((_) {
-///       _childWidth = _childElement.ref.width;
-///       writeDOM().then((_) {
-///         updateVirtual(build());
-///         updateFinish();
-///       });
-///     });
+///   Future update() {
+///     await readDOM();
+///     _childWidth = _childElement.ref.width;
+///     await writeDOM();
+///     updateVRoot(build());
 ///   }
 /// }
 ///
@@ -136,10 +131,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Lifecycle method to update [Component].
   ///
   /// Execution context: [Scheduler]:write
-  void update() {
-    internalUpdate();
-    updated();
-  }
+  Future update() => null;
 
   void internalUpdate() {
     final newVRoot = build();
@@ -148,23 +140,35 @@ abstract class Component<T extends html.Element> implements Context {
         if (newVRoot != null) {
           mountVRoot(newVRoot);
         }
+        _flags &= ~_mountedFlag;
         mounted();
       } else {
         if (newVRoot != null) {
           updateVRoot(newVRoot);
         }
       }
+      _flags &= ~_renderedFlag;
       rendered();
     } else {
       if (newVRoot != null) {
         updateVRoot(newVRoot);
       }
     }
-    _flags &= ~_dirtyFlag;
+    final updateFuture = update();
+    if (updateFuture == null) {
+      _updateFinish(null);
+    } else {
+      updateFuture.then(_updateFinish);
+    }
   }
 
-  void mounted() { _flags &= ~_mountedFlag; }
-  void rendered() { _flags &= ~_renderedFlag; }
+  void _updateFinish(_) {
+    _flags &= ~_dirtyFlag;
+    updated();
+  }
+
+  void mounted() {}
+  void rendered() {}
   void updated() {}
 
   /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
@@ -186,7 +190,7 @@ abstract class Component<T extends html.Element> implements Context {
 
   void _invalidatedUpdate(_) {
     if (shouldComponentUpdate()) {
-      update();
+      internalUpdate();
     }
   }
 
