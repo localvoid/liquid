@@ -3,16 +3,23 @@ part of liquid;
 abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBase<T> {
   Component<T> component;
 
-  // TODO: add id property
-  VRootBase(List<vdom.Node> children,
+  VRootBase(
+      List<vdom.Node> children,
+      String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(null, children, null, attributes, classes, styles);
+      : super(null, children, id, attributes, classes, styles);
 
   void create(vdom.Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'
-        ' should mount it on top of the existing Element');
+        ' should mount it on top of the existing Component with mountComponent');
+  }
+
+  void mount(html.Node node, vdom.Context context) {
+    throw new UnsupportedError('VRootBase doesn\'t support mounting on top of'
+        ' html nodes, you should mount it on top of the existing Component'
+        ' with mountComponent');
   }
 
   void link(VRootDecorator<T> parent) {}
@@ -35,12 +42,14 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   html.Node container;
   vdom.Node innerContainer;
 
-  VRootDecorator({List<vdom.Node> children,
-      this.innerContainer,
-      Map<String, String> attributes,
-      List<String> classes,
-      Map<String, String> styles})
-      : super(children, attributes, classes, styles);
+  VRootDecorator(
+      {this.innerContainer,
+       List<vdom.Node> children,
+       String id,
+       Map<String, String> attributes,
+       List<String> classes,
+       Map<String, String> styles})
+      : super(children, id, attributes, classes, styles);
 
   void decorate(VRootBase<T> root) {
     _next = root;
@@ -92,11 +101,13 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
 }
 
 class VRoot<T extends html.Element> extends VRootBase<T> {
-  VRoot({List<vdom.Node> children,
-      Map<String, String> attributes,
-      List<String> classes,
-      Map<String, String> styles})
-      : super(children, attributes, classes, styles);
+  VRoot(
+      {List<vdom.Node> children,
+       String id,
+       Map<String, String> attributes,
+       List<String> classes,
+       Map<String, String> styles})
+      : super(children, id, attributes, classes, styles);
 
   void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
