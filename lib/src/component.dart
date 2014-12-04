@@ -57,7 +57,7 @@ abstract class Component<T extends html.Element> implements Context {
   int _depth = 0;
 
   /// Flags: [_attachedFlag], [_dirtyFlag]
-  int _flags = 0;
+  int _flags = _dirtyFlag;
 
   /// Component is attached to the DOM.
   bool get isAttached => (_flags & _attachedFlag) == _attachedFlag;
@@ -79,12 +79,12 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Create a root-level [element].
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void create() { element = new html.Element.tag('div') as T; }
 
   /// Mount component on top of existing html
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void mount(T node) {
     _flags |= _mountedFlag;
     element = node;
@@ -92,32 +92,89 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Initialize
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void init() {}
 
   /// Lifecycle method that is called when [Component] is attached to the
   /// document.
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void attached() {}
 
   /// Lifecycle method that is called when [Component] is detached from the
   /// document.
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void detached() {}
 
-  /// Find [e] ancestor that matches [selector].
-  html.Element closest(html.Element e, String selector) {
-    final sentinel = element.parent;
-    do {
-      if (e.matches(selector)) {
-        return e;
-      }
-      e = e.parent;
-    } while (e != null || identical(e, sentinel));
+  /// Build Virtual DOM for the current state of the [VComponent].
+  ///
+  /// Execution context: [domScheduler]:write
+  VRootBase<T> build() => null;
 
-    return null;
+  /// Lifecycle method to update [Component].
+  ///
+  /// Execution context: [domScheduler]:write
+  Future update() => null;
+
+  bool shouldComponentUpdate() => (isAttached && isDirty);
+
+  void mounted() {}
+  void rendered() {}
+  void updated() {}
+
+  void attach() {
+    assert(!isAttached);
+    attached();
+    _flags |= _attachedFlag;
+    if (vRoot != null) {
+      vRoot.attach();
+    }
+  }
+
+  void detach() {
+    assert(isAttached);
+    if (vRoot != null) {
+      vRoot.detached();
+    }
+    _flags &= ~_attachedFlag;
+    detached();
+  }
+
+  void insertBefore(vdom.Node node, html.Node nextRef) {
+    node.create(this);
+    container.insertBefore(node.ref, nextRef);
+    if (isAttached){
+      node.attached();
+    }
+    node.render(this);
+  }
+
+  void move(vdom.Node node, html.Node nextRef) {
+    container.insertBefore(node.ref, nextRef);
+  }
+
+  void removeChild(vdom.Node node) {
+    node.dispose(this);
+  }
+
+  /// Mark [Component] as dirty and add it to the next frame
+  /// [domScheduler]:write queue.
+  void invalidate() {
+    if (!isDirty) {
+      _flags |= _dirtyFlag;
+      if (identical(Zone.current, domScheduler.zone)) {
+        domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
+      } else {
+        domScheduler.zone.run(() {
+          domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
+        });
+      }
+    }
+  }
+
+  void _invalidatedUpdate(_) {
+    internalUpdate();
   }
 
   /// Returns [Future] that completes when [domScheduler] launches write
@@ -128,12 +185,12 @@ abstract class Component<T extends html.Element> implements Context {
   /// tasks for the current [Frame]
   Future readDOM() => domScheduler.currentFrame.read();
 
-  /// Lifecycle method to update [Component].
-  ///
-  /// Execution context: [Scheduler]:write
-  Future update() => null;
-
   void internalUpdate() {
+    if (!shouldComponentUpdate()) {
+      return;
+    }
+
+    _flags &= ~_dirtyFlag;
     final newVRoot = build();
     if (!isRendered) {
       if (isMounted) {
@@ -156,52 +213,17 @@ abstract class Component<T extends html.Element> implements Context {
     }
     final updateFuture = update();
     if (updateFuture == null) {
-      _updateFinish(null);
+      updated();
     } else {
       updateFuture.then(_updateFinish);
     }
   }
 
-  void _updateFinish(_) {
-    _flags &= ~_dirtyFlag;
-    updated();
-  }
-
-  void mounted() {}
-  void rendered() {}
-  void updated() {}
-
-  /// Mark [Component] as dirty and add it to the next frame [Scheduler]:write
-  /// queue.
-  void invalidate() {
-    if (!isDirty) {
-      _flags |= _dirtyFlag;
-      if (identical(Zone.current, domScheduler.zone)) {
-        domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
-      } else {
-        domScheduler.zone.run(() {
-          domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
-        });
-      }
-    }
-  }
-
-  bool shouldComponentUpdate() => (isAttached && isDirty);
-
-  void _invalidatedUpdate(_) {
-    if (shouldComponentUpdate()) {
-      internalUpdate();
-    }
-  }
-
-  /// Build Virtual DOM for the current state of the [VComponent].
-  ///
-  /// Execution context: [Scheduler]:write
-  VRootBase<T> build() => null;
+  void _updateFinish(_) { updated(); }
 
   /// Update [Component] using Virtual DOM.
   ///
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void updateVRoot(VRootBase<T> newVRoot) {
     if (vRoot == null) {
       newVRoot.mountComponent(this);
@@ -212,45 +234,23 @@ abstract class Component<T extends html.Element> implements Context {
     vRoot = newVRoot;
   }
 
-  /// Execution context: [Scheduler]:write
+  /// Execution context: [domScheduler]:write
   void mountVRoot(VRootBase<T> newVRoot) {
     newVRoot.mountComponent(this);
     newVRoot.mount(element, this);
     vRoot = newVRoot;
   }
 
-  void insertBefore(vdom.Node node, html.Node nextRef) {
-    node.create(this);
-    container.insertBefore(node.ref, nextRef);
-    if (isAttached){
-      node.attached();
-    }
-    node.render(this);
-  }
+  /// Find [e] ancestor that matches [selector].
+  html.Element closest(html.Element e, String selector) {
+    final sentinel = element.parent;
+    do {
+      if (e.matches(selector)) {
+        return e;
+      }
+      e = e.parent;
+    } while (e != null || identical(e, sentinel));
 
-  void move(vdom.Node node, html.Node nextRef) {
-    container.insertBefore(node.ref, nextRef);
-  }
-
-  void removeChild(vdom.Node node) {
-    node.dispose(this);
-  }
-
-  void attach() {
-    assert(!isAttached);
-    attached();
-    _flags |= _attachedFlag;
-    if (vRoot != null) {
-      vRoot.attach();
-    }
-  }
-
-  void detach() {
-    assert(isAttached);
-    if (vRoot != null) {
-      vRoot.detached();
-    }
-    _flags &= ~_attachedFlag;
-    detached();
+    return null;
   }
 }
