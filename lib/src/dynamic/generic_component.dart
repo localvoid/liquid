@@ -50,6 +50,7 @@ class VGenericComponent extends VComponent {
         }
       });
       if (dirty) {
+        _instanceMirror.reflectee.dirty = true;
         _instanceMirror.invoke(#internalUpdate, const []);
       }
     }
@@ -75,8 +76,8 @@ class VGenericComponentFactory extends Function {
           null, null, null, null);
     }
     final properties = new HashMap.from(args);
-    final String key = properties.remove(#key);
-    final Object id = properties.remove(#id);
+    final Object key = properties.remove(#key);
+    final String id = properties.remove(#id);
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);

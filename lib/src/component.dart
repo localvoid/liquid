@@ -63,7 +63,14 @@ abstract class Component<T extends html.Element> implements VContext {
   bool get isAttached => (_flags & _attachedFlag) == _attachedFlag;
 
   /// Component is dirty, and should be updated.
-  bool get isDirty => (_flags & _dirtyFlag) == _dirtyFlag;
+  bool get dirty => (_flags & _dirtyFlag) == _dirtyFlag;
+  void set dirty(bool v) {
+    if (v) {
+      _flags |= _dirtyFlag;
+    } else {
+      _flags &= ~_dirtyFlag;
+    }
+  }
 
   /// Component is rendered.
   bool get isRendered => (_flags & _renderedFlag) == _renderedFlag;
@@ -117,7 +124,7 @@ abstract class Component<T extends html.Element> implements VContext {
   /// Execution context: [domScheduler]:write
   Future update() => null;
 
-  bool shouldComponentUpdate() => (isAttached && isDirty);
+  bool shouldComponentUpdate() => (isAttached && dirty);
 
   void mounted() {}
   void rendered() {}
@@ -143,6 +150,7 @@ abstract class Component<T extends html.Element> implements VContext {
 
   void insertBefore(vdom.VNode node, html.Node nextRef) {
     node.create(this);
+    node.init();
     container.insertBefore(node.ref, nextRef);
     if (isAttached){
       node.attached();
@@ -161,7 +169,7 @@ abstract class Component<T extends html.Element> implements VContext {
   /// Mark [Component] as dirty and add it to the next frame
   /// [domScheduler]:write queue.
   void invalidate() {
-    if (!isDirty) {
+    if (!dirty) {
       _flags |= _dirtyFlag;
       if (identical(Zone.current, domScheduler.zone)) {
         domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);

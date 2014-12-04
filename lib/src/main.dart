@@ -12,6 +12,7 @@ void injectComponent(Component component, html.Element parent) {
   domScheduler.zone.run(() {
     domScheduler.nextFrame.write(0).then((_) {
       component.create();
+      component.init();
       parent.append(component.element);
       component.attach();
       component.internalUpdate();
