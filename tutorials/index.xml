@@ -160,9 +160,6 @@ is a great explanation of complexity in UI Components.&lt;/p&gt;
   v.h1(&lt;span style=&#34;color: #A0A000&#34;&gt;id:&lt;/span&gt; &lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;header&amp;#39;&lt;/span&gt;)(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;TODO Application&amp;#39;&lt;/span&gt;));
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;We have a convention that all functions creating virtual dom nodes
-should be prefixed with letter &amp;lsquo;v&amp;rsquo;.&lt;/p&gt;
-
 &lt;p&gt;&lt;code&gt;staticTreeFactory(buildFunction)&lt;/code&gt; returns factory function that will
 generate virtual dom nodes.&lt;/p&gt;
 
