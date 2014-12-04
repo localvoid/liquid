@@ -8,9 +8,13 @@ import 'dart:async';
 import 'dart:html' as html;
 import 'package:dom_scheduler/dom_scheduler.dart';
 import 'package:vdom/vdom.dart' as vdom;
+
+export 'package:vdom/vdom.dart' show VNode, VElement, VText;
+export 'package:liquid/forms.dart';
 export 'package:liquid/dynamic.dart';
 
 part 'package:liquid/src/vdom/component.dart';
+part 'package:liquid/src/vdom/basic.dart';
 part 'package:liquid/src/vdom/root.dart';
 part 'package:liquid/src/context.dart';
 part 'package:liquid/src/event.dart';

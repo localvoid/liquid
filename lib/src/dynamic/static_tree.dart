@@ -1,7 +1,11 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid.dynamic;
 
-class VStaticTree extends vdom.ElementBase {
-  vdom.Node _vTree;
+class VStaticTree extends vdom.VElementBase {
+  vdom.VNode _vTree;
   Function _buildFunction;
   Map<Symbol, dynamic> _properties;
 
@@ -15,18 +19,18 @@ class VStaticTree extends vdom.ElementBase {
       Map<String, String> styles)
       : super(key, id, attributes, classes, styles);
 
-  void create(Context context) {
+  void create(VContext context) {
     _vTree = build();
     _vTree.create(context);
     ref = _vTree.ref;
   }
 
-  void render(Context context) {
+  void render(VContext context) {
     super.render(context);
     _vTree.render(context);
   }
 
-  vdom.Node build() => Function.apply(_buildFunction, const [], _properties);
+  vdom.VNode build() => Function.apply(_buildFunction, const [], _properties);
 
   void attached() { _vTree.attached(); }
   void detached() { _vTree.detached(); }

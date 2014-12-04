@@ -1,3 +1,7 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid.dynamic;
 
 class VDynamicTree extends VStaticTree {
@@ -14,7 +18,7 @@ class VDynamicTree extends VStaticTree {
       Map<String, String> styles)
       : super(buildFunction, properties, key, id, attributes, classes, styles);
 
-  void update(VStaticTree other, Context context) {
+  void update(VStaticTree other, VContext context) {
     super.update(other, context);
     other._vTree = other.build();
     var dirty = false;

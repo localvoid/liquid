@@ -30,7 +30,7 @@ part of liquid;
 /// }
 ///
 /// ```
-abstract class Component<T extends html.Element> implements Context {
+abstract class Component<T extends html.Element> implements VContext {
   /// Component is attached to the document.
   static const _attachedFlag = 1;
 
@@ -47,8 +47,8 @@ abstract class Component<T extends html.Element> implements Context {
   T element;
 
   /// Parent context
-  Context _context;
-  void set context(Context newContext) {
+  VContext _context;
+  void set context(VContext newContext) {
     _context = newContext;
     _depth = newContext._depth + 1;
   }
@@ -141,7 +141,7 @@ abstract class Component<T extends html.Element> implements Context {
     detached();
   }
 
-  void insertBefore(vdom.Node node, html.Node nextRef) {
+  void insertBefore(vdom.VNode node, html.Node nextRef) {
     node.create(this);
     container.insertBefore(node.ref, nextRef);
     if (isAttached){
@@ -150,11 +150,11 @@ abstract class Component<T extends html.Element> implements Context {
     node.render(this);
   }
 
-  void move(vdom.Node node, html.Node nextRef) {
+  void move(vdom.VNode node, html.Node nextRef) {
     container.insertBefore(node.ref, nextRef);
   }
 
-  void removeChild(vdom.Node node) {
+  void removeChild(vdom.VNode node) {
     node.dispose(this);
   }
 

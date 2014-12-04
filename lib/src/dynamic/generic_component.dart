@@ -1,3 +1,7 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid.dynamic;
 
 class VGenericComponent extends VComponent {
@@ -17,7 +21,7 @@ class VGenericComponent extends VComponent {
       Map<String, String> styles)
     : super(key, attributes, classes, styles);
 
-  void create(Context context) {
+  void create(VContext context) {
     _instanceMirror = _classMirror.newInstance(const Symbol(''), const []);
     component = _instanceMirror.reflectee
       ..context = context;
@@ -32,7 +36,7 @@ class VGenericComponent extends VComponent {
     ref = component.element;
   }
 
-  void update(VGenericComponent other, Context context) {
+  void update(VGenericComponent other, VContext context) {
     super.update(other, context);
     other._instanceMirror = _instanceMirror;
 

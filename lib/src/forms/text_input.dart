@@ -23,7 +23,7 @@ VTextInput vTextInput({
 }
 
 /// Virtual DOM Text Input Element
-class VTextInput extends v.ElementBase<InputElement> {
+class VTextInput extends v.VElementBase<InputElement> {
   final String _value;
 
   String get value => ref.value;
@@ -38,16 +38,16 @@ class VTextInput extends v.ElementBase<InputElement> {
     : _value = value,
       super(key, id, attributes, classes, styles);
 
-  void create(v.Context context) { ref = new InputElement(type: 'text'); }
+  void create(v.VContext context) { ref = new InputElement(type: 'text'); }
 
-  void render(v.Context context) {
+  void render(v.VContext context) {
     super.render(context);
     if (_value != null) {
       ref.value = _value;
     }
   }
 
-  void update(VTextInput other, v.Context context) {
+  void update(VTextInput other, v.VContext context) {
     super.update(other, context);
     if (other._value != null && ref.value != other._value) {
       ref.value = other._value;

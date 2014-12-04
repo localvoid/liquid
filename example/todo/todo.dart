@@ -3,9 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html';
-import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
-import 'package:liquid/forms.dart';
 
 class Item {
   static int __nextId = 0;
@@ -15,9 +13,9 @@ class Item {
   Item([this.text = '']) : id = __nextId++;
 }
 
-final vTodoItem = vStaticTreeFactory(({item}) => vdom.li()(item.text));
+final vTodoItem = vStaticTreeFactory(({item}) => vLi()(item.text));
 final vTodoList = vDynamicTreeFactory(({items}) {
-  return vdom.ul()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
+  return vUl()(items.map((i) => vTodoItem(key: i.id, item: i)).toList());
 });
 
 class TodoApp extends Component<DivElement> {
@@ -53,11 +51,11 @@ class TodoApp extends Component<DivElement> {
 
   build() {
     return vRoot()([
-      vdom.h2()('TODO'),
+      vH2()('TODO'),
       vTodoList(items: items),
-      vdom.form()([
+      vForm()([
         vTextInput(value: inputText),
-        vdom.button(classes: ['add-button'])('Add item')
+        vButton(classes: ['add-button'])('Add item')
       ])
     ]);
   }

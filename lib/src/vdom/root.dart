@@ -1,22 +1,26 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid;
 
-abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBase<T> {
+abstract class VRootBase<T extends html.Element> extends vdom.VElementContainerBase<T> {
   Component<T> component;
 
   VRootBase(
-      List<vdom.Node> children,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
       : super(null, children, id, attributes, classes, styles);
 
-  void create(vdom.Context context) {
+  void create(vdom.VContext context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'
         ' should mount it on top of the existing Component with mountComponent');
   }
 
-  void mount(html.Node node, vdom.Context context) {
+  void mount(html.Node node, vdom.VContext context) {
     throw new UnsupportedError('VRootBase doesn\'t support mounting on top of'
         ' html nodes, you should mount it on top of the existing Component'
         ' with mountComponent');
@@ -29,7 +33,7 @@ abstract class VRootBase<T extends html.Element> extends vdom.ElementContainerBa
     ref = component.element;
   }
 
-  void update(VRootBase<T> other, Context context) {
+  void update(VRootBase<T> other, VContext context) {
     super.update(other, context);
     other.component = component;
   }
@@ -40,11 +44,11 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   VRootDecorator<T> parent;
   VRootBase<T> _next;
   html.Node container;
-  vdom.Node innerContainer;
+  vdom.VNode innerContainer;
 
   VRootDecorator(
       {this.innerContainer,
-       List<vdom.Node> children,
+       List<vdom.VNode> children,
        String id,
        Map<String, String> attributes,
        List<String> classes,
@@ -67,7 +71,7 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
     }
   }
 
-  void render(Context context) {
+  void render(VContext context) {
     if (parent == null) {
       container = ref;
     } else {
@@ -83,7 +87,7 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
     }
   }
 
-  void update(VRootDecorator<T> other, Context context) {
+  void update(VRootDecorator<T> other, VContext context) {
     if (parent == null) {
       container = ref;
     } else {
@@ -102,29 +106,29 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
 
 class VRoot<T extends html.Element> extends VRootBase<T> {
   VRoot(
-      {List<vdom.Node> children,
+      {List<vdom.VNode> children,
        String id,
        Map<String, String> attributes,
        List<String> classes,
        Map<String, String> styles})
       : super(children, id, attributes, classes, styles);
 
-  void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
+  void insertBefore(vdom.VNode node, html.Node nextRef, VContext context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.Node node, html.Node nextRef, Context context) {
+  void move(vdom.VNode node, html.Node nextRef, VContext context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.Node node, Context context) {
+  void removeChild(vdom.VNode node, VContext context) {
     component.removeChild(node);
   }
 }
 
 VRootDecorator vRootDecorator({
-  List<vdom.Node> children,
-  vdom.Node innerContainer,
+  List<vdom.VNode> children,
+  vdom.VNode innerContainer,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -138,7 +142,7 @@ VRootDecorator vRootDecorator({
 }
 
 VRoot vRoot({
-  List<vdom.Node> children,
+  List<vdom.VNode> children,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {

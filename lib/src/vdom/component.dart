@@ -1,18 +1,22 @@
+// Copyright (c) 2014, the Liquid project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 part of liquid;
 
 abstract class VComponentBase<C extends Component<T>, T extends html.Element>
-  extends vdom.Node<T> {
+  extends vdom.VNode<T> {
   C component = null;
 
   VComponentBase(Object key) : super(key);
 
-  void create(Context context);
+  void create(VContext context);
 
   void init() { component.init(); }
 
-  void render(Context context) { component.internalUpdate(); }
+  void render(VContext context) { component.internalUpdate(); }
 
-  void update(VComponentBase<C, T> other, Context context) {
+  void update(VComponentBase<C, T> other, VContext context) {
     other.ref = ref;
     other.component = component;
   }
@@ -34,7 +38,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
   VComponent(Object key, this.attributes, this.classes, this.styles)
        : super(key);
 
-  void render(Context context) {
+  void render(VContext context) {
     super.render(context);
     if (attributes != null) {
       attributes.forEach((key, value) {
@@ -51,7 +55,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
     }
   }
 
-  void update(VComponent<C, T> other, Context context) {
+  void update(VComponent<C, T> other, VContext context) {
     super.update(other, context);
     if (attributes != null || other.attributes != null) {
       vdom.updateMap(attributes, other.attributes, ref.attributes);
@@ -69,8 +73,8 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
 }
 
 abstract class VComponentContainer<C extends Component<T>, T extends html.Element>
-    extends VComponent<C, T> with vdom.Container {
-  List<vdom.Node> children;
+    extends VComponent<C, T> with vdom.VContainer {
+  List<vdom.VNode> children;
 
   html.Node get container => component.container;
 
@@ -85,32 +89,32 @@ abstract class VComponentContainer<C extends Component<T>, T extends html.Elemen
     if (children is List) {
       this.children = children;
     } else if (children is String) {
-      this.children = [new vdom.Text(children)];
+      this.children = [new vdom.VText(children)];
     } else {
       this.children = [children];
     }
     return this;
   }
 
-  void render(Context context) {
+  void render(VContext context) {
     super.render(context);
     renderChildren(children, context);
   }
 
-  void update(VComponentContainer<C, T> other, Context context) {
+  void update(VComponentContainer<C, T> other, VContext context) {
     super.update(other, context);
     updateChildren(children, other.children, context);
   }
 
-  void insertBefore(vdom.Node node, html.Node nextRef, Context context) {
+  void insertBefore(vdom.VNode node, html.Node nextRef, VContext context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.Node node, html.Node nextRef, Context context) {
+  void move(vdom.VNode node, html.Node nextRef, VContext context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.Node node, Context context) {
+  void removeChild(vdom.VNode node, VContext context) {
     component.removeChild(node);
   }
 

@@ -23,7 +23,7 @@ VCheckbox vCheckbox({
 }
 
 /// Virtual DOM Checkbox Element
-class VCheckbox extends v.ElementBase<CheckboxInputElement> {
+class VCheckbox extends v.VElementBase<CheckboxInputElement> {
   final bool _checked;
 
   bool get checked => ref.checked;
@@ -38,16 +38,16 @@ class VCheckbox extends v.ElementBase<CheckboxInputElement> {
     : _checked = checked,
       super(key, id, attributes, classes, styles);
 
-  void create(v.Context context) { ref = new CheckboxInputElement(); }
+  void create(v.VContext context) { ref = new CheckboxInputElement(); }
 
-  void render(v.Context context) {
+  void render(v.VContext context) {
     super.render(context);
     if (_checked != null) {
       ref.checked = _checked;
     }
   }
 
-  void update(VCheckbox other, v.Context context) {
+  void update(VCheckbox other, v.VContext context) {
     super.update(other, context);
     if (other._checked != null && ref.checked != other._checked) {
       ref.checked = other._checked;

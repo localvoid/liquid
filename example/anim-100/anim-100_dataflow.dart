@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:html';
-import 'package:vdom/helpers.dart' as vdom;
 import 'package:liquid/liquid.dart';
 
 final vBox = vDynamicTreeFactory(({count: 0}) {
@@ -14,8 +13,8 @@ final vBox = vDynamicTreeFactory(({count: 0}) {
   final color = count % 255;
   final content = count % 100;
 
-  return vdom.div(classes: ['box-view'])(
-    vdom.div(classes: ['box'],
+  return vDiv(classes: ['box-view'])(
+    vDiv(classes: ['box'],
              styles: {
                'top': '${top}px',
                'left': '${left}px',

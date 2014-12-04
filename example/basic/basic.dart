@@ -6,9 +6,8 @@ import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
 
-class BasicComponent extends Component<ParagraphElement> {
-  @property
-  int elapsed = 0;
+class BasicComponent extends Component {
+  @property int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 
