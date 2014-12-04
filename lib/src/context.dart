@@ -8,7 +8,7 @@ part of liquid;
 ///
 /// [Component]'s implement this interface.
 abstract class Context implements vdom.Context {
-  /// Parent is attached to the DOM
+  /// Parent is attached to the Document.
   bool get isAttached;
 
   /// Depth relative to other Contexts, it is used to sort write tasks by
