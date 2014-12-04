@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>Tutorials on Liquid </title>
+      <generator uri="https://hugo.spf13.com">Hugo</generator>
+    <link>http://localvoid.github.io/liquid/tutorials/index.xml/</link>
+    <language>en-us</language>
+    
+    
+    <updated>Wed, 03 Dec 2014 14:56:44 NOVT</updated>
+    
+    <item>
+      <title>Creating a Single Page Todo App with Liquid</title>
+      <link>http://localvoid.github.io/liquid/tutorials/todo-app/</link>
+      <pubDate>Wed, 03 Dec 2014 14:56:44 NOVT</pubDate>
+      
+      <guid>http://localvoid.github.io/liquid/tutorials/todo-app/</guid>
+      <description>
+
+&lt;p&gt;Before starting this tutorial you should be familiar with the
+&lt;a href=&#34;https://www.dartlang.org&#34;&gt;Dart language&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this tutorial I&amp;rsquo;ll show how to build a simple Todo application with
+Liquid library.&lt;/p&gt;
+
+&lt;p&gt;The primary goal of the Liquid library is to create general purpose
+library for User Interfaces with reusable Components, and it does not
+enforce you to make everything reactive, immutable, or stateless, you
+are free to choose any way to structure your application.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_0&#34;&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;Make sure that you have
+&lt;a href=&#34;https://www.dartlang.org/tools/download.html&#34;&gt;Dart SDK&lt;/a&gt; installed and
+running, the minimum version of the SDK is 1.6.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;File Structure&lt;/h3&gt;
+
+&lt;p&gt;File structure of our application will conform to the
+&lt;a href=&#34;https://www.dartlang.org/tools/pub/package-layout.html&#34;&gt;Pub Package Layout Conventions&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;.
+├── lib
+│   ├── src
+│   │   ├── models
+│   │   │   ├── item.dart
+│   │   │   └── item_list.dart
+│   │   └── views
+│   │       ├── app.dart
+│   │       ├── header.dart
+│   │       ├── item.dart
+│   │       └── item_list.dart
+│   ├── models.dart
+│   └── views.dart
+├── pubspec.yaml
+└── web
+    ├── index.dart
+    └── index.html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_2&#34;&gt;Installing Packages&lt;/h3&gt;
+
+&lt;p&gt;Open &lt;code&gt;pubspec.yaml&lt;/code&gt; file in the project root
+directory and make sure that you have this dependencies:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dependencies:
+  browser: any
+  liquid: any
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now run &lt;code&gt;$ pub get&lt;/code&gt; command from the project&amp;rsquo;s root directory to install all dependencies.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_3&#34;&gt;Data Model&lt;/h2&gt;
+
+&lt;p&gt;We will start writing our application by defining Data Model.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_4&#34;&gt;Item&lt;/h3&gt;
+
+&lt;p&gt;Item is an entry in our Todo List. It is quite simple, the only
+important thing is that it should have unique key, so we can easily
+find it. This key will be used in the Virtual DOM to find which Node
+represents this item.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #0000FF; font-weight: bold&#34;&gt;Item&lt;/span&gt; {
+  &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt; _nextId &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #666666&#34;&gt;0&lt;/span&gt;; &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Used for Auto-Incremental Unique Keys&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; &lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt; id;
+  &lt;span style=&#34;color: #B00040&#34;&gt;String&lt;/span&gt; title;
+
+  Item(&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;this&lt;/span&gt;.title) &lt;span style=&#34;color: #666666&#34;&gt;:&lt;/span&gt; id &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; _nextId&lt;span style=&#34;color: #666666&#34;&gt;++&lt;/span&gt;;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&#34;toc_5&#34;&gt;ItemList&lt;/h3&gt;
+
+&lt;p&gt;ItemList will contain all entries and will be responsible for all
+modifications. It also provides an event stream that emits events when
+something is changed.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #0000FF; font-weight: bold&#34;&gt;ItemList&lt;/span&gt; {
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Here we are creating Dart Streams to listen for&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// notifications when something is changed.&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;//&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// If you are not familiar with Dart Stream,&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// you can read about them in this articles:&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;//&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// https://www.dartlang.org/docs/tutorials/streams/&lt;/span&gt;
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// https://www.dartlang.org/articles/creating-streams/&lt;/span&gt;
+
+  StreamController _onChangesController &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;new&lt;/span&gt; StreamController();
+  Stream &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;get&lt;/span&gt; onChanges &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt; _onChangesController.stream;
+
+  List&lt;span style=&#34;color: #666666&#34;&gt;&amp;lt;&lt;/span&gt;Item&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&lt;/span&gt; items &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; [];
+
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Actions:&lt;/span&gt;
+
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;/// Create a new Todo Item&lt;/span&gt;
+  &lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; createItem(&lt;span style=&#34;color: #B00040&#34;&gt;String&lt;/span&gt; title) {
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (title.trim().isNotEmpty) {
+      items.add(&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;new&lt;/span&gt; Item(title));
+      _onChangesController.add(&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+    }
+  }
+
+  &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;/// Update title property for Todo item&lt;/span&gt;
+  &lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; updateItemTitle(&lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt; id, &lt;span style=&#34;color: #B00040&#34;&gt;String&lt;/span&gt; newTitle) {
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (newTitle.trim().isEmpty) {
+      items.removeWhere((i) &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt; i.id &lt;span style=&#34;color: #666666&#34;&gt;==&lt;/span&gt; id);
+    } &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; item &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; items.firstWhere((i) &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt; i.id &lt;span style=&#34;color: #666666&#34;&gt;==&lt;/span&gt; id);
+      item.title &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; newTitle;
+    }
+    _onChangesController.add(&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&#34;toc_6&#34;&gt;Introduction to Virtual DOM&lt;/h2&gt;
+
+&lt;p&gt;If you ever worked with the DOM directly, you understand how hard is
+to apply modification to the DOM when UI Component goes from one state
+to another.&lt;/p&gt;
+
+&lt;p&gt;There are couple solutions for this problem, and the most popular is
+the data-binding, that is used in libraries like Angular.&lt;/p&gt;
+
+&lt;p&gt;In the Liquid library we are using Virtual DOM with its diff/patch
+algorithm to apply changes to the actual DOM. When state is changed,
+we just rebuilding the Virtual DOM from the ground up and the
+diff/patch takes care of all changes.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.youtube.com/watch?v=rI0GQc__0SM&#34;&gt;Steven Luscher: Decomplexifying Code with React&lt;/a&gt;
+is a great explanation of complexity in UI Components.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_7&#34;&gt;Header Element&lt;/h2&gt;
+
+&lt;p&gt;Now we will create our first Virtual DOM Node for Header.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; vHeader &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; v.staticTreeFactory(() &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt;
+  v.h1(&lt;span style=&#34;color: #A0A000&#34;&gt;id:&lt;/span&gt; &lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;header&amp;#39;&lt;/span&gt;)(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;TODO Application&amp;#39;&lt;/span&gt;));
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We have a convention that all functions creating virtual dom nodes
+should be prefixed with letter &amp;lsquo;v&amp;rsquo;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;staticTreeFactory(buildFunction)&lt;/code&gt; returns factory function that will
+generate virtual dom nodes.&lt;/p&gt;
+
+&lt;p&gt;All Nodes that accepts children are implementing function call
+interface to specify children &lt;code&gt;Node()(children)&lt;/code&gt;. Children argument
+can be a simple String, single Node, or List of Nodes.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_8&#34;&gt;Introduction to Components&lt;/h2&gt;
+
+&lt;p&gt;Components is just an extension to html Elements, they have an
+additional state, slightly more complex lifecycle and can render and
+update itself using Virtual DOM.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_9&#34;&gt;Application Component&lt;/h2&gt;
+
+&lt;p&gt;It is time to build Component for our Application.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #0000FF; font-weight: bold&#34;&gt;App&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;extends&lt;/span&gt; Component {
+  &lt;span style=&#34;border: 1px solid #FF0000&#34;&gt;@&lt;/span&gt;property models.ItemList data;
+
+  v.VTextInput _input;
+  &lt;span style=&#34;color: #B00040&#34;&gt;String&lt;/span&gt; _title &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; init() {
+    data.onChanges.listen((_) {
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Invalidate Component when data is changed.&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;//&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// When we invalidate Component, it means that it will&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// be updated on the next rendering frame.&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;//&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// This way we can update DOM in batches, no need to&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// update it as soon as possible, especially when the&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// state can be changed mutiple times before browser&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// starts to render new frame.&lt;/span&gt;
+      invalidate();
+    });
+
+    &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Add Event Listeners using Event-Delegation.&lt;/span&gt;
+    element.onKeyPress.matches(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;input&amp;#39;&lt;/span&gt;).listen((e) {
+      &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.keyCode &lt;span style=&#34;color: #666666&#34;&gt;==&lt;/span&gt; KeyCode.ENTER) {
+        &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (_input.value.isNotEmpty) {
+          data.createItem(_input.value);
+          _title &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;;
+        }
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    });
+  }
+
+  build() {
+    &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// Here we are assigning VTextInput to [_input] property, so we can&lt;/span&gt;
+    &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// reference it from the event listeners.&lt;/span&gt;
+    _input &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; v.textInput(&lt;span style=&#34;color: #A0A000&#34;&gt;value:&lt;/span&gt; _title);
+
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;return&lt;/span&gt; v.root()([
+      vHeader(),
+      vItemList(&lt;span style=&#34;color: #A0A000&#34;&gt;data:&lt;/span&gt; data),
+      _input
+    ]);
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&#34;toc_10&#34;&gt;ItemList&lt;/h2&gt;
+
+&lt;p&gt;Item List will be a simple Virtual Dom Tree, no need to create a
+stateful Component. But because it can change, we will use
+&lt;code&gt;dynamicTreeFactory&lt;/code&gt;. By default all named arguments have the same
+behavior as &lt;code&gt;@property&lt;/code&gt;. If you want to use immutable data structures,
+just prepend &lt;code&gt;@immutable&lt;/code&gt; annotation before named argument.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; vItemList &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; v.dynamicTreeFactory(({data}) &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt;
+  v.ul()(data.items.map((i) &lt;span style=&#34;color: #666666&#34;&gt;=&amp;gt;&lt;/span&gt;
+    vItem(&lt;span style=&#34;color: #A0A000&#34;&gt;key:&lt;/span&gt;    i.id,
+          &lt;span style=&#34;color: #A0A000&#34;&gt;data:&lt;/span&gt;   data,
+          &lt;span style=&#34;color: #A0A000&#34;&gt;title:&lt;/span&gt;  i.title,
+          &lt;span style=&#34;color: #A0A000&#34;&gt;itemId:&lt;/span&gt; i.id)).toList()));
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&#34;toc_11&#34;&gt;Item Component&lt;/h2&gt;
+
+&lt;p&gt;Item will be implemented as a Component because it has internal
+state. To create Components inside of VirtualDOM trees we need to
+create a factory for this Component with
+&lt;code&gt;componentFactory(Component)&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; vItem &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; v.componentFactory(Item);
+&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #0000FF; font-weight: bold&#34;&gt;Item&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;extends&lt;/span&gt; Component {
+  &lt;span style=&#34;border: 1px solid #FF0000&#34;&gt;@&lt;/span&gt;property models.ItemList data;
+  &lt;span style=&#34;border: 1px solid #FF0000&#34;&gt;@&lt;/span&gt;property &lt;span style=&#34;color: #B00040&#34;&gt;int&lt;/span&gt; itemId;
+  &lt;span style=&#34;border: 1px solid #FF0000&#34;&gt;@&lt;/span&gt;property &lt;span style=&#34;color: #B00040&#34;&gt;String&lt;/span&gt; title;
+
+  &lt;span style=&#34;color: #B00040&#34;&gt;bool&lt;/span&gt; _editing &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;false&lt;/span&gt;;
+  v.VTextInput _input;
+
+  &lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; create() { element &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;new&lt;/span&gt; LIElement(); }
+
+  &lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; init() {
+    element.onDoubleClick.matches(&lt;span style=&#34;color: #BA2121&#34;&gt;&amp;#39;span&amp;#39;&lt;/span&gt;).listen((e) {
+      _editing &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;true&lt;/span&gt;;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// We can&amp;#39;t focus _input Element right now, because it will be created&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// on the next frame. So we can use special [after] Future and wait&lt;/span&gt;
+      &lt;span style=&#34;color: #408080; font-style: italic&#34;&gt;// until next frame is rendered.&lt;/span&gt;
+      domScheduler.nextFrame.after().then((_) {
+        &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (_editing) {
+          _input.ref.focus();
+        }
+      });
+      invalidate();
+      e.stopPropagation();
+      e.preventDefault();
+    });
+
+    element.onBlur.capture((e) {
+      &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (_editing) {
+        _editing &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;false&lt;/span&gt;;
+        data.updateItemTitle(itemId, _input.value);
+      }
+    });
+  }
+
+  build() {
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;var&lt;/span&gt; children;
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;if&lt;/span&gt; (_editing) {
+      _input &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; v.textInput(&lt;span style=&#34;color: #A0A000&#34;&gt;value:&lt;/span&gt; title);
+      children &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; [_input];
+    } &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      _input &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+      children &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; [v.span()(title)];
+    }
+
+    &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;return&lt;/span&gt; v.root()(children);
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&#34;toc_12&#34;&gt;Inserting Components into the DOM&lt;/h2&gt;
+
+&lt;p&gt;Now we need to insert Application Component into the DOM, and we have
+a special method for this &lt;code&gt;injectComponent(component, parentElement)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #B00040&#34;&gt;void&lt;/span&gt; main() {
+  &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;final&lt;/span&gt; data &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;new&lt;/span&gt; models.ItemList();
+  injectComponent(&lt;span style=&#34;color: #008000; font-weight: bold&#34;&gt;new&lt;/span&gt; views.App()..data &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; data, document.body);
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&#34;toc_13&#34;&gt;Source Code&lt;/h2&gt;
+
+&lt;p&gt;Source code is available at
+&lt;a href=&#34;https://github.com/localvoid/liquid-tutorial/&#34;&gt;GitHub repository&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
