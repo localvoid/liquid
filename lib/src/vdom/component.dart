@@ -2,21 +2,21 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+part of liquid.vdom;
 
-abstract class VComponentBase<C extends Component<T>, T extends html.Element>
-  extends vdom.VNode<T> {
+abstract class VComponentBase<C extends liquid.Component<T>, T extends html.Element>
+  extends VNode<T> {
   C component = null;
 
   VComponentBase(Object key) : super(key);
 
-  void create(VContext context);
+  void create(Context context);
 
   void init() { component.init(); }
 
-  void render(VContext context) { component.internalUpdate(); }
+  void render(Context context) { component.internalUpdate(); }
 
-  void update(VComponentBase<C, T> other, VContext context) {
+  void update(VComponentBase<C, T> other, Context context) {
     other.ref = ref;
     other.component = component;
   }
@@ -29,7 +29,7 @@ abstract class VComponentBase<C extends Component<T>, T extends html.Element>
       'VComponentBase[stateless]' : 'VComponentBase[$component]';
 }
 
-abstract class VComponent<C extends Component<T>, T extends html.Element>
+abstract class VComponent<C extends liquid.Component<T>, T extends html.Element>
     extends VComponentBase<C, T> {
   Map<String, String> attributes;
   List<String> classes;
@@ -38,7 +38,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
   VComponent(Object key, this.attributes, this.classes, this.styles)
        : super(key);
 
-  void render(VContext context) {
+  void render(Context context) {
     super.render(context);
     if (attributes != null) {
       attributes.forEach((key, value) {
@@ -55,16 +55,16 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
     }
   }
 
-  void update(VComponent<C, T> other, VContext context) {
+  void update(VComponent<C, T> other, Context context) {
     super.update(other, context);
     if (attributes != null || other.attributes != null) {
-      vdom.updateMap(attributes, other.attributes, ref.attributes);
+      updateMap(attributes, other.attributes, ref.attributes);
     }
     if (styles != null || other.styles != null) {
-      vdom.updateStyle(styles, other.styles, ref.style);
+      updateStyle(styles, other.styles, ref.style);
     }
     if (classes != null || other.classes != null) {
-      vdom.updateSet(classes, other.classes, ref.classes);
+      updateSet(classes, other.classes, ref.classes);
     }
   }
 
@@ -72,9 +72,9 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
       'VComponent[stateless]' : 'VComponent[$component]';
 }
 
-abstract class VComponentContainer<C extends Component<T>, T extends html.Element>
-    extends VComponent<C, T> with vdom.VContainer {
-  List<vdom.VNode> children;
+abstract class VComponentContainer<C extends liquid.Component<T>, T extends html.Element>
+    extends VComponent<C, T> with VContainer {
+  List<VNode> children;
 
   html.Node get container => component.container;
 
@@ -89,32 +89,32 @@ abstract class VComponentContainer<C extends Component<T>, T extends html.Elemen
     if (children is List) {
       this.children = children;
     } else if (children is String) {
-      this.children = [new vdom.VText(children)];
+      this.children = [new VText(children)];
     } else {
       this.children = [children];
     }
     return this;
   }
 
-  void render(VContext context) {
+  void render(Context context) {
     super.render(context);
     renderChildren(children, context);
   }
 
-  void update(VComponentContainer<C, T> other, VContext context) {
+  void update(VComponentContainer<C, T> other, Context context) {
     super.update(other, context);
     updateChildren(children, other.children, context);
   }
 
-  void insertBefore(vdom.VNode node, html.Node nextRef, VContext context) {
+  void insertBefore(VNode node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.VNode node, html.Node nextRef, VContext context) {
+  void move(VNode node, html.Node nextRef, Context context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.VNode node, VContext context) {
+  void removeChild(VNode node, Context context) {
     component.removeChild(node);
   }
 

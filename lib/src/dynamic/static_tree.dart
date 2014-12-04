@@ -19,13 +19,13 @@ class VStaticTree extends vdom.VElementBase {
       Map<String, String> styles)
       : super(key, id, attributes, classes, styles);
 
-  void create(VContext context) {
+  void create(Context context) {
     _vTree = build();
     _vTree.create(context);
     ref = _vTree.ref;
   }
 
-  void render(VContext context) {
+  void render(Context context) {
     super.render(context);
     _vTree.render(context);
   }
@@ -60,4 +60,4 @@ class VStaticTreeFactory extends Function {
   VStaticTree noSuchMethod(Invocation invocation) => _create(invocation.namedArguments);
 }
 
-Function vStaticTreeFactory(Function buildFunction) => new VStaticTreeFactory(buildFunction);
+Function staticTreeFactory(Function buildFunction) => new VStaticTreeFactory(buildFunction);

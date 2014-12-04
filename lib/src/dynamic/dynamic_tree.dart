@@ -18,7 +18,7 @@ class VDynamicTree extends VStaticTree {
       Map<String, String> styles)
       : super(buildFunction, properties, key, id, attributes, classes, styles);
 
-  void update(VStaticTree other, VContext context) {
+  void update(VStaticTree other, Context context) {
     super.update(other, context);
     other._vTree = other.build();
     var dirty = false;
@@ -64,4 +64,4 @@ class VDynamicTreeFactory extends Function {
   VDynamicTree noSuchMethod(Invocation invocation) => _create(invocation.namedArguments);
 }
 
-Function vDynamicTreeFactory(Function buildFunction) => new VDynamicTreeFactory(buildFunction);
+Function dynamicTreeFactory(Function buildFunction) => new VDynamicTreeFactory(buildFunction);

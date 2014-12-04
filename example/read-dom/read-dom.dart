@@ -5,15 +5,16 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
+import 'package:liquid/vdom.dart';
 
-final vOuterBox = vComponentFactory(OuterBox);
+final outerBox = componentFactory(OuterBox);
 class OuterBox extends Component<DivElement> {
-  build() => vRoot(classes: ['outer-box'])(vBox(parent: this));
+  build() => root(classes: ['outer-box'])(box(parent: this));
 }
 
-final vInnerBox = vStaticTreeFactory(() => vDiv(classes: ['inner-box'])('x'));
+final innerBox = staticTreeFactory(() => div(classes: ['inner-box'])('x'));
 
-final vBox = vComponentFactory(Box);
+final box = componentFactory(Box);
 class Box extends Component<DivElement> {
   @property OuterBox parent;
 
@@ -23,11 +24,11 @@ class Box extends Component<DivElement> {
   StreamSubscription _resizeSub;
 
   build() {
-    _child = vInnerBox();
+    _child = innerBox();
 
-    return vRoot(classes: ['box'])([
-      vDiv()('Outer: $_outerWidth'),
-      vDiv()('Inner: $_innerWidth'),
+    return root(classes: ['box'])([
+      div()('Outer: $_outerWidth'),
+      div()('Inner: $_innerWidth'),
       _child
     ]);
   }
@@ -54,10 +55,10 @@ class Box extends Component<DivElement> {
 }
 
 class App extends Component<DivElement> {
-  build() => vRoot()([
-      vOuterBox(),
-      vOuterBox(),
-      vOuterBox()
+  build() => root()([
+      outerBox(),
+      outerBox(),
+      outerBox()
   ]);
 }
 

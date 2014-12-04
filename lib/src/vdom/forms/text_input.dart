@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid.forms;
+part of liquid.vdom;
 
-/// Creates a new [VTextInput] element.
-VTextInput vTextInput({
+/// Creates a new [TextInput] element.
+VTextInput textInput({
   Object key,
   String value,
   String id,
@@ -23,7 +23,7 @@ VTextInput vTextInput({
 }
 
 /// Virtual DOM Text Input Element
-class VTextInput extends v.VElementBase<InputElement> {
+class VTextInput extends VElementBase<html.InputElement> {
   final String _value;
 
   String get value => ref.value;
@@ -38,16 +38,16 @@ class VTextInput extends v.VElementBase<InputElement> {
     : _value = value,
       super(key, id, attributes, classes, styles);
 
-  void create(v.VContext context) { ref = new InputElement(type: 'text'); }
+  void create(Context context) { ref = new html.InputElement(type: 'text'); }
 
-  void render(v.VContext context) {
+  void render(Context context) {
     super.render(context);
     if (_value != null) {
       ref.value = _value;
     }
   }
 
-  void update(VTextInput other, v.VContext context) {
+  void update(VTextInput other, Context context) {
     super.update(other, context);
     if (other._value != null && ref.value != other._value) {
       ref.value = other._value;

@@ -2,15 +2,15 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+part of liquid.vdom;
 
-vdom.VElement vA({Object key,
+VElement a({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('a',
+  return new VElement('a',
       key: key,
       id: id,
       children: children,
@@ -19,13 +19,13 @@ vdom.VElement vA({Object key,
       classes: classes);
 }
 
-vdom.VElement vArea({Object key,
+VElement area({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('area',
+  return new VElement('area',
       key: key,
       id: id,
       children: children,
@@ -34,13 +34,13 @@ vdom.VElement vArea({Object key,
       classes: classes);
 }
 
-vdom.VElement vBr({Object key,
+VElement br({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('br',
+  return new VElement('br',
       key: key,
       id: id,
       children: children,
@@ -49,13 +49,13 @@ vdom.VElement vBr({Object key,
       classes: classes);
 }
 
-vdom.VElement vBase({Object key,
+VElement base({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('base',
+  return new VElement('base',
       key: key,
       id: id,
       children: children,
@@ -64,13 +64,13 @@ vdom.VElement vBase({Object key,
       classes: classes);
 }
 
-vdom.VElement vBody({Object key,
+VElement body({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('body',
+  return new VElement('body',
       key: key,
       id: id,
       children: children,
@@ -79,13 +79,13 @@ vdom.VElement vBody({Object key,
       classes: classes);
 }
 
-vdom.VElement vButton({Object key,
+VElement button({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('button',
+  return new VElement('button',
       key: key,
       id: id,
       children: children,
@@ -94,13 +94,13 @@ vdom.VElement vButton({Object key,
       classes: classes);
 }
 
-vdom.VElement vCanvas({Object key,
+VElement canvas({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('canvas',
+  return new VElement('canvas',
       key: key,
       id: id,
       children: children,
@@ -109,13 +109,13 @@ vdom.VElement vCanvas({Object key,
       classes: classes);
 }
 
-vdom.VElement vContent({Object key,
+VElement content({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('content',
+  return new VElement('content',
       key: key,
       id: id,
       children: children,
@@ -124,13 +124,13 @@ vdom.VElement vContent({Object key,
       classes: classes);
 }
 
-vdom.VElement vDl({Object key,
+VElement dl({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('dl',
+  return new VElement('dl',
       key: key,
       id: id,
       children: children,
@@ -139,13 +139,13 @@ vdom.VElement vDl({Object key,
       classes: classes);
 }
 
-vdom.VElement vDt({Object key,
+VElement dt({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('dt',
+  return new VElement('dt',
       key: key,
       id: id,
       children: children,
@@ -154,13 +154,13 @@ vdom.VElement vDt({Object key,
       classes: classes);
 }
 
-vdom.VElement vDd({Object key,
+VElement dd({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('dd',
+  return new VElement('dd',
       key: key,
       id: id,
       children: children,
@@ -169,13 +169,13 @@ vdom.VElement vDd({Object key,
       classes: classes);
 }
 
-vdom.VElement vDetails({Object key,
+VElement details({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('details',
+  return new VElement('details',
       key: key,
       id: id,
       children: children,
@@ -184,13 +184,13 @@ vdom.VElement vDetails({Object key,
       classes: classes);
 }
 
-vdom.VElement vDialog({Object key,
+VElement dialog({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('dialog',
+  return new VElement('dialog',
       key: key,
       id: id,
       children: children,
@@ -199,13 +199,13 @@ vdom.VElement vDialog({Object key,
       classes: classes);
 }
 
-vdom.VElement vDiv({Object key,
+VElement div({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('div',
+  return new VElement('div',
       key: key,
       id: id,
       children: children,
@@ -214,13 +214,13 @@ vdom.VElement vDiv({Object key,
       classes: classes);
 }
 
-vdom.VElement vEmbed({Object key,
+VElement embed({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('embed',
+  return new VElement('embed',
       key: key,
       id: id,
       children: children,
@@ -229,13 +229,13 @@ vdom.VElement vEmbed({Object key,
       classes: classes);
 }
 
-vdom.VElement vFieldset({Object key,
+VElement fieldset({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('fieldset',
+  return new VElement('fieldset',
       key: key,
       id: id,
       children: children,
@@ -244,13 +244,13 @@ vdom.VElement vFieldset({Object key,
       classes: classes);
 }
 
-vdom.VElement vForm({Object key,
+VElement form({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('form',
+  return new VElement('form',
       key: key,
       id: id,
       children: children,
@@ -259,13 +259,13 @@ vdom.VElement vForm({Object key,
       classes: classes);
 }
 
-vdom.VElement vHr({Object key,
+VElement hr({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('hr',
+  return new VElement('hr',
       key: key,
       id: id,
       children: children,
@@ -274,13 +274,13 @@ vdom.VElement vHr({Object key,
       classes: classes);
 }
 
-vdom.VElement vHead({Object key,
+VElement head({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('head',
+  return new VElement('head',
       key: key,
       id: id,
       children: children,
@@ -289,13 +289,13 @@ vdom.VElement vHead({Object key,
       classes: classes);
 }
 
-vdom.VElement vH1({Object key,
+VElement h1({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h1',
+  return new VElement('h1',
       key: key,
       id: id,
       children: children,
@@ -304,13 +304,13 @@ vdom.VElement vH1({Object key,
       classes: classes);
 }
 
-vdom.VElement vH2({Object key,
+VElement h2({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h2',
+  return new VElement('h2',
       key: key,
       id: id,
       children: children,
@@ -319,13 +319,13 @@ vdom.VElement vH2({Object key,
       classes: classes);
 }
 
-vdom.VElement vH3({Object key,
+VElement h3({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h3',
+  return new VElement('h3',
       key: key,
       id: id,
       children: children,
@@ -334,13 +334,13 @@ vdom.VElement vH3({Object key,
       classes: classes);
 }
 
-vdom.VElement vH4({Object key,
+VElement h4({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h4',
+  return new VElement('h4',
       key: key,
       id: id,
       children: children,
@@ -349,13 +349,13 @@ vdom.VElement vH4({Object key,
       classes: classes);
 }
 
-vdom.VElement vH5({Object key,
+VElement h5({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h5',
+  return new VElement('h5',
       key: key,
       id: id,
       children: children,
@@ -364,13 +364,13 @@ vdom.VElement vH5({Object key,
       classes: classes);
 }
 
-vdom.VElement vH6({Object key,
+VElement h6({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('h6',
+  return new VElement('h6',
       key: key,
       id: id,
       children: children,
@@ -379,13 +379,13 @@ vdom.VElement vH6({Object key,
       classes: classes);
 }
 
-vdom.VElement vIframe({Object key,
+VElement iframe({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('iframe',
+  return new VElement('iframe',
       key: key,
       id: id,
       children: children,
@@ -394,13 +394,13 @@ vdom.VElement vIframe({Object key,
       classes: classes);
 }
 
-vdom.VElement vImg({Object key,
+VElement img({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('img',
+  return new VElement('img',
       key: key,
       id: id,
       children: children,
@@ -409,13 +409,13 @@ vdom.VElement vImg({Object key,
       classes: classes);
 }
 
-vdom.VElement vInput({Object key,
+VElement input({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('input',
+  return new VElement('input',
       key: key,
       id: id,
       children: children,
@@ -424,13 +424,13 @@ vdom.VElement vInput({Object key,
       classes: classes);
 }
 
-vdom.VElement vKeygen({Object key,
+VElement keygen({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('keygen',
+  return new VElement('keygen',
       key: key,
       id: id,
       children: children,
@@ -439,13 +439,13 @@ vdom.VElement vKeygen({Object key,
       classes: classes);
 }
 
-vdom.VElement vLi({Object key,
+VElement li({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('li',
+  return new VElement('li',
       key: key,
       id: id,
       children: children,
@@ -454,13 +454,13 @@ vdom.VElement vLi({Object key,
       classes: classes);
 }
 
-vdom.VElement vLabel({Object key,
+VElement label({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('label',
+  return new VElement('label',
       key: key,
       id: id,
       children: children,
@@ -469,13 +469,13 @@ vdom.VElement vLabel({Object key,
       classes: classes);
 }
 
-vdom.VElement vLegend({Object key,
+VElement legend({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('legend',
+  return new VElement('legend',
       key: key,
       id: id,
       children: children,
@@ -484,13 +484,13 @@ vdom.VElement vLegend({Object key,
       classes: classes);
 }
 
-vdom.VElement vLink({Object key,
+VElement link({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('link',
+  return new VElement('link',
       key: key,
       id: id,
       children: children,
@@ -499,13 +499,13 @@ vdom.VElement vLink({Object key,
       classes: classes);
 }
 
-vdom.VElement vMap({Object key,
+VElement map({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('map',
+  return new VElement('map',
       key: key,
       id: id,
       children: children,
@@ -514,13 +514,13 @@ vdom.VElement vMap({Object key,
       classes: classes);
 }
 
-vdom.VElement vMedia({Object key,
+VElement media({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('media',
+  return new VElement('media',
       key: key,
       id: id,
       children: children,
@@ -529,13 +529,13 @@ vdom.VElement vMedia({Object key,
       classes: classes);
 }
 
-vdom.VElement vMenu({Object key,
+VElement menu({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('menu',
+  return new VElement('menu',
       key: key,
       id: id,
       children: children,
@@ -544,13 +544,13 @@ vdom.VElement vMenu({Object key,
       classes: classes);
 }
 
-vdom.VElement vMeta({Object key,
+VElement meta({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('meta',
+  return new VElement('meta',
       key: key,
       id: id,
       children: children,
@@ -559,13 +559,13 @@ vdom.VElement vMeta({Object key,
       classes: classes);
 }
 
-vdom.VElement vMeter({Object key,
+VElement meter({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('meter',
+  return new VElement('meter',
       key: key,
       id: id,
       children: children,
@@ -574,13 +574,13 @@ vdom.VElement vMeter({Object key,
       classes: classes);
 }
 
-vdom.VElement vMod({Object key,
+VElement mod({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('mod',
+  return new VElement('mod',
       key: key,
       id: id,
       children: children,
@@ -589,13 +589,13 @@ vdom.VElement vMod({Object key,
       classes: classes);
 }
 
-vdom.VElement vOl({Object key,
+VElement ol({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('ol',
+  return new VElement('ol',
       key: key,
       id: id,
       children: children,
@@ -604,13 +604,13 @@ vdom.VElement vOl({Object key,
       classes: classes);
 }
 
-vdom.VElement vObject({Object key,
+VElement object({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('object',
+  return new VElement('object',
       key: key,
       id: id,
       children: children,
@@ -619,13 +619,13 @@ vdom.VElement vObject({Object key,
       classes: classes);
 }
 
-vdom.VElement vOptgroup({Object key,
+VElement optgroup({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('optgroup',
+  return new VElement('optgroup',
       key: key,
       id: id,
       children: children,
@@ -634,13 +634,13 @@ vdom.VElement vOptgroup({Object key,
       classes: classes);
 }
 
-vdom.VElement vOption({Object key,
+VElement option({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('option',
+  return new VElement('option',
       key: key,
       id: id,
       children: children,
@@ -649,13 +649,13 @@ vdom.VElement vOption({Object key,
       classes: classes);
 }
 
-vdom.VElement vOutput({Object key,
+VElement output({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('output',
+  return new VElement('output',
       key: key,
       id: id,
       children: children,
@@ -664,13 +664,13 @@ vdom.VElement vOutput({Object key,
       classes: classes);
 }
 
-vdom.VElement vP({Object key,
+VElement p({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('p',
+  return new VElement('p',
       key: key,
       id: id,
       children: children,
@@ -679,13 +679,13 @@ vdom.VElement vP({Object key,
       classes: classes);
 }
 
-vdom.VElement vParam({Object key,
+VElement param({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('param',
+  return new VElement('param',
       key: key,
       id: id,
       children: children,
@@ -694,13 +694,13 @@ vdom.VElement vParam({Object key,
       classes: classes);
 }
 
-vdom.VElement vPicture({Object key,
+VElement picture({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('picture',
+  return new VElement('picture',
       key: key,
       id: id,
       children: children,
@@ -709,13 +709,13 @@ vdom.VElement vPicture({Object key,
       classes: classes);
 }
 
-vdom.VElement vPre({Object key,
+VElement pre({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('pre',
+  return new VElement('pre',
       key: key,
       id: id,
       children: children,
@@ -724,13 +724,13 @@ vdom.VElement vPre({Object key,
       classes: classes);
 }
 
-vdom.VElement vProgress({Object key,
+VElement progress({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('progress',
+  return new VElement('progress',
       key: key,
       id: id,
       children: children,
@@ -739,13 +739,13 @@ vdom.VElement vProgress({Object key,
       classes: classes);
 }
 
-vdom.VElement vQuote({Object key,
+VElement quote({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('quote',
+  return new VElement('quote',
       key: key,
       id: id,
       children: children,
@@ -754,13 +754,13 @@ vdom.VElement vQuote({Object key,
       classes: classes);
 }
 
-vdom.VElement vSelect({Object key,
+VElement select({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('select',
+  return new VElement('select',
       key: key,
       id: id,
       children: children,
@@ -769,13 +769,13 @@ vdom.VElement vSelect({Object key,
       classes: classes);
 }
 
-vdom.VElement vSource({Object key,
+VElement source({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('source',
+  return new VElement('source',
       key: key,
       id: id,
       children: children,
@@ -784,13 +784,13 @@ vdom.VElement vSource({Object key,
       classes: classes);
 }
 
-vdom.VElement vSpan({Object key,
+VElement span({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('span',
+  return new VElement('span',
       key: key,
       id: id,
       children: children,
@@ -799,13 +799,13 @@ vdom.VElement vSpan({Object key,
       classes: classes);
 }
 
-vdom.VElement vCaption({Object key,
+VElement caption({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('caption',
+  return new VElement('caption',
       key: key,
       id: id,
       children: children,
@@ -814,13 +814,13 @@ vdom.VElement vCaption({Object key,
       classes: classes);
 }
 
-vdom.VElement vTd({Object key,
+VElement td({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('td',
+  return new VElement('td',
       key: key,
       id: id,
       children: children,
@@ -830,13 +830,13 @@ vdom.VElement vTd({Object key,
 }
 
 
-vdom.VElement vTr({Object key,
+VElement tr({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('tr',
+  return new VElement('tr',
       key: key,
       id: id,
       children: children,
@@ -845,13 +845,13 @@ vdom.VElement vTr({Object key,
       classes: classes);
 }
 
-vdom.VElement vTable({Object key,
+VElement table({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('table',
+  return new VElement('table',
       key: key,
       id: id,
       children: children,
@@ -860,13 +860,13 @@ vdom.VElement vTable({Object key,
       classes: classes);
 }
 
-vdom.VElement vTemplate({Object key,
+VElement template({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('template',
+  return new VElement('template',
       key: key,
       id: id,
       children: children,
@@ -875,13 +875,13 @@ vdom.VElement vTemplate({Object key,
       classes: classes);
 }
 
-vdom.VElement vTextarea({Object key,
+VElement textarea({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('textarea',
+  return new VElement('textarea',
       key: key,
       id: id,
       children: children,
@@ -890,13 +890,13 @@ vdom.VElement vTextarea({Object key,
       classes: classes);
 }
 
-vdom.VElement vUl({Object key,
+VElement ul({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('ul',
+  return new VElement('ul',
       key: key,
       id: id,
       children: children,
@@ -905,13 +905,13 @@ vdom.VElement vUl({Object key,
       classes: classes);
 }
 
-vdom.VElement vArticle({Object key,
+VElement article({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('article',
+  return new VElement('article',
       key: key,
       id: id,
       children: children,
@@ -920,13 +920,13 @@ vdom.VElement vArticle({Object key,
       classes: classes);
 }
 
-vdom.VElement vSection({Object key,
+VElement section({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('section',
+  return new VElement('section',
       key: key,
       id: id,
       children: children,
@@ -935,13 +935,13 @@ vdom.VElement vSection({Object key,
       classes: classes);
 }
 
-vdom.VElement vNav({Object key,
+VElement nav({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('nav',
+  return new VElement('nav',
       key: key,
       id: id,
       children: children,
@@ -950,13 +950,13 @@ vdom.VElement vNav({Object key,
       classes: classes);
 }
 
-vdom.VElement vHeader({Object key,
+VElement header({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('header',
+  return new VElement('header',
       key: key,
       id: id,
       children: children,
@@ -965,13 +965,13 @@ vdom.VElement vHeader({Object key,
       classes: classes);
 }
 
-vdom.VElement vFooter({Object key,
+VElement footer({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('footer',
+  return new VElement('footer',
       key: key,
       id: id,
       children: children,
@@ -980,13 +980,13 @@ vdom.VElement vFooter({Object key,
       classes: classes);
 }
 
-vdom.VElement vStrong({Object key,
+VElement strong({Object key,
      String id,
-     List<vdom.VNode> children,
+     List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new vdom.VElement('strong',
+  return new VElement('strong',
       key: key,
       id: id,
       children: children,
@@ -995,6 +995,6 @@ vdom.VElement vStrong({Object key,
       classes: classes);
 }
 
-vdom.VText vText(String data, {Object key}) {
-  return new vdom.VText(data, key: key);
+VText text(String data, {Object key}) {
+  return new VText(data, key: key);
 }

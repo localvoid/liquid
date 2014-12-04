@@ -6,15 +6,16 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:html';
 import 'package:liquid/liquid.dart';
+import 'package:liquid/vdom.dart';
 
-final vBox = vDynamicTreeFactory(({count: 0}) {
+final box = dynamicTreeFactory(({count: 0}) {
   final top = math.sin(count / 10) * 10;
   final left = math.cos(count / 10) * 10;
   final color = count % 255;
   final content = count % 100;
 
-  return vDiv(classes: ['box-view'])(
-    vDiv(classes: ['box'],
+  return div(classes: ['box-view'])(
+    div(classes: ['box'],
              styles: {
                'top': '${top}px',
                'left': '${left}px',
@@ -24,13 +25,13 @@ final vBox = vDynamicTreeFactory(({count: 0}) {
   );
 });
 
-class App extends Component<DivElement> {
+class App extends Component {
   @property List<int> items;
 
   build() {
     var i = 0;
-    return vRoot(classes: ['grid'])(
-        items.map((item) => vBox(key: i++, count: item)).toList()
+    return root(classes: ['grid'])(
+        items.map((item) => box(key: i++, count: item)).toList()
     );
   }
 }

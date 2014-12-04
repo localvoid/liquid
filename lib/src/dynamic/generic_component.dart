@@ -4,7 +4,7 @@
 
 part of liquid.dynamic;
 
-class VGenericComponent extends VComponent {
+class VGenericComponent extends vdom.VComponent {
   ClassMirror _classMirror;
   InstanceMirror _instanceMirror;
   Map<Symbol, _Property> _propertyTypes;
@@ -21,7 +21,7 @@ class VGenericComponent extends VComponent {
       Map<String, String> styles)
     : super(key, attributes, classes, styles);
 
-  void create(VContext context) {
+  void create(Context context) {
     _instanceMirror = _classMirror.newInstance(const Symbol(''), const []);
     component = _instanceMirror.reflectee
       ..context = context;
@@ -36,7 +36,7 @@ class VGenericComponent extends VComponent {
     ref = component.element;
   }
 
-  void update(VGenericComponent other, VContext context) {
+  void update(VGenericComponent other, Context context) {
     super.update(other, context);
     other._instanceMirror = _instanceMirror;
 
@@ -100,4 +100,4 @@ class VGenericComponentFactory extends Function {
   }
 }
 
-Function vComponentFactory(Type componentType) => new VGenericComponentFactory(componentType);
+Function componentFactory(Type componentType) => new VGenericComponentFactory(componentType);

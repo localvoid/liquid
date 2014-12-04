@@ -2,25 +2,25 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+part of liquid.vdom;
 
-abstract class VRootBase<T extends html.Element> extends vdom.VElementContainerBase<T> {
-  Component<T> component;
+abstract class VRootBase<T extends html.Element> extends VElementContainerBase<T> {
+  liquid.Component<T> component;
 
   VRootBase(
-      List<vdom.VNode> children,
+      List<VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
       : super(null, children, id, attributes, classes, styles);
 
-  void create(vdom.VContext context) {
+  void create(Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'
         ' should mount it on top of the existing Component with mountComponent');
   }
 
-  void mount(html.Node node, vdom.VContext context) {
+  void mount(html.Node node, Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support mounting on top of'
         ' html nodes, you should mount it on top of the existing Component'
         ' with mountComponent');
@@ -28,12 +28,12 @@ abstract class VRootBase<T extends html.Element> extends vdom.VElementContainerB
 
   void link(VRootDecorator<T> parent) {}
 
-  void mountComponent(Component<T> component) {
+  void mountComponent(liquid.Component<T> component) {
     this.component = component;
     ref = component.element;
   }
 
-  void update(VRootBase<T> other, VContext context) {
+  void update(VRootBase<T> other, Context context) {
     super.update(other, context);
     other.component = component;
   }
@@ -44,11 +44,11 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   VRootDecorator<T> parent;
   VRootBase<T> _next;
   html.Node container;
-  vdom.VNode innerContainer;
+  VNode innerContainer;
 
   VRootDecorator(
       {this.innerContainer,
-       List<vdom.VNode> children,
+       List<VNode> children,
        String id,
        Map<String, String> attributes,
        List<String> classes,
@@ -64,14 +64,14 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
     this.parent = parent;
   }
 
-  void mountComponent(Component<T> component) {
+  void mountComponent(liquid.Component<T> component) {
     super.mountComponent(component);
     if (_next != null) {
       _next.mountComponent(component);
     }
   }
 
-  void render(VContext context) {
+  void render(Context context) {
     if (parent == null) {
       container = ref;
     } else {
@@ -87,7 +87,7 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
     }
   }
 
-  void update(VRootDecorator<T> other, VContext context) {
+  void update(VRootDecorator<T> other, Context context) {
     if (parent == null) {
       container = ref;
     } else {
@@ -106,29 +106,29 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
 
 class VRoot<T extends html.Element> extends VRootBase<T> {
   VRoot(
-      {List<vdom.VNode> children,
+      {List<VNode> children,
        String id,
        Map<String, String> attributes,
        List<String> classes,
        Map<String, String> styles})
       : super(children, id, attributes, classes, styles);
 
-  void insertBefore(vdom.VNode node, html.Node nextRef, VContext context) {
+  void insertBefore(VNode node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.VNode node, html.Node nextRef, VContext context) {
+  void move(VNode node, html.Node nextRef, Context context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.VNode node, VContext context) {
+  void removeChild(VNode node, Context context) {
     component.removeChild(node);
   }
 }
 
-VRootDecorator vRootDecorator({
-  List<vdom.VNode> children,
-  vdom.VNode innerContainer,
+VRootDecorator rootDecorator({
+  List<VNode> children,
+  VNode innerContainer,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -141,8 +141,8 @@ VRootDecorator vRootDecorator({
       styles: styles);
 }
 
-VRoot vRoot({
-  List<vdom.VNode> children,
+VRoot root({
+  List<VNode> children,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {

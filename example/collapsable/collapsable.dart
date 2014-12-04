@@ -5,9 +5,10 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
+import 'package:liquid/vdom.dart';
 
-final vCollapsable = vComponentContainerFactory(Collapsable);
-class Collapsable extends Component<DivElement> {
+final collapsable = componentContainerFactory(Collapsable);
+class Collapsable extends Component {
   @property bool collapsed = false;
 
   void create() {
@@ -20,11 +21,11 @@ class Collapsable extends Component<DivElement> {
   }
 
   build() =>
-      vRootDecorator(classes: collapsed ? ['collapsable-close'] : ['collapsable-open']);
+      rootDecorator(classes: collapsed ? ['collapsable-close'] : ['collapsable-open']);
 }
 
-final vBasicComponent = vComponentFactory(BasicComponent);
-class BasicComponent extends Component<ParagraphElement> {
+final basic = componentFactory(Basic);
+class Basic extends Component {
   @property int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
@@ -40,14 +41,14 @@ class BasicComponent extends Component<ParagraphElement> {
     });
   }
 
-  build() => vRoot()('Liquid has been successfully running for $elapsedSeconds seconds.');
+  build() => root()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
 class App extends Component<DivElement> {
   build() {
-    return vRoot()(
-        vCollapsable(null, null)(
-            vBasicComponent(null, {#elapsed: 0})
+    return root()(
+        collapsable(null, null)(
+            basic(null, {#elapsed: 0})
         )
     );
   }

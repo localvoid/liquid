@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid.forms;
+part of liquid.vdom;
 
-/// Creates a new [VCheckbox] element.
-VCheckbox vCheckbox({
+/// Creates a new [Checkbox] element.
+VCheckbox checkbox({
   Object key,
   bool checked,
   String id,
@@ -23,7 +23,7 @@ VCheckbox vCheckbox({
 }
 
 /// Virtual DOM Checkbox Element
-class VCheckbox extends v.VElementBase<CheckboxInputElement> {
+class VCheckbox extends VElementBase<html.CheckboxInputElement> {
   final bool _checked;
 
   bool get checked => ref.checked;
@@ -38,16 +38,16 @@ class VCheckbox extends v.VElementBase<CheckboxInputElement> {
     : _checked = checked,
       super(key, id, attributes, classes, styles);
 
-  void create(v.VContext context) { ref = new CheckboxInputElement(); }
+  void create(Context context) { ref = new html.CheckboxInputElement(); }
 
-  void render(v.VContext context) {
+  void render(Context context) {
     super.render(context);
     if (_checked != null) {
       ref.checked = _checked;
     }
   }
 
-  void update(VCheckbox other, v.VContext context) {
+  void update(VCheckbox other, Context context) {
     super.update(other, context);
     if (other._checked != null && ref.checked != other._checked) {
       ref.checked = other._checked;

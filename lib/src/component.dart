@@ -30,7 +30,7 @@ part of liquid;
 /// }
 ///
 /// ```
-abstract class Component<T extends html.Element> implements VContext {
+abstract class Component<T extends html.Element> implements Context {
   /// Component is attached to the document.
   static const _attachedFlag = 1;
 
@@ -47,8 +47,8 @@ abstract class Component<T extends html.Element> implements VContext {
   T element;
 
   /// Parent context
-  VContext _context;
-  void set context(VContext newContext) {
+  Context _context;
+  void set context(Context newContext) {
     _context = newContext;
     _depth = newContext._depth + 1;
   }
@@ -79,7 +79,7 @@ abstract class Component<T extends html.Element> implements VContext {
   bool get isMounted => (_flags & _mountedFlag) == _mountedFlag;
 
   /// Reference to the root-level Virtual DOM Element.
-  VRootBase<T> vRoot;
+  vdom.VRootBase<T> vRoot;
 
   /// Container for children nodes.
   html.Node get container => element;
@@ -117,7 +117,7 @@ abstract class Component<T extends html.Element> implements VContext {
   /// Build Virtual DOM for the current state of the [VComponent].
   ///
   /// Execution context: [domScheduler]:write
-  VRootBase<T> build() => null;
+  vdom.VRootBase<T> build() => null;
 
   /// Lifecycle method to update [Component].
   ///
@@ -232,7 +232,7 @@ abstract class Component<T extends html.Element> implements VContext {
   /// Update [Component] using Virtual DOM.
   ///
   /// Execution context: [domScheduler]:write
-  void updateVRoot(VRootBase<T> newVRoot) {
+  void updateVRoot(vdom.VRootBase<T> newVRoot) {
     if (vRoot == null) {
       newVRoot.mountComponent(this);
       newVRoot.render(this);
@@ -243,7 +243,7 @@ abstract class Component<T extends html.Element> implements VContext {
   }
 
   /// Execution context: [domScheduler]:write
-  void mountVRoot(VRootBase<T> newVRoot) {
+  void mountVRoot(vdom.VRootBase<T> newVRoot) {
     newVRoot.mountComponent(this);
     newVRoot.mount(element, this);
     vRoot = newVRoot;

@@ -32,25 +32,25 @@ class VGenericComponentContainer extends VGenericComponent with vdom.VContainer 
     return this;
   }
 
-  void render(VContext context) {
+  void render(Context context) {
     super.render(context);
     renderChildren(children, context);
   }
 
-  void update(VGenericComponentContainer other, VContext context) {
+  void update(VGenericComponentContainer other, Context context) {
     super.update(other, context);
     updateChildren(children, other.children, context);
   }
 
-  void insertBefore(vdom.VNode node, html.Node nextRef, VContext context) {
+  void insertBefore(vdom.VNode node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.VNode node, html.Node nextRef, VContext context) {
+  void move(vdom.VNode node, html.Node nextRef, Context context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.VNode node, VContext context) {
+  void removeChild(vdom.VNode node, Context context) {
     component.removeChild(node);
   }
 }
@@ -83,4 +83,4 @@ class VGenericComponentContainerFactory extends VGenericComponentFactory {
   }
 }
 
-Function vComponentContainerFactory(Type componentType) => new VGenericComponentContainerFactory(componentType);
+Function componentContainerFactory(Type componentType) => new VGenericComponentContainerFactory(componentType);

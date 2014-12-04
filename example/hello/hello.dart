@@ -4,11 +4,12 @@
 
 import 'dart:html';
 import 'package:liquid/liquid.dart';
+import 'package:liquid/vdom.dart';
 
 class HelloComponent extends Component<DivElement> {
   @property String name;
 
-  build() => vRoot()('Hello $name');
+  build() => root()('Hello $name');
 }
 
 main() {
