@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localvoid.github.io/liquid/</loc>
+    <loc>https://localvoid.github.io/liquid/</loc>
     <lastmod>2014-12-03T14:56:44+06:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localvoid.github.io/liquid/tutorials/todo-app/</loc>
+    <loc>https://localvoid.github.io/liquid/tutorials/todo-app/</loc>
     <lastmod>2014-12-03T14:56:44+06:00</lastmod>
   </url>
   

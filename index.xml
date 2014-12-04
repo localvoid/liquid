@@ -3,7 +3,7 @@
   <channel>
       <title>Recent Content on Liquid </title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://localvoid.github.io/liquid/index.xml/</link>
+    <link>https://localvoid.github.io/liquid/index.xml/</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Creating a Single Page Todo App with Liquid</title>
-      <link>http://localvoid.github.io/liquid/tutorials/todo-app/</link>
+      <link>https://localvoid.github.io/liquid/tutorials/todo-app/</link>
       <pubDate>Wed, 03 Dec 2014 14:56:44 NOVT</pubDate>
       
-      <guid>http://localvoid.github.io/liquid/tutorials/todo-app/</guid>
+      <guid>https://localvoid.github.io/liquid/tutorials/todo-app/</guid>
       <description>
 
 &lt;p&gt;Before starting this tutorial you should be familiar with the
