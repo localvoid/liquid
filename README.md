@@ -28,7 +28,7 @@ And now you are ready to use it, just import
 application with Liquid library
 
 You can start by going through our
-[Tutorial](https://localvoid.github.io/liquid/tutorial.html), or read
+[Tutorial](https://localvoid.github.io/liquid/), or read
 the source code from our examples.
 
 ## Examples
@@ -47,3 +47,11 @@ Here are simple examples that is build with Liquid library:
 [[Source Code](https://github.com/localvoid/todomvc-liquid)], it is
 heavily commented and demonstrates many important features of this
 library.
+
+## Roadmap
+
+- Transformers to convert dynamic code into static (0.3.0)
+- Runtime checks in development mode to improve developer experience (0.4.0)
+- Linter/Static analyze
+- Component Stylesheets
+- Server-Side rendering
