@@ -1,0 +1,4 @@
+baseurl = "https://localvoid.github.io/liquid"
+languageCode = "en-us"
+title = "Liquid"
+pygmentsstyle = "default"
