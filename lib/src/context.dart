@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+library liquid.context;
+
+import 'package:vdom/vdom.dart' as vdom;
 
 /// [Context] that is used to propagate information through Virtual DOM.
 ///
@@ -14,5 +16,5 @@ abstract class Context implements vdom.Context {
   /// Depth relative to other Contexts, it is used to sort write tasks by
   /// its depth, so the lowest depth have the highest priority and will
   /// be executed first.
-  int get _depth;
+  int get depth;
 }

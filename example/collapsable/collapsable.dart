@@ -47,8 +47,8 @@ class Basic extends Component {
 class App extends Component<DivElement> {
   build() {
     return root()(
-        collapsable(null, null)(
-            basic(null, {#elapsed: 0})
+        collapsable()(
+            basic(elapsed: 0)
         )
     );
   }

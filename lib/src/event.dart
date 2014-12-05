@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+library liquid.event;
+
+import 'package:liquid/src/component.dart';
 
 /// Base class for Component events.
 abstract class ComponentEvent {

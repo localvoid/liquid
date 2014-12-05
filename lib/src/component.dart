@@ -2,7 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of liquid;
+library liquid.component;
+
+import 'dart:async';
+import 'dart:html' as html;
+import 'package:vdom/vdom.dart' as vdom;
+import 'package:liquid/src/vdom.dart' as vdom;
+import 'package:liquid/src/context.dart';
+import 'package:liquid/src/main.dart';
 
 /// Liquid Component is a base class for all Components.
 ///
@@ -50,11 +57,11 @@ abstract class Component<T extends html.Element> implements Context {
   Context _context;
   void set context(Context newContext) {
     _context = newContext;
-    _depth = newContext._depth + 1;
+    depth = newContext.depth + 1;
   }
 
   /// Depth relative to other contexts
-  int _depth = 0;
+  int depth = 0;
 
   /// Flags: [_attachedFlag], [_dirtyFlag]
   int _flags = _dirtyFlag;
@@ -172,10 +179,10 @@ abstract class Component<T extends html.Element> implements Context {
     if (!dirty) {
       _flags |= _dirtyFlag;
       if (identical(Zone.current, domScheduler.zone)) {
-        domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
+        domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
       } else {
         domScheduler.zone.run(() {
-          domScheduler.nextFrame.write(_depth).then(_invalidatedUpdate);
+          domScheduler.nextFrame.write(depth).then(_invalidatedUpdate);
         });
       }
     }
@@ -187,7 +194,7 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Returns [Future] that completes when [domScheduler] launches write
   /// tasks for the current [Frame]
-  Future writeDOM() => domScheduler.currentFrame.write(_depth);
+  Future writeDOM() => domScheduler.currentFrame.write(depth);
 
   /// Returns [Future] that completes when [domScheduler] launches read
   /// tasks for the current [Frame]

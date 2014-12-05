@@ -5,7 +5,7 @@
 part of liquid.dynamic;
 
 class VDynamicTree extends VStaticTree {
-  HashMap<Symbol, _Property> _propertyTypes;
+  HashMap<Symbol, Property> _propertyTypes;
 
   VDynamicTree(
       this._propertyTypes,
@@ -18,27 +18,17 @@ class VDynamicTree extends VStaticTree {
       Map<String, String> styles)
       : super(buildFunction, properties, key, id, attributes, classes, styles);
 
-  void update(VStaticTree other, Context context) {
+  void update(VStaticTree other, vdom.Context context) {
     super.update(other, context);
     other._vTree = other.build();
-    var dirty = false;
-    for (var k in _properties.keys) {
-      if (other._properties.containsKey(k) &&
-          !_propertyTypes[k].equal(_properties[k], other._properties[k])) {
-        dirty = true;
-        break;
-      }
-    }
-    if (dirty) {
-      _vTree.update(other._vTree, context);
-    }
+    _vTree.update(other._vTree, context);
   }
 }
 
 class VDynamicTreeFactory extends Function {
   Function _buildFunction;
   ClosureMirror _closureMirror;
-  HashMap<Symbol, _Property> _propertyTypes;
+  HashMap<Symbol, Property> _propertyTypes;
 
   VDynamicTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
@@ -49,12 +39,12 @@ class VDynamicTreeFactory extends Function {
     if (args == null) {
       return new VDynamicTree(_propertyTypes, _buildFunction, null, null, null, null, null, null);
     }
-    final properties = new HashMap.from(args);
-    final key = properties.remove(#key);
-    final id = properties.remove(#id);
-    final attributes = properties.remove(#attributes);
-    final classes = properties.remove(#classes);
-    final styles = properties.remove(#styles);
+    final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
+    final Object key = properties.remove(#key);
+    final String id = properties.remove(#id);
+    final Map<String, String> attributes = properties.remove(#attributes);
+    final List<String> classes = properties.remove(#classes);
+    final Map<String, String> styles = properties.remove(#styles);
     return new VDynamicTree(_propertyTypes, _buildFunction, properties,
         key, id, attributes, classes, styles);
   }

@@ -2,9 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library liquid.vdom_dynamic;
+library liquid.vdom_static;
 
 export 'package:vdom/vdom.dart';
 export 'package:liquid/src/vdom.dart';
-export 'package:liquid/src/dynamic.dart' show staticTreeFactory,
-  dynamicTreeFactory, componentFactory, componentContainerFactory;
+export 'package:liquid/src/static.dart';

@@ -12,7 +12,7 @@ class VGenericComponentContainer extends VGenericComponent with vdom.VContainer 
   VGenericComponentContainer(
       this.children,
       ClassMirror typeMirror,
-      Map<Symbol, _Property> propertyTypes,
+      Map<Symbol, Property> propertyTypes,
       Map<Symbol, dynamic> properties,
       Object key,
       String id,
@@ -24,6 +24,8 @@ class VGenericComponentContainer extends VGenericComponent with vdom.VContainer 
   VGenericComponentContainer call(children) {
     if (children is List) {
       this.children = children;
+    } else if (children is Iterable) {
+      this.children = children.toList();
     } else if (children is String) {
       this.children = [new vdom.VText(children)];
     } else {
@@ -32,25 +34,25 @@ class VGenericComponentContainer extends VGenericComponent with vdom.VContainer 
     return this;
   }
 
-  void render(Context context) {
+  void render(vdom.Context context) {
     super.render(context);
     renderChildren(children, context);
   }
 
-  void update(VGenericComponentContainer other, Context context) {
+  void update(VGenericComponentContainer other, vdom.Context context) {
     super.update(other, context);
     updateChildren(children, other.children, context);
   }
 
-  void insertBefore(vdom.VNode node, html.Node nextRef, Context context) {
+  void insertBefore(vdom.VNode node, html.Node nextRef, vdom.Context context) {
     component.insertBefore(node, nextRef);
   }
 
-  void move(vdom.VNode node, html.Node nextRef, Context context) {
+  void move(vdom.VNode node, html.Node nextRef, vdom.Context context) {
     component.move(node, nextRef);
   }
 
-  void removeChild(vdom.VNode node, Context context) {
+  void removeChild(vdom.VNode node, vdom.Context context) {
     component.removeChild(node);
   }
 }
@@ -63,8 +65,8 @@ class VGenericComponentContainerFactory extends VGenericComponentFactory {
       return new VGenericComponentContainer(null, _classMirror, _propertyTypes,
           null, null, null, null, null, null);
     }
-    final properties = new HashMap.from(args);
-    final List children = properties.remove(#children);
+    final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
+    final List<vdom.VNode> children = properties.remove(#children);
     final Object key = properties.remove(#key);
     final String id = properties.remove(#id);
     final Map<String, String> attributes = properties.remove(#attributes);

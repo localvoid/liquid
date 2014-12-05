@@ -19,13 +19,13 @@ class VStaticTree extends vdom.VElementBase {
       Map<String, String> styles)
       : super(key, id, attributes, classes, styles);
 
-  void create(Context context) {
+  void create(vdom.Context context) {
     _vTree = build();
     _vTree.create(context);
     ref = _vTree.ref;
   }
 
-  void render(Context context) {
+  void render(vdom.Context context) {
     super.render(context);
     _vTree.render(context);
   }
@@ -46,12 +46,12 @@ class VStaticTreeFactory extends Function {
     if (args == null) {
       return new VStaticTree(_buildFunction, null, null, null, null, null, null);
     }
-    final properties = new HashMap.from(args);
-    final key = properties.remove(#key);
-    final id = properties.remove(#id);
-    final attributes = properties.remove(#attributes);
-    final classes = properties.remove(#classes);
-    final styles = properties.remove(#styles);
+    final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
+    final Object key = properties.remove(#key);
+    final String id = properties.remove(#id);
+    final Map<String, String> attributes = properties.remove(#attributes);
+    final List<String> classes = properties.remove(#classes);
+    final Map<String, String> styles = properties.remove(#styles);
     return new VStaticTree(_buildFunction, properties, key, id, attributes, classes, styles);
   }
 

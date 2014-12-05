@@ -16,7 +16,7 @@ final innerBox = staticTreeFactory(() => div(classes: ['inner-box'])('x'));
 
 final box = componentFactory(Box);
 class Box extends Component<DivElement> {
-  @property OuterBox parent;
+  @property OuterBox parent = null;
 
   int _outerWidth = 0;
   int _innerWidth = 0;

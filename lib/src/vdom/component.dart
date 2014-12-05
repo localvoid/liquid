@@ -4,7 +4,7 @@
 
 part of liquid.vdom;
 
-abstract class VComponentBase<C extends liquid.Component<T>, T extends html.Element>
+abstract class VComponentBase<C extends Component<T>, T extends html.Element>
   extends VNode<T> {
   C component = null;
 
@@ -29,13 +29,15 @@ abstract class VComponentBase<C extends liquid.Component<T>, T extends html.Elem
       'VComponentBase[stateless]' : 'VComponentBase[$component]';
 }
 
-abstract class VComponent<C extends liquid.Component<T>, T extends html.Element>
+// TODO: add id
+abstract class VComponent<C extends Component<T>, T extends html.Element>
     extends VComponentBase<C, T> {
+  String id;
   Map<String, String> attributes;
   List<String> classes;
   Map<String, String> styles;
 
-  VComponent(Object key, this.attributes, this.classes, this.styles)
+  VComponent(Object key, this.id, this.attributes, this.classes, this.styles)
        : super(key);
 
   void render(Context context) {
@@ -72,7 +74,7 @@ abstract class VComponent<C extends liquid.Component<T>, T extends html.Element>
       'VComponent[stateless]' : 'VComponent[$component]';
 }
 
-abstract class VComponentContainer<C extends liquid.Component<T>, T extends html.Element>
+abstract class VComponentContainer<C extends Component<T>, T extends html.Element>
     extends VComponent<C, T> with VContainer {
   List<VNode> children;
 
@@ -80,10 +82,11 @@ abstract class VComponentContainer<C extends liquid.Component<T>, T extends html
 
   VComponentContainer(Object key,
       this.children,
+      String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, attributes, classes, styles);
+      : super(key, id, attributes, classes, styles);
 
   VComponentContainer<C, T> call(children) {
     if (children is List) {
