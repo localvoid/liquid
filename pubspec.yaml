@@ -1,12 +1,12 @@
 name: liquid
 description: Library to build User Interfaces
-version: 0.2.0
+version: 0.2.1
 author: Boris Kaul <localvoid@gmail.com>
 homepage: https://github.com/localvoid/liquid
 environment:
   sdk: '>=1.6.0'
 dependencies:
-  vdom: '>=0.7.0 <0.8.0'
+  vdom: '>=0.7.1 <0.8.0'
   dom_scheduler: '>=0.0.1 <0.1.0'
 dev_dependency:
   browser: any

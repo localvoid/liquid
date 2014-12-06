@@ -88,6 +88,8 @@ abstract class VComponentContainer<C extends liquid.Component<T>, T extends html
   VComponentContainer<C, T> call(children) {
     if (children is List) {
       this.children = children;
+    } else if (children is Iterable) {
+      this.children = children.toList();
     } else if (children is String) {
       this.children = [new VText(children)];
     } else {

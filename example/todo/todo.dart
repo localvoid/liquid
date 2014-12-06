@@ -16,7 +16,7 @@ class Item {
 
 final todoItem = staticTreeFactory(({item}) => li()(item.text));
 final todoList = dynamicTreeFactory(({items}) {
-  return ul()(items.map((i) => todoItem(key: i.id, item: i)).toList());
+  return ul()(items.map((i) => todoItem(key: i.id, item: i)));
 });
 
 class TodoApp extends Component<DivElement> {
