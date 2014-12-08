@@ -7,7 +7,6 @@
 /// dart:mirrors.
 library liquid.transformer;
 
-import 'dart:async';
 import 'package:barback/barback.dart';
 import 'package:code_transformers/resolver.dart';
 
@@ -28,24 +27,5 @@ class LiquidTransformerGroup extends TransformerGroup {
          [new FactoryTransformer(options, resolvers)],
          [new FactoryCallTransformer(options, resolvers)]
         ]);
-  }
-}
-
-class _SerialTransformer extends Transformer {
-  final Iterable<Transformer> _transformers;
-
-  _SerialTransformer(this._transformers);
-
-  Future<bool> isPrimary(AssetId id) =>
-      Future.wait(_transformers.map((t) => t.isPrimary(id)))
-          .then((l) => l.any((result) => result));
-
-  Future apply(Transform transform) {
-    return Future.forEach(_transformers, (t) {
-      return new Future.value(t.isPrimary(transform.primaryInput.id))
-        .then((isPrimary) {
-          if (isPrimary) return t.apply(transform);
-        });
-    });
   }
 }

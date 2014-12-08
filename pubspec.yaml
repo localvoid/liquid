@@ -16,5 +16,3 @@ dependencies:
   path: any
 dev_dependency:
   browser: any
-transformers:
-- liquid

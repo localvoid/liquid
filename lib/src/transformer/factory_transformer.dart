@@ -59,11 +59,15 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
     final componentMetaDataExtractor = new ComponentMetaDataExtractor(liquidElements);
 
     // replace vdom.dart to vdom_static.dart
+    // and remove part directives (inject them)
+    // TODO: migrate to aggregate transformers
     for (final directive in unit.directives) {
       if (directive is ImportDirective &&
           directive.uri.stringValue == 'package:liquid/vdom.dart') {
         final uri = directive.uri;
         transaction.edit(uri.offset, uri.end, '\'package:liquid/vdom_static.dart\'');
+      } else if (directive is PartDirective) {
+        transaction.edit(directive.offset, directive.end, '');
       }
     }
 
@@ -71,12 +75,29 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
 
     // compile factories
     final factoryGenerators = new FactoryGenerators(liquidElements, componentMetaDataExtractor);
+
+
+    final url = id.path.startsWith('lib/')
+        ? 'package:${id.package}/${id.path.substring(4)}' : id.path;
+
+    for (final part in lib.parts) {
+      final tx = resolver.createTextEditTransaction(part);
+      for (final directive in part.unit.directives) {
+        if (directive is PartOfDirective) {
+          tx.edit(directive.offset, directive.end, '');
+        }
+      }
+      part.unit.visitChildren(new _FactoryGeneratorCompiler(tx, factoryGenerators));
+      final printer = tx.commit();
+      printer.build(url);
+      final end = unit.directives.last.end;
+      transaction.edit(end, end, printer.text);
+    }
+
     unit.visitChildren(new _FactoryGeneratorCompiler(transaction, factoryGenerators));
 
     // commit changes
     final printer = transaction.commit();
-    var url = id.path.startsWith('lib/')
-            ? 'package:${id.package}/${id.path.substring(4)}' : id.path;
     printer.build(url);
     transform.addOutput(new Asset.fromString(id, printer.text));
   }

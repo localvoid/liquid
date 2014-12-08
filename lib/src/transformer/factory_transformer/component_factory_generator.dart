@@ -64,7 +64,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     if (metaData.properties.isNotEmpty) {
       out.write('  final int propertyMask;\n');
       for (var a in metaData.properties) {
-        out.write('  @property final ${a.type} ${a.name};\n');
+        out.write('  @property final ${a.name};\n');
       }
       out.write('\n');
     }
@@ -94,6 +94,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     }
     out.write('    component.create();\n');
     out.write('    ref = component.element;\n');
+    out.write('    component.dirty = true;\n');
     out.write('  }\n\n');
 
     // update()
@@ -120,7 +121,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     if (metaData.properties.isNotEmpty) {
       out.write('int propertyMask, {');
       for (var a in metaData.properties) {
-        out.write('${a}, ');
+        out.write('${a.name}, ');
       }
     } else {
       out.write('{');

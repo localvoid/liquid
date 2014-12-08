@@ -88,7 +88,10 @@ class _FactoryCallVisitor extends GeneralizingAstVisitor {
       if (metaData.properties.isNotEmpty) {
         int propertyMask = 0;
         for (var arg in m.argumentList.arguments) {
-          propertyMask |= 1 << metaData.propertyPositions[arg.bestParameterElement.name];
+          final argName = arg.bestParameterElement.name;
+          if (!reservedProperties.containsKey(argName)) {
+            propertyMask |= 1 << metaData.propertyPositions[arg.bestParameterElement.name];
+          }
         }
         _transaction.edit(m.argumentList.offset + 1, m.argumentList.offset + 1, '$propertyMask, ');
       }
