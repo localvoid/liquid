@@ -9,11 +9,12 @@ abstract class VStaticTree extends vdom.VElementBase {
 
   VStaticTree(
       Object key,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, id, attributes, classes, styles);
+      : super(key, children, id, attributes, classes, styles);
 
   void create(vdom.Context context) {
     vRoot = build();

@@ -131,7 +131,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Execution context: [domScheduler]:write
   Future update() => null;
 
-  bool shouldComponentUpdate() => (isAttached && dirty);
+  bool shouldComponentUpdate() => true;
 
   void mounted() {}
   void rendered() {}
@@ -200,31 +200,34 @@ abstract class Component<T extends html.Element> implements Context {
   /// tasks for the current [Frame]
   Future readDOM() => domScheduler.currentFrame.read();
 
+  // TODO: refactor this
   void internalUpdate() {
-    if (!shouldComponentUpdate()) {
+    if (!dirty) {
       return;
     }
 
     _flags &= ~_dirtyFlag;
-    final newVRoot = build();
     if (!isRendered) {
+      final newVRoot = build();
       if (isMounted) {
         if (newVRoot != null) {
           mountVRoot(newVRoot);
         }
-        _flags &= ~_mountedFlag;
         mounted();
       } else {
         if (newVRoot != null) {
           updateVRoot(newVRoot);
         }
       }
-      _flags &= ~_renderedFlag;
+      _flags |= _renderedFlag;
       rendered();
-    } else {
+    } else if (shouldComponentUpdate()) {
+      final newVRoot = build();
       if (newVRoot != null) {
         updateVRoot(newVRoot);
       }
+    } else {
+      return;
     }
     final updateFuture = update();
     if (updateFuture == null) {

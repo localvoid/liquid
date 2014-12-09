@@ -36,7 +36,7 @@ class VCheckbox extends VElementBase<html.CheckboxInputElement> {
     List<String> classes,
     Map<String, String> styles})
     : _checked = checked,
-      super(key, id, attributes, classes, styles);
+      super(key, null, id, attributes, classes, styles);
 
   void create(Context context) { ref = new html.CheckboxInputElement(); }
 

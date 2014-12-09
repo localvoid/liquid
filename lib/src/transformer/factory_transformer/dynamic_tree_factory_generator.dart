@@ -4,6 +4,8 @@
 
 part of liquid.transformer.factory_transformer;
 
+// TODO: implement optimized update
+
 /// class __V${name} extends __vdom.VDynamicTree {
 ///   ${fn.namedArgs}
 ///
@@ -28,10 +30,11 @@ class DynamicTreeFactoryGenerator extends FactoryGenerator {
         namedArgs.add(p);
       }
     }
+    final out = new StringBuffer();
+
     final className = '__V${name}';
 
     // Preamble
-    final out = new StringBuffer();
     out.write('\n\nclass $className extends __vdom.VDynamicTree {\n');
     for (var a in namedArgs) {
       out.write('  final ${a.parameter.toSource()};\n');
@@ -41,8 +44,8 @@ class DynamicTreeFactoryGenerator extends FactoryGenerator {
       out.write('this.${a.identifier.toSource()}, ');
     }
     out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
-            '      : super(key, id, arguments, classes, styles);\n\n');
+        'Object key, List<__vdom.VNode> children, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
+            '      : super(key, children, id, arguments, classes, styles);\n\n');
 
     out.write('  __vdom.VNode build() ');
 
@@ -58,13 +61,14 @@ class DynamicTreeFactoryGenerator extends FactoryGenerator {
     for (var a in namedArgs) {
       out.write('${a.toSource()}, ');
     }
-    out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles');
+    out.write('Object key, List<__vdom.VNode> children, String id, '
+        'Map<String, String> arguments, List<String> classes, '
+        'Map<String, String> styles');
     out.write('}) =>\n    new __V${name}(');
     for (var a in namedArgs) {
       out.write('${a.identifier.toSource()}, ');
     }
-    out.write('key, id, arguments, classes, styles);\n');
+    out.write('key, children, id, arguments, classes, styles);\n');
 
     transaction.edit(buildFunction.body.end, tld.end, out.toString());
   }

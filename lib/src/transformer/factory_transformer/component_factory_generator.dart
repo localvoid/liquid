@@ -4,10 +4,13 @@
 
 part of liquid.transformer.factory_transformer;
 
-/// class __V${name} extends __vdom.VGenericComponent {
+// TODO: use 0 as a default value for properties with number types
+
+///   class __V${name} extends __vdom.VComponentBase {
+///   final int propertyMask;
 ///   ${fn.namedArgs}
 ///
-///   __V${name}(propertyMask, ${fn.namedArgs} + defaultArgs) : super(propertyMask, defaultArgs);
+///   __V${name}(this.propertyMask, ${fn.namedArgs} + defaultArgs) : super(propertyMask, defaultArgs);
 ///
 ///   void create(__vdom.Context context) {
 ///     component = new ${componentType}();
@@ -58,7 +61,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     final out = new StringBuffer();
 
     // VComponent
-    out.write('\n\nclass $className extends __vdom.VComponent {\n');
+    out.write('\n\nclass $className extends __vdom.VComponentBase {\n');
 
     // properties
     if (metaData.properties.isNotEmpty) {
@@ -78,8 +81,8 @@ class ComponentFactoryGenerator extends FactoryGenerator {
       }
     }
     out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
-            '      : super(key, id, arguments, classes, styles);\n\n');
+        'Object key, List<__vdom.VNode> children, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
+            '      : super(key, children, id, arguments, classes, styles);\n\n');
 
     // create()
     out.write('  void create(__vdom.Context context) {\n');
@@ -126,8 +129,9 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     } else {
       out.write('{');
     }
-    out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles');
+    out.write('Object key, List<__vdom.VNode> children, String id, '
+        'Map<String, String> arguments, List<String> classes, '
+        'Map<String, String> styles');
     out.write('}) =>\n    new __V${name}(');
     if (metaData.properties.isNotEmpty) {
       out.write('propertyMask, ');
@@ -135,7 +139,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
         out.write('${a.name}, ');
       }
     }
-    out.write('key, id, arguments, classes, styles);\n');
+    out.write('key, children, id, arguments, classes, styles);\n');
 
     transaction.edit(tld.offset, tld.end, out.toString());
   }

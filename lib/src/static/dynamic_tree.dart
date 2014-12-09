@@ -7,11 +7,12 @@ part of liquid.static;
 abstract class VDynamicTree extends VStaticTree {
   VDynamicTree(
       Object key,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, id, attributes, classes, styles);
+      : super(key, children, id, attributes, classes, styles);
 
   void update(VStaticTree other, vdom.Context context) {
     super.update(other, context);

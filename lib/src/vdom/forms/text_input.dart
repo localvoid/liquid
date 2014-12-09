@@ -36,7 +36,7 @@ class VTextInput extends VElementBase<html.InputElement> {
     List<String> classes,
     Map<String, String> styles})
     : _value = value,
-      super(key, id, attributes, classes, styles);
+      super(key, null, id, attributes, classes, styles);
 
   void create(Context context) { ref = new html.InputElement(type: 'text'); }
 

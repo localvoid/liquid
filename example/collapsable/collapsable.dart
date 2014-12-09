@@ -7,7 +7,7 @@ import 'dart:html';
 import 'package:liquid/liquid.dart';
 import 'package:liquid/vdom.dart';
 
-final collapsable = componentContainerFactory(Collapsable);
+final collapsable = componentFactory(Collapsable);
 class Collapsable extends Component {
   @property bool collapsed = false;
 
@@ -33,7 +33,6 @@ class Basic extends Component {
   void create() { element = new ParagraphElement(); }
 
   void attached() {
-    super.attached();
     final start = new DateTime.now().millisecondsSinceEpoch;
     new Timer.periodic(new Duration(milliseconds: 50), (t) {
       elapsed = new DateTime.now().millisecondsSinceEpoch - start;

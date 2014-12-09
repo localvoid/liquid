@@ -10,6 +10,7 @@ import 'package:liquid/src/transformer/liquid_elements.dart';
 
 /// List of reserved properties
 const reservedProperties = const {'key': true,
+                                  'children': true,
                                   'id': true,
                                   'attributes': true,
                                   'classes': true,

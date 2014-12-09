@@ -13,11 +13,12 @@ class VStaticTree extends vdom.VElementBase {
       this._buildFunction,
       this._properties,
       Object key,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, id, attributes, classes, styles);
+      : super(key, children, id, attributes, classes, styles);
 
   void create(vdom.Context context) {
     _vTree = build();
@@ -44,15 +45,18 @@ class VStaticTreeFactory extends Function {
 
   VStaticTree _create([Map args]) {
     if (args == null) {
-      return new VStaticTree(_buildFunction, null, null, null, null, null, null);
+      return new VStaticTree(_buildFunction, null, null, null, null, null, null,
+          null);
     }
     final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
     final Object key = properties.remove(#key);
+    final List<vdom.VNode> children = properties.remove(#children);
     final String id = properties.remove(#id);
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
-    return new VStaticTree(_buildFunction, properties, key, id, attributes, classes, styles);
+    return new VStaticTree(_buildFunction, properties, key, children, id,
+        attributes, classes, styles);
   }
 
   VStaticTree call() => _create();

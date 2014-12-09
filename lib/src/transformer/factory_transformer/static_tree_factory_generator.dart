@@ -24,19 +24,13 @@ class StaticTreeFactoryGenerator extends FactoryGenerator {
         namedArgs.add(p);
       }
     }
+    final out = new StringBuffer();
+
     final className = '__V${name}';
 
-    // Prefix
-    final out = new StringBuffer();
+    // Preamble
     out.write('\n\nclass $className extends __vdom.VStaticTree {\n');
     for (var a in namedArgs) {
-      if (a.element.metadata.isEmpty) {
-        out.write('  @property\n');
-      } else {
-        for (var annotation in a.element.metadata) {
-          out.write('  @${annotation.element.name}\n');
-        }
-      }
       out.write('  final ${a.parameter.toSource()};\n');
     }
     out.write('\n  $className(');
@@ -44,14 +38,14 @@ class StaticTreeFactoryGenerator extends FactoryGenerator {
       out.write('this.${a.identifier.toSource()}, ');
     }
     out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
-            '      : super(key, id, arguments, classes, styles);\n\n');
+        'Object key, List<__vdom.VNode> children, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
+            '      : super(key, children, id, arguments, classes, styles);\n\n');
 
     out.write('  __vdom.VNode build() ');
 
     transaction.edit(tld.offset, buildFunction.body.offset, out.toString());
 
-    // Postfix
+    // Epilogue
     out.clear();
     if (buildFunction.body is ExpressionFunctionBody) {
       out.write(';');
@@ -61,13 +55,14 @@ class StaticTreeFactoryGenerator extends FactoryGenerator {
     for (var a in namedArgs) {
       out.write('${a.toSource()}, ');
     }
-    out.write(
-        'Object key, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles');
+    out.write('Object key, List<__vdom.VNode> children, String id, '
+        'Map<String, String> arguments, List<String> classes, '
+        'Map<String, String> styles');
     out.write('}) =>\n    new __V${name}(');
     for (var a in namedArgs) {
       out.write('${a.identifier.toSource()}, ');
     }
-    out.write('key, id, arguments, classes, styles);\n');
+    out.write('key, children, id, arguments, classes, styles);\n');
 
     transaction.edit(buildFunction.body.end, tld.end, out.toString());
   }

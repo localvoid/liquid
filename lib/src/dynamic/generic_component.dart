@@ -4,9 +4,10 @@
 
 part of liquid.dynamic;
 
-class VGenericComponent extends vdom.VComponent {
-  ClassMirror _classMirror;
+class VGenericComponent extends vdom.VComponentBase {
   InstanceMirror _instanceMirror;
+
+  ClassMirror _classMirror;
   Map<Symbol, Property> _propertyTypes;
   Map<Symbol, dynamic> _properties;
 
@@ -15,11 +16,12 @@ class VGenericComponent extends vdom.VComponent {
       this._propertyTypes,
       this._properties,
       Object key,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-    : super(key, id, attributes, classes, styles);
+    : super(key, children, id, attributes, classes, styles);
 
   void create(vdom.Context context) {
     _instanceMirror = _classMirror.newInstance(const Symbol(''), const []);
@@ -41,18 +43,14 @@ class VGenericComponent extends vdom.VComponent {
     other._instanceMirror = _instanceMirror;
 
     if (other._properties != null) {
-      var dirty = false;
       other._properties.forEach((k, v) {
-        if (_properties.containsKey(k)) {
+        if (_propertyTypes.containsKey(k)) {
           _instanceMirror.setField(k, v);
-          dirty = true;
         }
       });
-      if (dirty) {
-        _instanceMirror.reflectee.dirty = true;
-        _instanceMirror.invoke(#internalUpdate, const []);
-      }
     }
+    component.dirty = true;
+    component.internalUpdate();
   }
 }
 
@@ -72,23 +70,17 @@ class VGenericComponentFactory extends Function {
   VGenericComponent _create([Map args]) {
     if (args == null) {
       return new VGenericComponent(_classMirror, _propertyTypes, null, null,
-          null, null, null, null);
+          null, null, null, null, null);
     }
     final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
     final Object key = properties.remove(#key);
+    final List<vdom.VNode> children = properties.remove(#children);
     final String id = properties.remove(#id);
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
-    return new VGenericComponent(
-        _classMirror,
-        _propertyTypes,
-        properties,
-        key,
-        id,
-        attributes,
-        classes,
-        styles);
+    return new VGenericComponent(_classMirror, _propertyTypes, properties,
+        key, children, id, attributes, classes, styles);
   }
 
   VGenericComponent call() => _create();

@@ -8,14 +8,14 @@ import 'package:liquid/liquid.dart';
 import 'package:liquid/vdom.dart';
 
 final outerBox = componentFactory(OuterBox);
-class OuterBox extends Component<DivElement> {
+class OuterBox extends Component {
   build() => root(classes: ['outer-box'])(box(parent: this));
 }
 
 final innerBox = staticTreeFactory(() => div(classes: ['inner-box'])('x'));
 
 final box = componentFactory(Box);
-class Box extends Component<DivElement> {
+class Box extends Component {
   @property OuterBox parent = null;
 
   int _outerWidth = 0;

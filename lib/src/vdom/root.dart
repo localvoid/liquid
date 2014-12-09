@@ -4,7 +4,7 @@
 
 part of liquid.vdom;
 
-abstract class VRootBase<T extends html.Element> extends VElementContainerBase<T> {
+abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
   Component<T> component;
 
   VRootBase(
@@ -21,9 +21,7 @@ abstract class VRootBase<T extends html.Element> extends VElementContainerBase<T
   }
 
   void mount(html.Node node, Context context) {
-    throw new UnsupportedError('VRootBase doesn\'t support mounting on top of'
-        ' html nodes, you should mount it on top of the existing Component'
-        ' with mountComponent');
+    throw new UnimplementedError('Mounting isn\'t implemented right now.');
   }
 
   void link(VRootDecorator<T> parent) {}
@@ -127,15 +125,17 @@ class VRoot<T extends html.Element> extends VRootBase<T> {
 }
 
 VRootDecorator rootDecorator({
-  List<VNode> children,
   VNode innerContainer,
+  List<VNode> children,
+  String id,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
 
   return new VRootDecorator(
-      children: children,
       innerContainer: innerContainer,
+      children: children,
+      id: id,
       attributes: attributes,
       classes: classes,
       styles: styles);
@@ -143,12 +143,14 @@ VRootDecorator rootDecorator({
 
 VRoot root({
   List<VNode> children,
+  String id,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
 
   return new VRoot(
       children: children,
+      id: id,
       attributes: attributes,
       classes: classes,
       styles: styles);

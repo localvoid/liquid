@@ -12,11 +12,13 @@ class VDynamicTree extends VStaticTree {
       Function buildFunction,
       Map<Symbol, dynamic> properties,
       Object key,
+      List<vdom.VNode> children,
       String id,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(buildFunction, properties, key, id, attributes, classes, styles);
+      : super(buildFunction, properties, key, children, id, attributes,
+          classes, styles);
 
   void update(VStaticTree other, vdom.Context context) {
     super.update(other, context);
@@ -37,16 +39,18 @@ class VDynamicTreeFactory extends Function {
 
   VDynamicTree _create([Map args]) {
     if (args == null) {
-      return new VDynamicTree(_propertyTypes, _buildFunction, null, null, null, null, null, null);
+      return new VDynamicTree(_propertyTypes, _buildFunction, null, null, null,
+          null, null, null, null);
     }
     final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
     final Object key = properties.remove(#key);
+    final List<vdom.VNode> children = properties.remove(#children);
     final String id = properties.remove(#id);
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
     return new VDynamicTree(_propertyTypes, _buildFunction, properties,
-        key, id, attributes, classes, styles);
+        key, children, id, attributes, classes, styles);
   }
 
   VDynamicTree call() => _create();
