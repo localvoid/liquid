@@ -16,7 +16,7 @@ class LiquidElements {
   static const int allElements = propertyClassFlag | componentClassFlag |
       staticTreeFactoryFlag | dynamicTreeFactoryFlag | componentFactoryFlag;
 
-  static const int vComponentClassFlag = 1 << 5;
+  static const int vComponentBaseClassFlag = 1 << 5;
 
 
   Resolver _resolver;
@@ -26,7 +26,7 @@ class LiquidElements {
   Element staticTreeFactory;
   Element dynamicTreeFactory;
   Element componentFactory;
-  ClassElement vComponentClass;
+  ClassElement vComponentBaseClass;
 
   LiquidElements(this._resolver);
 
@@ -71,11 +71,11 @@ class LiquidElements {
       }
     }
 
-    if ((mask & vComponentClassFlag == vComponentClassFlag) &&
-        (elementMask & vComponentClassFlag != vComponentClassFlag)) {
-      vComponentClass = _resolver.getType('liquid.vdom.VComponent');
-      if (vComponentClass != null) {
-        elementMask |= vComponentClassFlag;
+    if ((mask & vComponentBaseClassFlag == vComponentBaseClassFlag) &&
+        (elementMask & vComponentBaseClassFlag != vComponentBaseClassFlag)) {
+      vComponentBaseClass = _resolver.getType('liquid.vdom.VComponentBase');
+      if (vComponentBaseClass != null) {
+        elementMask |= vComponentBaseClassFlag;
       }
     }
   }

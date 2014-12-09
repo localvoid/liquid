@@ -44,7 +44,7 @@ class FactoryCallTransformer extends Transformer with ResolverTransformer {
 
     final lookupFlags = LiquidElements.componentClassFlag |
                         LiquidElements.propertyClassFlag |
-                        LiquidElements.vComponentClassFlag;
+                        LiquidElements.vComponentBaseClassFlag;
 
     liquidElements.lookup(lookupFlags);
 
@@ -82,7 +82,7 @@ class _FactoryCallVisitor extends GeneralizingAstVisitor {
     if (m.bestType != null &&
         !m.bestType.isVoid &&
         !m.bestType.isDynamic &&
-        m.bestType.isSubtypeOf(_liquidElements.vComponentClass.type)) {
+        m.bestType.isSubtypeOf(_liquidElements.vComponentBaseClass.type)) {
       final ClassElement cls = m.bestType.element;
       final metaData = _metaDataExtractor.extract(cls);
       if (metaData.properties.isNotEmpty) {
