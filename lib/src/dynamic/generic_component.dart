@@ -52,6 +52,8 @@ class VGenericComponent extends vdom.VComponentBase {
     component.dirty = true;
     component.internalUpdate();
   }
+
+  String toString() => '<${_classMirror.reflectedType} key="$key"/>';
 }
 
 class VGenericComponentFactory extends Function {
