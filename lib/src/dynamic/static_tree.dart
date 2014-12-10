@@ -49,7 +49,13 @@ class _VStaticTreeFactory extends Function {
   /// build function that generates virtual dom.
   Function _buildFunction;
 
-  _VStaticTreeFactory(this._buildFunction);
+  ClosureMirror _closureMirror;
+  HashMap<Symbol, Property> _propertyTypes;
+
+  _VStaticTreeFactory(this._buildFunction) {
+     _closureMirror = reflect(_buildFunction);
+     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
+  }
 
   /// Creates a new instance of [VStaticTree] with [args] properties.
   VStaticTree _create([Map args]) {
@@ -64,13 +70,26 @@ class _VStaticTreeFactory extends Function {
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
+    assert(() {
+      for (final property in properties.keys) {
+        if (!_propertyTypes.containsKey(property)) {
+          throw new AssertionFailure(
+              'Static Tree Node doesn\'t have a property $property.');
+        }
+      }
+      return true;
+    }());
     return new VStaticTree(_buildFunction, properties, key, children, id,
         attributes, classes, styles);
   }
 
   /// It is used to implement variadic arguments.
-  VStaticTree noSuchMethod(Invocation invocation) =>
-      _create(invocation.namedArguments);
+  VStaticTree noSuchMethod(Invocation invocation) {
+    assert(invariant(invocation.positionalArguments.isEmpty, () =>
+        'Static Tree factory invocation shouldn\'t have positional arguments.\n'
+        'Position arguments: ${invocation.positionalArguments}'));
+    return _create(invocation.namedArguments);
+  }
 
   /// Factory method invoked without any arguments.
   VStaticTree call() => _create();

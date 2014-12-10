@@ -85,14 +85,25 @@ class _VGenericComponentFactory extends Function {
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
+    assert(() {
+      for (final property in properties.keys) {
+        if (!_propertyTypes.containsKey(property)) {
+          throw new AssertionFailure(
+              'Component $_componentType doesn\'t have a property $property.');
+        }
+      }
+      return true;
+    }());
     return new VGenericComponent(_classMirror, _propertyTypes, properties,
         key, children, id, attributes, classes, styles);
   }
 
   /// It is used to implement variadic arguments.
   VGenericComponent noSuchMethod(Invocation invocation) {
-    final arguments = invocation.namedArguments;
-    return _create(arguments);
+    assert(invariant(invocation.positionalArguments.isEmpty, () =>
+        'VComponent factory invocation shouldn\'t have positional arguments.\n'
+        'Position arguments: ${invocation.positionalArguments}'));
+    return _create(invocation.namedArguments);
   }
 
   /// Factory method invoked without any arguments.

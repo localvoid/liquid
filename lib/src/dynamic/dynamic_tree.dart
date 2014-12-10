@@ -63,13 +63,26 @@ class _VDynamicTreeFactory extends Function {
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
+    assert(() {
+      for (final property in properties.keys) {
+        if (!_propertyTypes.containsKey(property)) {
+          throw new AssertionFailure(
+              'Dynamic Tree Node doesn\'t have a property $property.');
+        }
+      }
+      return true;
+    }());
     return new VDynamicTree(_propertyTypes, _buildFunction, properties,
         key, children, id, attributes, classes, styles);
   }
 
   /// It is used to implement variadic arguments.
-  VDynamicTree noSuchMethod(Invocation invocation) =>
-      _create(invocation.namedArguments);
+  VDynamicTree noSuchMethod(Invocation invocation) {
+    assert(invariant(invocation.positionalArguments.isEmpty, () =>
+        'Dynamic Tree factory invocation shouldn\'t have positional arguments.\n'
+        'Position arguments: ${invocation.positionalArguments}'));
+    return _create(invocation.namedArguments);
+  }
 
   /// Factory method invoked without any arguments.
   VDynamicTree call() => _create();
