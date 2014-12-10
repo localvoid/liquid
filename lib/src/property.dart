@@ -8,4 +8,6 @@ class Property {
   const Property();
 }
 
+/// Annotation that marks variable declarations as a property that can be used
+/// in virtual dom nodes.
 const Property property = const Property();

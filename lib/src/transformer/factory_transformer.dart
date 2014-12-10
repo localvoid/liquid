@@ -2,6 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Transformer that compiles `staticTreeFactory`, `dynamicTreeFactory` and
+/// `componentFactory` invocations into static and optimized classes that can
+/// be used without mirror-based apis.
 library liquid.transformer.factory_transformer;
 
 import 'dart:async';

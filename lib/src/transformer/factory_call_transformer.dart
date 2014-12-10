@@ -2,6 +2,23 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Transformer that adds `propertyMask` to specify which properties should be
+/// updated with virtual node for components.
+///
+/// ```dart
+/// final myComponent = componentFactory(MyComponent);
+/// class MyComponent extends Component {
+///   @property int prop1;
+///   @property int prop2;
+///   ...
+/// }
+///
+/// myComponent(prop2: 10);
+/// // will be transformed into:
+/// myComponent(0b10, prop2: 10);
+/// // 0b10 is a property mask that indicates that property with index 2 should
+/// // be updated
+/// ```
 library liquid.transformer.factory_call_transformer;
 
 import 'dart:async';

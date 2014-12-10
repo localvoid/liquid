@@ -37,7 +37,7 @@ abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
   }
 }
 
-// TODO: doesn't work properly, use double-linked lists
+/// TODO: experimental, WIP. (doesn't work right now with deep hierarchies)
 class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   VRootDecorator<T> parent;
   VRootBase<T> _next;
@@ -102,6 +102,8 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   }
 }
 
+/// Root-level Virtual Node for [Component]s to update root-level elements
+/// created with `create()` lifecycle method.
 class VRoot<T extends html.Element> extends VRootBase<T> {
   VRoot(
       {List<VNode> children,

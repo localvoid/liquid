@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Liquid Component is a base class for all Components.
 library liquid.component;
 
 import 'dart:async';
@@ -15,13 +16,13 @@ import 'package:liquid/src/main.dart';
 ///
 /// ```
 /// class MyComponent extends Component {
-///   build() => vRoot()('Hello Component');
+///   build() => vdom.root()('Hello Component');
 /// }
 /// ```
 ///
 /// If you want to read from the DOM, just override [update] method, it is
-/// called right after it Component is rendered, mounted and each time after
-/// initial VRoot update:
+/// called right after Component is rendered, mounted and each time after
+/// initial update (experimental API):
 ///
 /// ```
 /// class MyComponent extends Component {
@@ -41,7 +42,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Component is attached to the document.
   static const _attachedFlag = 1;
 
-  /// Component is dirty and should be updated at the next frame
+  /// Component is dirty and should be updated at the next frame.
   static const _dirtyFlag = 1 << 1;
 
   /// Component is rendered.
@@ -133,10 +134,28 @@ abstract class Component<T extends html.Element> implements Context {
 
   bool shouldComponentUpdate() => true;
 
+  /// Lifecycle method that executes right after [Component] is mounted on top
+  /// of existing html.
+  ///
+  /// Execution context: [domScheduler]:write
   void mounted() {}
+
+  /// Lifecycle method that executes right after [Component] is rendered for the
+  /// first time.
+  ///
+  /// Execution context: [domScheduler]:write
   void rendered() {}
+
+  /// Lifecycle method that executes right after [Component] is completely
+  /// updated.
+  ///
+  /// Execution context: [domScheduler]:write
   void updated() {}
 
+  /// Lifecycle method that should be called when [Component] is attached to
+  /// the html document.
+  ///
+  /// Execution context: [domScheduler]:write
   void attach() {
     assert(!isAttached);
     attached();
@@ -146,6 +165,10 @@ abstract class Component<T extends html.Element> implements Context {
     }
   }
 
+  /// Lifecycle method that should be called when [Component] is detached from
+  /// the html document.
+  ///
+  /// Execution context: [domScheduler]:write
   void detach() {
     assert(isAttached);
     if (vRoot != null) {
@@ -155,6 +178,14 @@ abstract class Component<T extends html.Element> implements Context {
     detached();
   }
 
+  /// Insert [node] into [container] before [nextRef] html element.
+  ///
+  /// If you overwrite this method, you should also overwrite [move], and
+  /// [removeChild] methods.
+  ///
+  /// By overwriting this method you've became responsible for [node] lifecycle.
+  ///
+  /// Execution context: [domScheduler]:write
   void insertBefore(vdom.VNode node, html.Node nextRef) {
     node.create(this);
     node.init();
@@ -165,10 +196,27 @@ abstract class Component<T extends html.Element> implements Context {
     node.render(this);
   }
 
+  /// Move [node] to position before [nextRef] html element inside of the
+  /// [container] element.
+  ///
+  /// If you overwrite this method, you should also overwrite [inertBefore], and
+  /// [removeChild] methods.
+  ///
+  /// By overwriting this method you've became responsible for [node] lifecycle.
+  ///
+  /// Execution context: [domScheduler]:write
   void move(vdom.VNode node, html.Node nextRef) {
     container.insertBefore(node.ref, nextRef);
   }
 
+  /// Remove [node] from the [container] element.
+  ///
+  /// If you overwrite this method, you should also overwrite [inertBefore], and
+  /// [move] methods.
+  ///
+  /// By overwriting this method you've became responsible for [node] lifecycle.
+  ///
+  /// Execution context: [domScheduler]:write
   void removeChild(vdom.VNode node) {
     node.dispose(this);
   }
@@ -239,7 +287,7 @@ abstract class Component<T extends html.Element> implements Context {
 
   void _updateFinish(_) { updated(); }
 
-  /// Update [Component] using Virtual DOM.
+  /// Update [vRoot] with the new Virtual DOM representation.
   ///
   /// Execution context: [domScheduler]:write
   void updateVRoot(vdom.VRootBase<T> newVRoot) {
@@ -252,6 +300,8 @@ abstract class Component<T extends html.Element> implements Context {
     vRoot = newVRoot;
   }
 
+  /// Mount [vRoot] on top of existing html tree.
+  ///
   /// Execution context: [domScheduler]:write
   void mountVRoot(vdom.VRootBase<T> newVRoot) {
     newVRoot.mountComponent(this);
@@ -260,6 +310,13 @@ abstract class Component<T extends html.Element> implements Context {
   }
 
   /// Find [e] ancestor that matches [selector].
+  ///
+  /// It is almost like Element.closest method, the difference is that it uses
+  /// [element] as a top-level sentinel value.
+  ///
+  /// * [MDN Element.closest](https://developer.mozilla.org/en-US/docs/Web/API/Element.closest)
+  ///
+  /// TODO: remove this when it is implemented in `dart:html`
   html.Element closest(html.Element e, String selector) {
     final sentinel = element.parent;
     do {

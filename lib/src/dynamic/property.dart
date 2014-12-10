@@ -4,7 +4,8 @@
 
 part of liquid.dynamic;
 
-HashMap<Symbol, Property> _lookupProperties(Iterable<DeclarationMirror> declarations) {
+/// Lookup for all declarations with `@property` annotations.
+Map<Symbol, Property> _lookupProperties(Iterable<DeclarationMirror> declarations) {
   final result = new HashMap<Symbol, Property>();
 
   for (var d in declarations) {

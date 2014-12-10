@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Mirror-based implementation for VStaticTree, VDynamicTree and VComponent
+/// nodes.
 library liquid.dynamic;
 
 import 'dart:collection';

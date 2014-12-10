@@ -7,6 +7,7 @@ library liquid.transformer.liquid_elements;
 import 'package:analyzer/src/generated/element.dart';
 import 'package:code_transformers/resolver.dart';
 
+/// Object that stores resolved elements from the Liquid library.
 class LiquidElements {
   static const int propertyClassFlag = 1;
   static const int componentClassFlag = 1 << 1;
@@ -16,6 +17,7 @@ class LiquidElements {
   static const int allElements = propertyClassFlag | componentClassFlag |
       staticTreeFactoryFlag | dynamicTreeFactoryFlag | componentFactoryFlag;
 
+  // TODO: fix this
   static const int vComponentBaseClassFlag = 1 << 5;
 
 

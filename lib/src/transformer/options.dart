@@ -4,6 +4,7 @@
 
 library liquid.transformer.options;
 
+/// Transformer Options
 class TransformerOptions {
   TransformerOptions(Map configuration) {
 
