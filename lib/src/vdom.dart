@@ -14,5 +14,7 @@ part 'package:liquid/src/vdom/basic.dart';
 part 'package:liquid/src/vdom/component.dart';
 part 'package:liquid/src/vdom/root.dart';
 
-part 'package:liquid/src/vdom/forms/check_box.dart';
-part 'package:liquid/src/vdom/forms/text_input.dart';
+part 'package:liquid/src/vdom/elements/check_box.dart';
+part 'package:liquid/src/vdom/elements/text_input.dart';
+part 'package:liquid/src/vdom/elements/link.dart';
+part 'package:liquid/src/vdom/elements/img.dart';

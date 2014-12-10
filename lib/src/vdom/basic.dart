@@ -4,7 +4,7 @@
 
 part of liquid.vdom;
 
-VElement a({Object key,
+VElement anchor({Object key,
      String id,
      List<VNode> children,
      Map<String, String> attributes,
@@ -394,21 +394,6 @@ VElement iframe({Object key,
       classes: classes);
 }
 
-VElement img({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('img',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
 VElement input({Object key,
      String id,
      List<VNode> children,
@@ -476,21 +461,6 @@ VElement legend({Object key,
      Map<String, String> styles,
      List<String> classes}) {
   return new VElement('legend',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement link({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('link',
       key: key,
       id: id,
       children: children,
