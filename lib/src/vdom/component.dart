@@ -4,13 +4,13 @@
 
 part of liquid.vdom;
 
-abstract class VComponentBase<C extends Component<T>, T extends html.Element>
+abstract class VComponent<C extends Component<T>, T extends html.Element>
   extends VElementBase<T> {
   C component;
 
   html.Node get container => component.container;
 
-  VComponentBase(
+  VComponent(
       Object key,
       List<VNode> children,
       String id,
@@ -26,7 +26,7 @@ abstract class VComponentBase<C extends Component<T>, T extends html.Element>
     component.internalUpdate();
   }
 
-  void update(VComponentBase<C, T> other, Context context) {
+  void update(VComponent<C, T> other, Context context) {
     other.ref = ref;
     other.component = component;
   }

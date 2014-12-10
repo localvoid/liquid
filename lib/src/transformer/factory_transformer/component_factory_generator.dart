@@ -61,7 +61,7 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     final out = new StringBuffer();
 
     // VComponent
-    out.write('\n\nclass $className extends __vdom.VComponentBase {\n');
+    out.write('\n\nclass $className extends __vdom.VComponent {\n');
 
     // properties
     if (metaData.properties.isNotEmpty) {

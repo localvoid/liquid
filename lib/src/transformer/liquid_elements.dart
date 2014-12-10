@@ -75,7 +75,7 @@ class LiquidElements {
 
     if ((mask & vComponentBaseClassFlag == vComponentBaseClassFlag) &&
         (elementMask & vComponentBaseClassFlag != vComponentBaseClassFlag)) {
-      vComponentBaseClass = _resolver.getType('liquid.vdom.VComponentBase');
+      vComponentBaseClass = _resolver.getType('liquid.vdom.VComponent');
       if (vComponentBaseClass != null) {
         elementMask |= vComponentBaseClassFlag;
       }
