@@ -49,36 +49,6 @@ VElement br({Object key,
       classes: classes);
 }
 
-VElement base({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('base',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement body({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('body',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
 VElement button({Object key,
      String id,
      List<VNode> children,
@@ -266,21 +236,6 @@ VElement hr({Object key,
      Map<String, String> styles,
      List<String> classes}) {
   return new VElement('hr',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement head({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('head',
       key: key,
       id: id,
       children: children,
@@ -506,21 +461,6 @@ VElement menu({Object key,
      Map<String, String> styles,
      List<String> classes}) {
   return new VElement('menu',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement meta({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('meta',
       key: key,
       id: id,
       children: children,
