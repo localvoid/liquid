@@ -6,6 +6,7 @@
 library liquid.component;
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:html' as html;
 import 'package:vdom/vdom.dart' as vdom;
 import 'package:liquid/src/vdom.dart' as vdom;
@@ -63,6 +64,9 @@ abstract class Component<T extends html.Element> implements Context {
 
   /// Depth relative to other contexts
   int depth = 0;
+
+  /// Scope store
+  Map<Symbol, dynamic> _store;
 
   /// Flags: [_attachedFlag], [_dirtyFlag]
   int _flags = _dirtyFlag;
@@ -336,5 +340,28 @@ abstract class Component<T extends html.Element> implements Context {
     } while (e != null || identical(e, sentinel));
 
     return null;
+  }
+
+  /// Experimental API
+  dynamic scopeGet(Symbol key) {
+    Component c = this;
+    while (c != null) {
+      if (c._store != null) {
+        final value = c._store[key];
+        if (value != null) {
+          return value;
+        }
+      }
+      c = _context;
+    }
+    return null;
+  }
+
+  /// Experimental API
+  void scopeSet(Symbol key, dynamic value) {
+    if (_store == null) {
+      _store = new HashMap<Symbol, dynamic>();
+    }
+    _store[key] = value;
   }
 }

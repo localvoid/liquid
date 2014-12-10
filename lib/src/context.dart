@@ -17,4 +17,10 @@ abstract class Context implements vdom.Context {
   /// its depth, so the lowest depth have the highest priority and will
   /// be executed first.
   int get depth;
+
+  /// Experimental API
+  dynamic scopeGet(Symbol key);
+
+  /// Experimental API
+  void scopeSet(Symbol key, dynamic value);
 }
