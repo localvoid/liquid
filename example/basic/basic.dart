@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
-import 'package:liquid/vdom.dart';
+import 'package:liquid/vdom.dart' as vdom;
 
 class BasicComponent extends Component {
   @property int elapsed = 0;
@@ -14,7 +14,7 @@ class BasicComponent extends Component {
 
   void create() { element = new ParagraphElement(); }
 
-  build() => root()('Liquid has been successfully running for $elapsedSeconds seconds.');
+  build() => vdom.root()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
 main() {

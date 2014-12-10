@@ -5,9 +5,9 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
-import 'package:liquid/vdom.dart';
+import 'package:liquid/vdom.dart' as vdom;
 
-final collapsable = componentFactory(Collapsable);
+final collapsable = vdom.componentFactory(Collapsable);
 class Collapsable extends Component {
   @property bool collapsed = false;
 
@@ -21,10 +21,10 @@ class Collapsable extends Component {
   }
 
   build() =>
-      rootDecorator(classes: collapsed ? ['collapsable-close'] : ['collapsable-open']);
+      vdom.rootDecorator(classes: collapsed ? ['collapsable-close'] : ['collapsable-open']);
 }
 
-final basic = componentFactory(Basic);
+final basic = vdom.componentFactory(Basic);
 class Basic extends Component {
   @property int elapsed = 0;
 
@@ -40,12 +40,12 @@ class Basic extends Component {
     });
   }
 
-  build() => root()('Liquid has been successfully running for $elapsedSeconds seconds.');
+  build() => vdom.root()('Liquid has been successfully running for $elapsedSeconds seconds.');
 }
 
 class App extends Component<DivElement> {
   build() {
-    return root()(
+    return vdom.root()(
         collapsable()(
             basic(elapsed: 0)
         )

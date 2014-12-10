@@ -5,15 +5,15 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:liquid/liquid.dart';
-import 'package:liquid/vdom.dart';
+import 'package:liquid/vdom.dart' as vdom;
 
-final dynamicTree = dynamicTreeFactory(({elapsed}) =>
-    div()(elapsed.toString()));
+final dynamicTree = vdom.dynamicTreeFactory(({elapsed}) =>
+    vdom.div()(elapsed.toString()));
 
 class App extends Component {
   @property int elapsed;
 
-  build() => root()(dynamicTree(elapsed: elapsed));
+  build() => vdom.root()(dynamicTree(elapsed: elapsed));
 }
 
 main() {

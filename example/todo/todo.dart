@@ -4,7 +4,7 @@
 
 import 'dart:html';
 import 'package:liquid/liquid.dart';
-import 'package:liquid/vdom.dart';
+import 'package:liquid/vdom.dart' as vdom;
 
 class Item {
   static int __nextId = 0;
@@ -14,13 +14,14 @@ class Item {
   Item([this.text = '']) : id = __nextId++;
 }
 
-final todoItem = staticTreeFactory(({item}) => li()(item.text));
-final todoList = dynamicTreeFactory(({items}) {
-  return ul()(items.map((i) => todoItem(key: i.id, item: i)));
+final todoItem = vdom.staticTreeFactory(({item}) => vdom.li()(item.text));
+final todoList = vdom.dynamicTreeFactory(({items}) {
+  return vdom.ul()(items.map((i) => todoItem(key: i.id, item: i)));
 });
 
 class TodoApp extends Component<DivElement> {
   @property List<Item> items;
+
   String inputText = '';
 
   void create() {
@@ -51,12 +52,12 @@ class TodoApp extends Component<DivElement> {
   }
 
   build() {
-    return root()([
-      h2()('TODO'),
+    return vdom.root()([
+      vdom.h2()('TODO'),
       todoList(items: items),
-      form()([
-        textInput(value: inputText),
-        button(classes: ['add-button'])('Add item')
+      vdom.form()([
+        vdom.textInput(value: inputText),
+        vdom.button(classes: ['add-button'])('Add item')
       ])
     ]);
   }

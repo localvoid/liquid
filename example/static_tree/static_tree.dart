@@ -4,13 +4,13 @@
 
 import 'dart:html';
 import 'package:liquid/liquid.dart';
-import 'package:liquid/vdom.dart';
+import 'package:liquid/vdom.dart' as vdom;
 
-final staticTree = staticTreeFactory(({name}) =>
-    div()('Hello $name!'));
+final staticTree = vdom.staticTreeFactory(({name}) =>
+    vdom.div()('Hello $name!'));
 
 class App extends Component {
-  build() => root()(staticTree(name: 'World'));
+  build() => vdom.root()(staticTree(name: 'World'));
 }
 
 main() {
