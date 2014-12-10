@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Transformer that compiles `staticTreeFactory`, `dynamicTreeFactory` and
-/// `componentFactory` invocations into static and optimized classes that can
+/// Transformer that compiles [staticTreeFactory], [dynamicTreeFactory] and
+/// [componentFactory] invocations into static and optimized classes that can
 /// be used without mirror-based apis.
 library liquid.transformer.factory_transformer;
 
@@ -62,8 +62,8 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
     final componentMetaDataExtractor = new ComponentMetaDataExtractor(liquidElements);
 
     // replace vdom.dart to vdom_static.dart
-    // and remove part directives (inject them)
-    // TODO: migrate to aggregate transformers
+    // and remove part directives (all parts injected into main library file right now)
+    // TODO: migrate to aggregate transformers and get rid of parts injecting
     for (final directive in unit.directives) {
       if (directive is ImportDirective &&
           directive.uri.stringValue == 'package:liquid/vdom.dart') {

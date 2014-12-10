@@ -102,7 +102,7 @@ class _VGenericComponentFactory extends Function {
   VGenericComponent noSuchMethod(Invocation invocation) {
     assert(invariant(invocation.positionalArguments.isEmpty, () =>
         'VComponent factory invocation shouldn\'t have positional arguments.\n'
-        'Position arguments: ${invocation.positionalArguments}'));
+        'Positional arguments: ${invocation.positionalArguments}'));
     return _create(invocation.namedArguments);
   }
 
@@ -110,7 +110,8 @@ class _VGenericComponentFactory extends Function {
   VGenericComponent call() => _create();
 }
 
-/// This function generates new factory for component vdom nodes.
+/// [componentFactory] function generates new factory for [VComponent] vdom
+/// nodes.
 ///
 /// [componentFactory] function should be treated as part of Liquid DSL,
 /// and it should be invoked only in top-level declarations:

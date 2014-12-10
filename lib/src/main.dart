@@ -12,13 +12,16 @@ import 'package:liquid/src/component.dart';
 final DOMScheduler domScheduler = new DOMScheduler();
 
 /// Inject Component into the DOM
-void injectComponent(Component component, html.Element parent) {
+void injectComponent(Component component, html.Element parent,
+                     [bool attached = true]) {
   domScheduler.zone.run(() {
     domScheduler.nextFrame.write(0).then((_) {
       component.create();
       component.init();
       parent.append(component.element);
-      component.attach();
+      if (attached) {
+        component.attach();
+      }
       component.internalUpdate();
     });
   });

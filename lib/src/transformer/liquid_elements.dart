@@ -9,17 +9,28 @@ import 'package:code_transformers/resolver.dart';
 
 /// Object that stores resolved elements from the Liquid library.
 class LiquidElements {
+  /// [Property] class used for @property annotation.
   static const int propertyClassFlag = 1;
+
+  /// [Component] class.
   static const int componentClassFlag = 1 << 1;
+
+  /// [staticTreeFactory] function from dynamic library.
   static const int staticTreeFactoryFlag = 1 << 2;
+
+  /// [dynamicTreeFactory] function from dynamic library.
   static const int dynamicTreeFactoryFlag = 1 << 3;
+
+  /// [componentFactory] function from dynamic library.
   static const int componentFactoryFlag = 1 << 4;
+
+  /// [VComponent] class.
+  static const int vComponentClassFlag = 1 << 5;
+
+  /// Mask for all Liquid Elements that are used in this class.
   static const int allElements = propertyClassFlag | componentClassFlag |
-      staticTreeFactoryFlag | dynamicTreeFactoryFlag | componentFactoryFlag;
-
-  // TODO: fix this
-  static const int vComponentBaseClassFlag = 1 << 5;
-
+      staticTreeFactoryFlag | dynamicTreeFactoryFlag | componentFactoryFlag |
+      vComponentClassFlag;
 
   Resolver _resolver;
   int elementMask = 0;
@@ -32,6 +43,7 @@ class LiquidElements {
 
   LiquidElements(this._resolver);
 
+  /// Lookup all [Element]s for elements specified in [mask] argument.
   void lookup(int mask) {
     if ((mask & propertyClassFlag == propertyClassFlag) &&
         (elementMask & propertyClassFlag != propertyClassFlag)) {
@@ -73,11 +85,11 @@ class LiquidElements {
       }
     }
 
-    if ((mask & vComponentBaseClassFlag == vComponentBaseClassFlag) &&
-        (elementMask & vComponentBaseClassFlag != vComponentBaseClassFlag)) {
+    if ((mask & vComponentClassFlag == vComponentClassFlag) &&
+        (elementMask & vComponentClassFlag != vComponentClassFlag)) {
       vComponentBaseClass = _resolver.getType('liquid.vdom.VComponent');
       if (vComponentBaseClass != null) {
-        elementMask |= vComponentBaseClassFlag;
+        elementMask |= vComponentClassFlag;
       }
     }
   }

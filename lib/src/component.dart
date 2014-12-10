@@ -122,7 +122,12 @@ abstract class Component<T extends html.Element> implements Context {
   /// Execution context: [domScheduler]:write
   void detached() {}
 
-  /// Build Virtual DOM for the current state of the [VComponent].
+  /// Build Virtual DOM for the current state of the [Component].
+  ///
+  /// If [build] method returns [:null:], it means that there is no need to
+  /// update virtual dom representation. This behavior applies only for
+  /// [Component] objects. [VStaticTree] and [VDynamicTree] should always
+  /// return virtual dom representation.
   ///
   /// Execution context: [domScheduler]:write
   vdom.VRootBase<T> build() => null;
@@ -132,6 +137,10 @@ abstract class Component<T extends html.Element> implements Context {
   /// Execution context: [domScheduler]:write
   Future update() => null;
 
+  /// When [shouldComponentUpdate] returns [:false:], it means that we can skip
+  /// updating step in [internalUpdate] method.
+  ///
+  /// Execution context: [domScheduler]:write
   bool shouldComponentUpdate() => true;
 
   /// Lifecycle method that executes right after [Component] is mounted on top

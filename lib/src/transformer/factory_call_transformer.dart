@@ -61,7 +61,7 @@ class FactoryCallTransformer extends Transformer with ResolverTransformer {
 
     final lookupFlags = LiquidElements.componentClassFlag |
                         LiquidElements.propertyClassFlag |
-                        LiquidElements.vComponentBaseClassFlag;
+                        LiquidElements.vComponentClassFlag;
 
     liquidElements.lookup(lookupFlags);
 

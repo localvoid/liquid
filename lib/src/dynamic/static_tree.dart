@@ -28,6 +28,9 @@ class VStaticTree extends vdom.VElementBase {
 
   void create(vdom.Context context) {
     _vTree = build();
+    assert(invariant(_vTree != null,
+        'build() method should return Virtual DOM Node, but instead returns '
+        '`null` value.'));
     _vTree.create(context);
     ref = _vTree.ref;
   }
@@ -54,6 +57,15 @@ class _VStaticTreeFactory extends Function {
 
   _VStaticTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
+     assert(() {
+       for (final param in _closureMirror.function.parameters) {
+         if (!param.isNamed) {
+           throw new AssertionFailure(
+               'Static Tree factories doesn\'t support positional arguments.');
+         }
+       }
+       return true;
+     }());
      _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
   }
 
@@ -87,7 +99,7 @@ class _VStaticTreeFactory extends Function {
   VStaticTree noSuchMethod(Invocation invocation) {
     assert(invariant(invocation.positionalArguments.isEmpty, () =>
         'Static Tree factory invocation shouldn\'t have positional arguments.\n'
-        'Position arguments: ${invocation.positionalArguments}'));
+        'Positional arguments: ${invocation.positionalArguments}'));
     return _create(invocation.namedArguments);
   }
 
@@ -95,7 +107,8 @@ class _VStaticTreeFactory extends Function {
   VStaticTree call() => _create();
 }
 
-/// This function generates new factory for static tree vdom nodes.
+/// [staticTreeFactory] function generates new factory for static tree vdom
+/// nodes.
 ///
 /// Static tree nodes are simple stateless nodes with lazy subtree generation.
 /// Subtree is created when `render()` method is invoked and it never updates

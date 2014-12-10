@@ -33,6 +33,9 @@ class VDynamicTree extends VStaticTree {
   void update(VStaticTree other, vdom.Context context) {
     super.update(other, context);
     other._vTree = other.build();
+    assert(invariant(other._vTree != null,
+        'build() method should return Virtual DOM Node, but instead returns '
+        '`null` value.'));
     _vTree.update(other._vTree, context);
   }
 }
@@ -47,6 +50,15 @@ class _VDynamicTreeFactory extends Function {
 
   _VDynamicTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
+     assert(() {
+       for (final param in _closureMirror.function.parameters) {
+         if (!param.isNamed) {
+           throw new AssertionFailure(
+               'Dynamic Tree factories doesn\'t support positional arguments.');
+         }
+       }
+       return true;
+     }());
      _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
   }
 
@@ -80,7 +92,7 @@ class _VDynamicTreeFactory extends Function {
   VDynamicTree noSuchMethod(Invocation invocation) {
     assert(invariant(invocation.positionalArguments.isEmpty, () =>
         'Dynamic Tree factory invocation shouldn\'t have positional arguments.\n'
-        'Position arguments: ${invocation.positionalArguments}'));
+        'Positional arguments: ${invocation.positionalArguments}'));
     return _create(invocation.namedArguments);
   }
 
@@ -88,7 +100,8 @@ class _VDynamicTreeFactory extends Function {
   VDynamicTree call() => _create();
 }
 
-/// This function generates new factory for dynamic tree vdom nodes.
+/// [dynamicTreeFactory] function generates new factory for dynamic tree vdom
+/// nodes.
 ///
 /// Dynamic tree nodes are simple stateless nodes with lazy subtree generation.
 /// Subtree is created when `update()` or `render()` method is invoked.
