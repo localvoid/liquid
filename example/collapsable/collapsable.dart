@@ -9,7 +9,7 @@ import 'package:liquid/vdom.dart' as vdom;
 
 final collapsable = vdom.componentFactory(Collapsable);
 class Collapsable extends Component {
-  @property bool collapsed = false;
+  @property() bool collapsed = false;
 
   void create() {
     element = new DivElement();
@@ -26,7 +26,7 @@ class Collapsable extends Component {
 
 final basic = vdom.componentFactory(Basic);
 class Basic extends Component {
-  @property int elapsed = 0;
+  @property(required: true) int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 

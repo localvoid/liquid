@@ -16,7 +16,7 @@ final innerBox = vdom.staticTreeFactory(() => vdom.div(classes: ['inner-box'])('
 
 final box = vdom.componentFactory(Box);
 class Box extends Component {
-  @property OuterBox parent = null;
+  @property() OuterBox parent = null;
 
   int _outerWidth = 0;
   int _innerWidth = 0;

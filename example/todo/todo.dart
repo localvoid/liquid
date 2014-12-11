@@ -20,7 +20,7 @@ final todoList = vdom.dynamicTreeFactory(({items}) {
 });
 
 class TodoApp extends Component<DivElement> {
-  @property List<Item> items;
+  @property() List<Item> items;
 
   String inputText = '';
 

@@ -8,7 +8,7 @@ import 'package:liquid/liquid.dart';
 import 'package:liquid/vdom.dart' as vdom;
 
 class BasicComponent extends Component {
-  @property int elapsed = 0;
+  @property() int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 

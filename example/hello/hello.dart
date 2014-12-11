@@ -7,7 +7,7 @@ import 'package:liquid/liquid.dart';
 import 'package:liquid/vdom.dart' as vdom;
 
 class HelloComponent extends Component<DivElement> {
-  @property String name;
+  @property() String name;
 
   build() => vdom.root()('Hello $name');
 }

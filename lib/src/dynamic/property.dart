@@ -5,20 +5,20 @@
 part of liquid.dynamic;
 
 /// Lookup for all declarations with `@property` annotations.
-Map<Symbol, Property> _lookupProperties(Iterable<DeclarationMirror> declarations,
-    [bool allProperties = true]) {
-  final result = new HashMap<Symbol, Property>();
+Map<Symbol, property> _lookupProperties(Iterable<DeclarationMirror> declarations,
+    [bool allProperties = true, property defaultProperty = const property()]) {
+  final result = new HashMap<Symbol, property>();
 
   for (var d in declarations) {
-    Property propertyType;
+    property propertyType;
     for (var m in d.metadata) {
-      if (m.reflectee is Property) {
+      if (m.reflectee is property) {
         propertyType = m.reflectee;
         break;
       }
     }
     if (allProperties && propertyType == null) {
-      propertyType = const Property();
+      propertyType = defaultProperty;
     }
     if (propertyType != null) {
       result[d.simpleName] = propertyType;

@@ -15,7 +15,7 @@ part of liquid.dynamic;
 class VDynamicTree extends VStaticTree {
   /// Metadata information about properties. It is used only in mirror-based
   /// implementation.
-  HashMap<Symbol, Property> _propertyTypes;
+  HashMap<Symbol, property> _propertyTypes;
 
   VDynamicTree(
       this._propertyTypes,
@@ -46,24 +46,44 @@ class _VDynamicTreeFactory extends Function {
   Function _buildFunction;
 
   ClosureMirror _closureMirror;
-  HashMap<Symbol, Property> _propertyTypes;
+  HashMap<Symbol, property> _propertyTypes;
 
   _VDynamicTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
+     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
      assert(() {
        for (final param in _closureMirror.function.parameters) {
          if (!param.isNamed) {
-           throw 'Dynamic Tree factories doesn\'t support positional arguments.';
+           throw 'Dynamic Tree Factories doesn\'t support positional arguments.\n'
+                 'Positional argument: "${MirrorSystem.getName(param.simpleName)}".\n'
+                 'Dynamic Tree Factory: ${_closureMirror.function.source}';
          }
        }
+       _propertyTypes.forEach((k, v) {
+         if (v.required) {
+           throw 'Dynamic Tree Factory requires to specify '
+                 '"${MirrorSystem.getName(k)}" property.\n'
+                 'Dynamic Tree Factory: ${_closureMirror.function.source}';
+         }
+       });
        return true;
      }());
-     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
   }
 
   /// Creates a new instance of [VDynamicTree] with [args] properties.
   VDynamicTree _create([Map args]) {
     if (args == null) {
+      assert(() {
+        _propertyTypes.forEach((k, v) {
+          if (v.required) {
+            throw 'Dynamic Tree Factory requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.\n'
+                  'Dynamic Tree Factory: ${_closureMirror.function.source}';
+          }
+        });
+        return true;
+      }());
+
       return new VDynamicTree(_propertyTypes, _buildFunction, null, null, null,
           null, null, null, null);
     }
@@ -78,8 +98,16 @@ class _VDynamicTreeFactory extends Function {
       for (final property in properties.keys) {
         if (!_propertyTypes.containsKey(property)) {
           throw 'Dynamic Tree Node doesn\'t have a property '
-                '${MirrorSystem.getName(property)}.';
+                '"${MirrorSystem.getName(property)}".\n'
+                'Dynamic Tree Factory: ${_closureMirror.function.source}';
         }
+        _propertyTypes.forEach((k, v) {
+          if (v.required && !properties.containsKey(k)) {
+            throw 'Dynamic Tree Factory requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.\n'
+                  'Dynamic Tree Factory: ${_closureMirror.function.source}';
+          }
+        });
       }
       return true;
     }());
@@ -90,8 +118,9 @@ class _VDynamicTreeFactory extends Function {
   /// It is used to implement variadic arguments.
   VDynamicTree noSuchMethod(Invocation invocation) {
     assert(invariant(invocation.positionalArguments.isEmpty, () =>
-        'Dynamic Tree factory invocation shouldn\'t have positional arguments.\n'
-        'Positional arguments: ${invocation.positionalArguments}'));
+        'Dynamic Tree factories shouldn\'t have positional arguments.\n'
+        'Positional arguments: ${invocation.positionalArguments}\n'
+        'Dynamic Tree Factory: ${_closureMirror.function.source}'));
     return _create(invocation.namedArguments);
   }
 

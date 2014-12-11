@@ -11,7 +11,7 @@ final dynamicTree = vdom.dynamicTreeFactory(({elapsed}) =>
     vdom.div()(elapsed.toString()));
 
 class App extends Component {
-  @property int elapsed;
+  @property() int elapsed;
 
   build() => vdom.root()(dynamicTree(elapsed: elapsed));
 }

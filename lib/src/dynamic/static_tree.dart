@@ -53,24 +53,44 @@ class _VStaticTreeFactory extends Function {
   Function _buildFunction;
 
   ClosureMirror _closureMirror;
-  HashMap<Symbol, Property> _propertyTypes;
+  HashMap<Symbol, property> _propertyTypes;
 
   _VStaticTreeFactory(this._buildFunction) {
      _closureMirror = reflect(_buildFunction);
+     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
      assert(() {
        for (final param in _closureMirror.function.parameters) {
          if (!param.isNamed) {
-           throw 'Static Tree factories doesn\'t support positional arguments.';
+           throw 'Static Tree Factories doesn\'t support positional arguments.\n'
+                 'Positional argument: "${MirrorSystem.getName(param.simpleName)}".\n'
+                 'Static Tree Factory: ${_closureMirror.function.source}';
          }
        }
+       _propertyTypes.forEach((k, v) {
+         if (v.required) {
+           throw 'Static Tree Factory requires to specify '
+                 '"${MirrorSystem.getName(k)}" property.\n'
+                 'Static Tree Factory: ${_closureMirror.function.source}';
+         }
+       });
        return true;
      }());
-     _propertyTypes = _lookupProperties(_closureMirror.function.parameters);
   }
 
   /// Creates a new instance of [VStaticTree] with [args] properties.
   VStaticTree _create([Map args]) {
     if (args == null) {
+      assert(() {
+        _propertyTypes.forEach((k, v) {
+          if (v.required) {
+            throw 'Static Tree Factory requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.\n'
+                  'Static Tree Factory: ${_closureMirror.function.source}';
+          }
+        });
+        return true;
+      }());
+
       return new VStaticTree(_buildFunction, null, null, null, null, null, null,
           null);
     }
@@ -85,8 +105,16 @@ class _VStaticTreeFactory extends Function {
       for (final property in properties.keys) {
         if (!_propertyTypes.containsKey(property)) {
           throw 'Static Tree Node doesn\'t have a property '
-                '${MirrorSystem.getName(property)}.';
+                '"${MirrorSystem.getName(property)}".\n'
+                'Static Tree Factory: ${_closureMirror.function.source}';
         }
+        _propertyTypes.forEach((k, v) {
+          if (v.required && !properties.containsKey(k)) {
+            throw 'Static Tree Factory requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.\n'
+                  'Static Tree Factory: ${_closureMirror.function.source}';
+          }
+        });
       }
       return true;
     }());
@@ -97,8 +125,9 @@ class _VStaticTreeFactory extends Function {
   /// It is used to implement variadic arguments.
   VStaticTree noSuchMethod(Invocation invocation) {
     assert(invariant(invocation.positionalArguments.isEmpty, () =>
-        'Static Tree factory invocation shouldn\'t have positional arguments.\n'
-        'Positional arguments: ${invocation.positionalArguments}'));
+        'Static Tree factories shouldn\'t have positional arguments.\n'
+        'Positional arguments: ${invocation.positionalArguments}\n'
+        'Static Tree Factory: ${_closureMirror.function.source}'));
     return _create(invocation.namedArguments);
   }
 
@@ -124,4 +153,5 @@ class _VStaticTreeFactory extends Function {
 ///
 /// When the project is compiled with transformer, call to this function will be
 /// transformed into an optimized Class with function to instantiate it.
-Function staticTreeFactory(Function buildFunction) => new _VStaticTreeFactory(buildFunction);
+Function staticTreeFactory(Function buildFunction) =>
+    new _VStaticTreeFactory(buildFunction);

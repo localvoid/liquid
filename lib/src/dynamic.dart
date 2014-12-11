@@ -9,7 +9,7 @@ library liquid.dynamic;
 import 'dart:collection';
 import 'dart:mirrors';
 import 'package:liquid/src/utils.dart';
-import 'package:liquid/src/property.dart';
+import 'package:liquid/src/annotations.dart';
 import 'package:liquid/vdom.dart' as vdom;
 
 part 'package:liquid/src/dynamic/property.dart';

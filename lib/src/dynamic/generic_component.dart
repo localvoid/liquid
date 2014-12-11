@@ -9,7 +9,7 @@ class VGenericComponent extends vdom.VComponent {
   InstanceMirror _instanceMirror;
 
   ClassMirror _classMirror;
-  Map<Symbol, Property> _propertyTypes;
+  Map<Symbol, property> _propertyTypes;
   Map<Symbol, dynamic> _properties;
 
   VGenericComponent(
@@ -63,7 +63,7 @@ class _VGenericComponentFactory extends Function {
   /// Type of the [Component] to instantiate
   Type _componentType;
   ClassMirror _classMirror;
-  Map<Symbol, Property> _propertyTypes;
+  Map<Symbol, property> _propertyTypes;
 
   _VGenericComponentFactory(this._componentType) {
     _classMirror = reflectClass(_componentType);
@@ -91,6 +91,15 @@ class _VGenericComponentFactory extends Function {
   /// Creates a new instance of [VGenericComponent] with [args] properties.
   VGenericComponent _create([Map args]) {
     if (args == null) {
+      assert(() {
+        _propertyTypes.forEach((k, v) {
+          if (v.required) {
+            throw '$_componentType component requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.';
+          }
+        });
+        return true;
+      }());
       return new VGenericComponent(_classMirror, _propertyTypes, null, null,
           null, null, null, null, null);
     }
@@ -104,9 +113,15 @@ class _VGenericComponentFactory extends Function {
     assert(() {
       for (final property in properties.keys) {
         if (!_propertyTypes.containsKey(property)) {
-          throw 'Component $_componentType doesn\'t have a property'
-                ' ${MirrorSystem.getName(property)}.';
+          throw '$_componentType component doesn\'t have a property '
+                '"${MirrorSystem.getName(property)}".';
         }
+        _propertyTypes.forEach((k, v) {
+          if (v.required && !properties.containsKey(k)) {
+            throw '$_componentType component requires to specify '
+                  '"${MirrorSystem.getName(k)}" property.';
+          }
+        });
       }
       return true;
     }());

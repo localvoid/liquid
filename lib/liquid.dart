@@ -5,7 +5,7 @@
 /// Library to build User Interfaces.
 library liquid;
 
-export 'package:liquid/src/property.dart';
+export 'package:liquid/src/annotations.dart';
 export 'package:liquid/src/component.dart';
 export 'package:liquid/src/event.dart';
 export 'package:liquid/src/main.dart';

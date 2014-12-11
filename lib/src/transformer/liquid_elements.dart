@@ -47,7 +47,7 @@ class LiquidElements {
   void lookup(int mask) {
     if ((mask & propertyClassFlag == propertyClassFlag) &&
         (elementMask & propertyClassFlag != propertyClassFlag)) {
-      propertyClass = _resolver.getType('liquid.property.Property');
+      propertyClass = _resolver.getType('liquid.annotations.property');
       if (propertyClass != null) {
         elementMask |= propertyClassFlag;
       }

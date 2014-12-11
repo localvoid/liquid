@@ -26,7 +26,7 @@ final box = vdom.dynamicTreeFactory(({count: 0}) {
 });
 
 class App extends Component {
-  @property List<int> items;
+  @property() List<int> items;
 
   build() {
     var i = 0;
