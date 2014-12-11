@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// TODO: fix error when only vdom library is imported
+
 /// Transformer that compiles [staticTreeFactory], [dynamicTreeFactory] and
 /// [componentFactory] invocations into static and optimized classes that can
 /// be used without mirror-based apis.
@@ -74,7 +76,9 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
       }
     }
 
-    addImport(transaction, unit, 'package:liquid/vdom_static.dart', '__vdom');
+    if (unit.directives.firstWhere((d) => d is ImportDirective, orElse: () => null) != null) {
+      addImport(transaction, unit, 'package:liquid/vdom_static.dart', '__vdom');
+    }
 
     // compile factories
     final factoryGenerators = new FactoryGenerators(liquidElements, componentMetaDataExtractor);
