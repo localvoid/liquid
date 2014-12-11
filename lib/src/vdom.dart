@@ -13,6 +13,7 @@ import 'package:liquid/src/component.dart';
 part 'package:liquid/src/vdom/basic.dart';
 part 'package:liquid/src/vdom/component.dart';
 part 'package:liquid/src/vdom/root.dart';
+part 'package:liquid/src/vdom/root_decorator.dart';
 
 part 'package:liquid/src/vdom/elements/check_box.dart';
 part 'package:liquid/src/vdom/elements/text_input.dart';

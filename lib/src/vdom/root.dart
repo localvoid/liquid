@@ -5,7 +5,16 @@
 part of liquid.vdom;
 
 abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
+  VRootDecorator<T> parent;
   Component<T> component;
+
+  // TODO: optimize this
+  html.Node get container {
+    if (parent != null) {
+      return parent.innerContainer != null ? parent.innerContainer : parent.container;
+    }
+    return component.container;
+  }
 
   VRootBase(
       List<VNode> children,
@@ -21,10 +30,14 @@ abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
   }
 
   void mount(html.Node node, Context context) {
-    throw new UnimplementedError('Mounting isn\'t implemented right now.');
+    if (children != null) {
+      mountChildren(children, node, context);
+    }
   }
 
-  void link(VRootDecorator<T> parent) {}
+  void link(VRootDecorator<T> parent) {
+    this.parent = parent;
+  }
 
   void mountComponent(Component<T> component) {
     this.component = component;
@@ -34,71 +47,6 @@ abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
   void update(VRootBase<T> other, Context context) {
     super.update(other, context);
     other.component = component;
-  }
-}
-
-/// TODO: experimental, WIP. (doesn't work right now with deep hierarchies)
-class VRootDecorator<T extends html.Element> extends VRootBase<T> {
-  VRootDecorator<T> parent;
-  VRootBase<T> _next;
-  html.Node container;
-  VNode innerContainer;
-
-  VRootDecorator(
-      {this.innerContainer,
-       List<VNode> children,
-       String id,
-       Map<String, String> attributes,
-       List<String> classes,
-       Map<String, String> styles})
-      : super(children, id, attributes, classes, styles);
-
-  void decorate(VRootBase<T> root) {
-    _next = root;
-    root.link(this);
-  }
-
-  void link(VRootDecorator<T> parent) {
-    this.parent = parent;
-  }
-
-  void mountComponent(Component<T> component) {
-    super.mountComponent(component);
-    if (_next != null) {
-      _next.mountComponent(component);
-    }
-  }
-
-  void render(Context context) {
-    if (parent == null) {
-      container = ref;
-    } else {
-      if (parent.innerContainer == null) {
-        container = parent.container;
-      } else {
-        container = parent.innerContainer.ref;
-      }
-    }
-    super.render(context);
-    if (_next != null) {
-      _next.render(context);
-    }
-  }
-
-  void update(VRootDecorator<T> other, Context context) {
-    if (parent == null) {
-      container = ref;
-    } else {
-      if (parent.innerContainer == null) {
-        container = parent.container;
-      } else {
-        container = parent.innerContainer.ref;
-      }
-    }
-    super.update(other, context);
-    if (_next != null) {
-      _next.update(other._next, context);
-    }
   }
 }
 
@@ -124,23 +72,6 @@ class VRoot<T extends html.Element> extends VRootBase<T> {
   void removeChild(VNode node, Context context) {
     component.removeChild(node);
   }
-}
-
-VRootDecorator rootDecorator({
-  VNode innerContainer,
-  List<VNode> children,
-  String id,
-  Map<String, String> attributes,
-  List<String> classes,
-  Map<String, String> styles}) {
-
-  return new VRootDecorator(
-      innerContainer: innerContainer,
-      children: children,
-      id: id,
-      attributes: attributes,
-      classes: classes,
-      styles: styles);
 }
 
 VRoot root({
