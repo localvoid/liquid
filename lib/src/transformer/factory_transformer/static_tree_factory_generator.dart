@@ -15,8 +15,10 @@ part of liquid.transformer.factory_transformer;
 /// __VmyTree myTree(${fn.namedArgs} + defaultArgs) =>
 ///     new __VmyTree(${fn.namedArgs} + defaultArgs);
 class StaticTreeFactoryGenerator extends FactoryGenerator {
-  void compile(TextEditTransaction transaction, TopLevelVariableDeclaration tld,
-      SimpleIdentifier name, FunctionExpression buildFunction) {
+  void compile(BuildLogger logger, TextEditTransaction transaction,
+               TopLevelVariableDeclaration tld, SimpleIdentifier name,
+               MethodInvocation method) {
+    final buildFunction = method.argumentList.arguments[0];
     final parameters = buildFunction.parameters.parameters;
     final List<DefaultFormalParameter> namedArgs = [];
     for (var p in parameters) {

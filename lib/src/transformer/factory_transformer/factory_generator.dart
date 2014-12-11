@@ -5,8 +5,9 @@
 part of liquid.transformer.factory_transformer;
 
 abstract class FactoryGenerator {
-  void compile(TextEditTransaction transaction, TopLevelVariableDeclaration tld,
-               SimpleIdentifier name, Expression arg);
+  void compile(BuildLogger logger, TextEditTransaction transaction,
+               TopLevelVariableDeclaration tld, SimpleIdentifier name,
+               MethodInvocation method);
 }
 
 class FactoryGenerators {

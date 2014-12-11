@@ -17,6 +17,7 @@ import 'package:analyzer/src/generated/utilities_dart.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:barback/barback.dart';
 import 'package:code_transformers/resolver.dart';
+import 'package:code_transformers/messages/build_logger.dart';
 import 'package:liquid/src/transformer/options.dart';
 import 'package:liquid/src/transformer/utils.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
@@ -50,21 +51,34 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
     final asset = transform.primaryInput;
     final id = asset.id;
     final lib = resolver.getLibrary(id);
-    final transaction = resolver.createTextEditTransaction(lib);
     final unit = lib.definingCompilationUnit.node;
 
     final liquidElements = new LiquidElements(resolver);
-    liquidElements.lookup(LiquidElements.allElements);
 
-    if ((liquidElements.elementMask & LiquidElements.allElements) != LiquidElements.allElements) {
+    // lookup for factory generator functions, if they're not found, then
+    // skip processing this file.
+    final requiredElements = LiquidElements.staticTreeFactoryFlag |
+                             LiquidElements.dynamicTreeFactoryFlag |
+                             LiquidElements.componentFactoryFlag;
+    liquidElements.lookup(requiredElements);
+
+    if ((liquidElements.elementMask & requiredElements) != requiredElements) {
       transform.addOutput(transform.primaryInput);
       return;
     }
 
-    final componentMetaDataExtractor = new ComponentMetaDataExtractor(liquidElements);
+    final buildLogger = new BuildLogger(transform);
+    final transaction = resolver.createTextEditTransaction(lib);
+
+    // lookup for Property and Component classes
+    liquidElements.lookup(LiquidElements.propertyClassFlag |
+                          LiquidElements.componentClassFlag);
+
+    final componentMetaDataExtractor =
+        new ComponentMetaDataExtractor(liquidElements);
 
     // replace vdom.dart to vdom_static.dart
-    // and remove part directives (all parts injected into main library file right now)
+    // and remove part directives (all parts injected into library file)
     // TODO: migrate to aggregate transformers and get rid of parts injecting
     for (final directive in unit.directives) {
       if (directive is ImportDirective &&
@@ -76,32 +90,41 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
       }
     }
 
-    if (unit.directives.firstWhere((d) => d is ImportDirective, orElse: () => null) != null) {
+    if (lib.importedLibraries.isNotEmpty) {
       addImport(transaction, unit, 'package:liquid/vdom_static.dart', '__vdom');
     }
 
     // compile factories
-    final factoryGenerators = new FactoryGenerators(liquidElements, componentMetaDataExtractor);
-
+    final factoryGenerators =
+        new FactoryGenerators(liquidElements, componentMetaDataExtractor);
 
     final url = id.path.startsWith('lib/')
         ? 'package:${id.package}/${id.path.substring(4)}' : id.path;
 
     for (final part in lib.parts) {
-      final tx = resolver.createTextEditTransaction(part);
+      final partTransaction = resolver.createTextEditTransaction(part);
       for (final directive in part.unit.directives) {
         if (directive is PartOfDirective) {
-          tx.edit(directive.offset, directive.end, '');
+          partTransaction.edit(directive.offset, directive.end, '');
         }
       }
-      part.unit.visitChildren(new _FactoryGeneratorCompiler(tx, factoryGenerators));
-      final printer = tx.commit();
+      part.unit.visitChildren(
+          new _FactoryGeneratorCompiler(
+              buildLogger,
+              partTransaction,
+              factoryGenerators));
+
+      final printer = partTransaction.commit();
       printer.build(url);
       final end = unit.directives.last.end;
       transaction.edit(end, end, printer.text);
     }
 
-    unit.visitChildren(new _FactoryGeneratorCompiler(transaction, factoryGenerators));
+    unit.visitChildren(
+        new _FactoryGeneratorCompiler(
+            buildLogger,
+            transaction,
+            factoryGenerators));
 
     // commit changes
     final printer = transaction.commit();
@@ -111,21 +134,36 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
 }
 
 class _FactoryGeneratorCompiler extends GeneralizingAstVisitor {
+  final BuildLogger _logger;
   final TextEditTransaction _transaction;
   final FactoryGenerators _factoryGenerators;
 
-  _FactoryGeneratorCompiler(this._transaction, this._factoryGenerators);
+  _FactoryGeneratorCompiler(this._logger, this._transaction,
+      this._factoryGenerators);
 
-  visitMethodInvocation(MethodInvocation m) {
-    final factoryMethod = _factoryGenerators[m.methodName.bestElement];
+  visitMethodInvocation(MethodInvocation method) {
+    final factoryMethod = _factoryGenerators[method.methodName.bestElement];
     if (factoryMethod != null) {
-      final arg = m.argumentList.arguments[0];
-      final VariableDeclaration declaration = m.parent;
+      if (method.parent is! VariableDeclaration) {
+        _logger.error(
+            'Factory Generator functions should be called from top-level'
+            'declarations in "final myFactory = factory(args);" format.');
+        return;
+      }
+      final VariableDeclaration declaration = method.parent;
+
+      if (declaration.parent.parent is! TopLevelVariableDeclaration) {
+        _logger.error(
+            'Factory Generator functions should be called from top-level'
+            'declarations in "final myFactory = factory(args);" format.');
+        return;
+      }
       final TopLevelVariableDeclaration tld = declaration.parent.parent;
+
       final name = declaration.name;
-      factoryMethod.compile(_transaction, tld, name, arg);
+      factoryMethod.compile(_logger, _transaction, tld, name, method);
     } else {
-      super.visitMethodInvocation(m);
+      super.visitMethodInvocation(method);
     }
   }
 }

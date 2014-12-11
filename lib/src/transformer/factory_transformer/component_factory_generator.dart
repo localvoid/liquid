@@ -51,9 +51,42 @@ class ComponentFactoryGenerator extends FactoryGenerator {
 
   ComponentFactoryGenerator(this._elements, this._extractor);
 
-  void compile(TextEditTransaction transaction, TopLevelVariableDeclaration tld,
-               SimpleIdentifier name, SimpleIdentifier type) {
-    final ClassElement component = type.bestElement;
+  void compile(BuildLogger logger, TextEditTransaction transaction,
+               TopLevelVariableDeclaration tld, SimpleIdentifier name,
+               MethodInvocation method) {
+    if (_elements.componentClass == null) {
+      logger.error(
+          'componentFactory function can\'t be invoked when Component class '
+          'isn\'t imported.');
+      return;
+    }
+    if (_elements.propertyClass == null) {
+      logger.error(
+          'componentFactory function can\'t be invoked when Property class '
+          'isn\'t imported.');
+      return;
+    }
+    if (method.argumentList.arguments.isEmpty) {
+      logger.error(
+          'Invalid componentFactory(Type componentType) invocation, argument '
+          '"componentType" is missing.');
+      return;
+    }
+    final type = method.argumentList.arguments[0];
+    if (type is! SimpleIdentifier) {
+      logger.error(
+          'Invalid componentFactory(Type componentType) invocation, argument '
+          '"componentType" should have type "Type".');
+      return;
+    }
+    final component = type.bestElement;
+    if (component is! ClassElement) {
+      logger.error(
+          'Invalid componentFactory(Type componentType) invocation, argument '
+          '"componentType" should have type "Type".');
+      return;
+    }
+
     final metaData = _extractor.extract(component);
 
     final className = '__V${name}';

@@ -42,8 +42,8 @@ class ComponentMetaDataExtractor {
   bool isPropertyField(FieldElement element) {
     for (final meta in element.metadata) {
       final metaElement = meta.element;
-      if (metaElement is PropertyAccessorElement &&
-          metaElement.variable.type.element == _liquidElements.propertyClass) {
+      if (metaElement is ConstructorElement &&
+          metaElement.returnType.element == _liquidElements.propertyClass) {
         return true;
       }
     }
