@@ -82,7 +82,6 @@ class _VGenericComponentFactory extends Function {
       }
       return true;
     }());
-    //print(_classMirror.declarations);
     final publicVariables = _classMirror.declarations.values.where((d) {
       return !d.isPrivate && d is VariableMirror;
     });

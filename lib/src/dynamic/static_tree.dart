@@ -60,8 +60,7 @@ class _VStaticTreeFactory extends Function {
      assert(() {
        for (final param in _closureMirror.function.parameters) {
          if (!param.isNamed) {
-           throw new AssertionFailure(
-               'Static Tree factories doesn\'t support positional arguments.');
+           throw 'Static Tree factories doesn\'t support positional arguments.';
          }
        }
        return true;
@@ -85,8 +84,8 @@ class _VStaticTreeFactory extends Function {
     assert(() {
       for (final property in properties.keys) {
         if (!_propertyTypes.containsKey(property)) {
-          throw new AssertionFailure(
-              'Static Tree Node doesn\'t have a property $property.');
+          throw 'Static Tree Node doesn\'t have a property '
+                '${MirrorSystem.getName(property)}.';
         }
       }
       return true;

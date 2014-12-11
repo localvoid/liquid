@@ -53,8 +53,7 @@ class _VDynamicTreeFactory extends Function {
      assert(() {
        for (final param in _closureMirror.function.parameters) {
          if (!param.isNamed) {
-           throw new AssertionFailure(
-               'Dynamic Tree factories doesn\'t support positional arguments.');
+           throw 'Dynamic Tree factories doesn\'t support positional arguments.';
          }
        }
        return true;
@@ -78,8 +77,8 @@ class _VDynamicTreeFactory extends Function {
     assert(() {
       for (final property in properties.keys) {
         if (!_propertyTypes.containsKey(property)) {
-          throw new AssertionFailure(
-              'Dynamic Tree Node doesn\'t have a property $property.');
+          throw 'Dynamic Tree Node doesn\'t have a property '
+                '${MirrorSystem.getName(property)}.';
         }
       }
       return true;

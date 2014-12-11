@@ -4,14 +4,6 @@
 
 library liquid.utils;
 
-class AssertionFailure {
-  final String message;
-
-  const AssertionFailure(this.message);
-
-  String toString() => message;
-}
-
 bool invariant(condition, [message]) {
   if (condition is Function){
     condition = condition();
@@ -20,7 +12,7 @@ bool invariant(condition, [message]) {
     if (message is Function) {
       message = message();
     }
-    throw new AssertionFailure(message);
+    throw message;
   }
   return true;
 }
