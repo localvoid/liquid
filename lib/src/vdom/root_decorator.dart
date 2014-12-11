@@ -7,6 +7,8 @@ part of liquid.vdom;
 /// EXPERIMENTAL
 class VRootDecorator<T extends html.Element> extends VRootBase<T> {
   VRootBase<T> _next;
+  VRootBase<T> _last;
+
   html.Node innerContainer;
 
   VRootDecorator({this.innerContainer, List<VNode> children, String id,
@@ -15,9 +17,16 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
       : super(children, id, attributes, classes, styles);
 
   VRootBase<T> decorate(VRootBase<T> root) {
-    _next = root;
+    if (_next == null) {
+      _next = root;
+    } else {
+      assert(invariant(_last is VRootDecorator<T>,
+          'Failed to decorate with $_last element.'));
+      (_last as VRootDecorator<T>)._next = root;
+    }
+    _last = root;
     root.link(this);
-    return root;
+    return this;
   }
 
   void mountComponent(Component<T> component) {

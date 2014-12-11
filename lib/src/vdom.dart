@@ -8,6 +8,7 @@ library liquid.vdom;
 import 'dart:html' as html;
 import 'package:vdom/vdom.dart';
 
+import 'package:liquid/src/utils.dart';
 import 'package:liquid/src/component.dart';
 
 part 'package:liquid/src/vdom/basic.dart';
