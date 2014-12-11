@@ -69,7 +69,7 @@ class _VGenericComponentFactory extends Function {
     final publicVariables = _classMirror.declarations.values.where((d) {
       return !d.isPrivate && d is VariableMirror;
     });
-    _propertyTypes = _lookupProperties(publicVariables);
+    _propertyTypes = _lookupProperties(publicVariables, false);
   }
 
   /// Creates a new instance of [VGenericComponent] with [args] properties.
