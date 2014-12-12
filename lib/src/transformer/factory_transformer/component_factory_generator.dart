@@ -46,10 +46,10 @@ part of liquid.transformer.factory_transformer;
 /// }
 ///
 class ComponentFactoryGenerator extends FactoryGenerator {
-  final LiquidElements _elements;
   final ComponentMetaDataExtractor _extractor;
 
-  ComponentFactoryGenerator(this._elements, this._extractor);
+  ComponentFactoryGenerator(LiquidElements elements, this._extractor)
+      : super(elements);
 
   void compile(BuildLogger logger, TextEditTransaction transaction,
                TopLevelVariableDeclaration tld, SimpleIdentifier name,
@@ -88,6 +88,17 @@ class ComponentFactoryGenerator extends FactoryGenerator {
     }
 
     final metaData = _extractor.extract(component);
+
+    if (metaData.properties.length > 48) {
+      logger.error(
+          'Component can\'t have more than 48 properties.');
+      return;
+    }
+    if (metaData.properties.length > 32) {
+      logger.info(
+          'Component have more than 32 properties, it is recommended to reduce '
+          'number of properties.');
+    }
 
     final className = '__V${name}';
 

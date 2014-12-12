@@ -15,10 +15,31 @@ part of liquid.transformer.factory_transformer;
 /// __VmyTree myTree(${fn.namedArgs} + defaultArgs) =>
 ///     new __VmyTree(${fn.namedArgs} + defaultArgs);
 class StaticTreeFactoryGenerator extends FactoryGenerator {
+  StaticTreeFactoryGenerator(LiquidElements elements) : super(elements);
+
   void compile(BuildLogger logger, TextEditTransaction transaction,
                TopLevelVariableDeclaration tld, SimpleIdentifier name,
                MethodInvocation method) {
+    if (_elements.propertyClass == null) {
+      logger.error(
+          'staticTreeFactory function can\'t be invoked when Property class '
+          'isn\'t imported.');
+      return;
+    }
+    if (method.argumentList.arguments.isEmpty) {
+      logger.error(
+          'Invalid staticTreeFactory(Function build) invocation, argument '
+          '"build" is missing.');
+      return;
+    }
     final buildFunction = method.argumentList.arguments[0];
+    if (buildFunction is! FunctionExpression) {
+      logger.error(
+          'Invalid staticTreeFactory(Function build) invocation, argument '
+          '"build" should be a Function Expression.');
+      return;
+    }
+
     final parameters = buildFunction.parameters.parameters;
     final List<DefaultFormalParameter> namedArgs = [];
     for (var p in parameters) {

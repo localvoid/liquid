@@ -27,11 +27,6 @@ class LiquidElements {
   /// [VComponent] class.
   static const int vComponentClassFlag = 1 << 5;
 
-  /// Mask for all Liquid Elements that are used in this class.
-  static const int allElements = propertyClassFlag | componentClassFlag |
-      staticTreeFactoryFlag | dynamicTreeFactoryFlag | componentFactoryFlag |
-      vComponentClassFlag;
-
   Resolver _resolver;
   int elementMask = 0;
   ClassElement propertyClass;

@@ -5,6 +5,10 @@
 part of liquid.transformer.factory_transformer;
 
 abstract class FactoryGenerator {
+  final LiquidElements _elements;
+
+  FactoryGenerator(this._elements);
+
   void compile(BuildLogger logger, TextEditTransaction transaction,
                TopLevelVariableDeclaration tld, SimpleIdentifier name,
                MethodInvocation method);
@@ -14,8 +18,8 @@ class FactoryGenerators {
   final HashMap<Element, FactoryGenerator> _generators = new HashMap();
 
   FactoryGenerators(LiquidElements elements, ComponentMetaDataExtractor extractor) {
-    _generators[elements.staticTreeFactory] = new StaticTreeFactoryGenerator();
-    _generators[elements.dynamicTreeFactory] = new DynamicTreeFactoryGenerator();
+    _generators[elements.staticTreeFactory] = new StaticTreeFactoryGenerator(elements);
+    _generators[elements.dynamicTreeFactory] = new DynamicTreeFactoryGenerator(elements);
     _generators[elements.componentFactory] = new ComponentFactoryGenerator(elements, extractor);
   }
 
