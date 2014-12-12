@@ -9,7 +9,6 @@ VLink link({
   Object key,
   String href,
   String title,
-  bool checked,
   List<VNode> children,
   String id,
   Map<String, String> attributes,
