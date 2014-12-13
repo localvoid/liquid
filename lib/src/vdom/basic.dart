@@ -4,6 +4,21 @@
 
 part of liquid.vdom;
 
+VElement a({Object key,
+     String id,
+     List<VNode> children,
+     Map<String, String> attributes,
+     Map<String, String> styles,
+     List<String> classes}) {
+  return new VElement('a',
+      key: key,
+      id: id,
+      children: children,
+      attributes: attributes,
+      styles: styles,
+      classes: classes);
+}
+
 VElement anchor({Object key,
      String id,
      List<VNode> children,
