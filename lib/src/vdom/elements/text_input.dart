@@ -8,6 +8,8 @@ part of liquid.vdom;
 VTextInput textInput({
   Object key,
   String value,
+  String placeholder,
+  bool autofocus,
   String id,
   Map<String, String> attributes,
   List<String> classes,
@@ -16,6 +18,8 @@ VTextInput textInput({
   return new VTextInput(
       key: key,
       value: value,
+      placeholder: placeholder,
+      autofocus: autofocus,
       id: id,
       attributes: attributes,
       classes: classes,
@@ -25,12 +29,16 @@ VTextInput textInput({
 /// Virtual DOM Text Input Element
 class VTextInput extends VElementBase<html.InputElement> {
   final String _value;
+  final String placeholder;
+  final bool autofocus;
 
   String get value => ref.value;
 
   VTextInput({
     Object key,
     String value,
+    this.placeholder,
+    this.autofocus,
     String id,
     Map<String, String> attributes,
     List<String> classes,
@@ -45,6 +53,12 @@ class VTextInput extends VElementBase<html.InputElement> {
     if (_value != null) {
       ref.value = _value;
     }
+    if (placeholder != null) {
+      ref.placeholder = placeholder;
+    }
+    if (autofocus != null) {
+      ref.autofocus = true;
+    }
   }
 
   void update(VTextInput other, Context context) {
@@ -52,5 +66,9 @@ class VTextInput extends VElementBase<html.InputElement> {
     if (other._value != null && ref.value != other._value) {
       ref.value = other._value;
     }
+    if (other.placeholder != placeholder) {
+      ref.placeholder = other.placeholder;
+    }
+    // no need to update autofocus when element is already created.
   }
 }
