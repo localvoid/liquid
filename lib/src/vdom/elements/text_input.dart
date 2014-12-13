@@ -57,7 +57,7 @@ class VTextInput extends VElementBase<html.InputElement> {
       ref.placeholder = placeholder;
     }
     if (autofocus != null) {
-      ref.autofocus = true;
+      ref.autofocus = autofocus;
     }
   }
 
