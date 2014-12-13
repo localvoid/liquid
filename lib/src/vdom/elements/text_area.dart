@@ -5,7 +5,7 @@
 part of liquid.vdom;
 
 /// Creates a new [VTextArea] element.
-VTextArea textArea({
+VTextArea textarea({
   Object key,
   String value,
   String placeholder,

@@ -34,21 +34,6 @@ VElement anchor({Object key,
       classes: classes);
 }
 
-VElement area({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('area',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
 VElement br({Object key,
      String id,
      List<VNode> children,
@@ -409,21 +394,6 @@ VElement li({Object key,
       classes: classes);
 }
 
-VElement label({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('label',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
 VElement legend({Object key,
      String id,
      List<VNode> children,
@@ -431,21 +401,6 @@ VElement legend({Object key,
      Map<String, String> styles,
      List<String> classes}) {
   return new VElement('legend',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement map({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('map',
       key: key,
       id: id,
       children: children,
@@ -792,21 +747,6 @@ VElement template({Object key,
      Map<String, String> styles,
      List<String> classes}) {
   return new VElement('template',
-      key: key,
-      id: id,
-      children: children,
-      attributes: attributes,
-      styles: styles,
-      classes: classes);
-}
-
-VElement textarea({Object key,
-     String id,
-     List<VNode> children,
-     Map<String, String> attributes,
-     Map<String, String> styles,
-     List<String> classes}) {
-  return new VElement('textarea',
       key: key,
       id: id,
       children: children,
