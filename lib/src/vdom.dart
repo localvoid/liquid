@@ -18,5 +18,6 @@ part 'package:liquid/src/vdom/root_decorator.dart';
 
 part 'package:liquid/src/vdom/elements/check_box.dart';
 part 'package:liquid/src/vdom/elements/text_input.dart';
+part 'package:liquid/src/vdom/elements/text_area.dart';
 part 'package:liquid/src/vdom/elements/link.dart';
 part 'package:liquid/src/vdom/elements/img.dart';
