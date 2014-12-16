@@ -12,11 +12,11 @@ class OuterBox extends Component {
   build() => vdom.root(classes: ['outer-box'])(box(parent: this));
 }
 
-final innerBox = vdom.staticTreeFactory(() => vdom.div(classes: ['inner-box'])('x'));
+innerBox() => vdom.div(classes: ['inner-box'])('x');
 
 final box = vdom.componentFactory(Box);
 class Box extends Component {
-  @property() OuterBox parent = null;
+  @property(required: true, equalCheck: true) OuterBox parent = null;
 
   int _outerWidth = 0;
   int _innerWidth = 0;

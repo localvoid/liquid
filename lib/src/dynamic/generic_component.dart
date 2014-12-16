@@ -45,7 +45,8 @@ class VGenericComponent extends vdom.VComponent {
 
     if (other._properties != null) {
       other._properties.forEach((k, v) {
-        if (_propertyTypes.containsKey(k)) {
+        final meta = _propertyTypes[k];
+        if (meta != null && !meta.immutable) {
           _instanceMirror.setField(k, v);
         }
       });

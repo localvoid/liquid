@@ -9,6 +9,13 @@ library liquid.annotations;
 /// nodes.
 class property {
   final bool required;
+  final bool immutable;
 
-  const property({this.required: false});
+  /// When [equalCheck] is [:null:] it means that equal checking is implicit
+  /// and will be automaticaly enabled for basic types: [bool], [int], [num],
+  /// [double] and [String].
+  final bool equalCheck;
+
+  const property({this.required: false, this.immutable: false,
+    this.equalCheck});
 }

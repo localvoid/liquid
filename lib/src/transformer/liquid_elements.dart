@@ -9,34 +9,47 @@ import 'package:code_transformers/resolver.dart';
 
 /// Object that stores resolved elements from the Liquid library.
 class LiquidElements {
-  /// [Property] class used for @property annotation.
+  /// [property] class.
   static const int propertyClassFlag = 1;
 
   /// [Component] class.
   static const int componentClassFlag = 1 << 1;
 
-  /// [staticTreeFactory] function from dynamic library.
-  static const int staticTreeFactoryFlag = 1 << 2;
-
-  /// [dynamicTreeFactory] function from dynamic library.
-  static const int dynamicTreeFactoryFlag = 1 << 3;
+  /// [VComponent] class.
+  static const int vComponentClassFlag = 1 << 2;
 
   /// [componentFactory] function from dynamic library.
-  static const int componentFactoryFlag = 1 << 4;
-
-  /// [VComponent] class.
-  static const int vComponentClassFlag = 1 << 5;
+  static const int componentFactoryFlag = 1 << 3;
 
   Resolver _resolver;
   int elementMask = 0;
+
+  ClassElement boolClass;
+  ClassElement numClass;
+  ClassElement intClass;
+  ClassElement doubleClass;
+  ClassElement stringClass;
+
   ClassElement propertyClass;
   ClassElement componentClass;
-  Element staticTreeFactory;
-  Element dynamicTreeFactory;
+  ClassElement vComponentClass;
   Element componentFactory;
-  ClassElement vComponentBaseClass;
 
-  LiquidElements(this._resolver);
+  LiquidElements(this._resolver) {
+    // TODO: is there any way to get TypeProvider instance?
+    boolClass = _resolver.getType('dart.core.bool');
+    numClass = _resolver.getType('dart.core.num');
+    intClass = _resolver.getType('dart.core.int');
+    doubleClass = _resolver.getType('dart.core.double');
+    stringClass = _resolver.getType('dart.core.String');
+  }
+
+  bool isCoreBasicClass(ClassElement e) =>
+      e == boolClass ||
+      e == numClass ||
+      e == intClass ||
+      e == doubleClass ||
+      e == stringClass;
 
   /// Lookup all [Element]s for elements specified in [mask] argument.
   void lookup(int mask) {
@@ -56,19 +69,11 @@ class LiquidElements {
       }
     }
 
-    if ((mask & staticTreeFactoryFlag == staticTreeFactoryFlag) &&
-        (elementMask & staticTreeFactoryFlag != staticTreeFactoryFlag)) {
-      staticTreeFactory = _resolver.getLibraryFunction('liquid.dynamic.staticTreeFactory');
-      if (staticTreeFactory != null) {
-        elementMask |= staticTreeFactoryFlag;
-      }
-    }
-
-    if ((mask & dynamicTreeFactoryFlag == dynamicTreeFactoryFlag) &&
-        (elementMask & dynamicTreeFactoryFlag != dynamicTreeFactoryFlag)) {
-      dynamicTreeFactory = _resolver.getLibraryFunction('liquid.dynamic.dynamicTreeFactory');
-      if (dynamicTreeFactory != null) {
-        elementMask |= dynamicTreeFactoryFlag;
+    if ((mask & vComponentClassFlag == vComponentClassFlag) &&
+        (elementMask & vComponentClassFlag != vComponentClassFlag)) {
+      vComponentClass = _resolver.getType('liquid.vdom.VComponent');
+      if (vComponentClass != null) {
+        elementMask |= vComponentClassFlag;
       }
     }
 
@@ -77,14 +82,6 @@ class LiquidElements {
       componentFactory = _resolver.getLibraryFunction('liquid.dynamic.componentFactory');
       if (componentFactory != null) {
         elementMask |= componentFactoryFlag;
-      }
-    }
-
-    if ((mask & vComponentClassFlag == vComponentClassFlag) &&
-        (elementMask & vComponentClassFlag != vComponentClassFlag)) {
-      vComponentBaseClass = _resolver.getType('liquid.vdom.VComponent');
-      if (vComponentBaseClass != null) {
-        elementMask |= vComponentClassFlag;
       }
     }
   }

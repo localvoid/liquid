@@ -4,7 +4,7 @@
 
 library liquid.transformer.component_meta_data;
 
-import 'dart:collection';
+import 'package:analyzer/src/generated/ast.dart';
 import 'package:analyzer/src/generated/element.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
 
@@ -21,51 +21,125 @@ class ComponentMetaDataExtractor {
 
   ComponentMetaDataExtractor(this._liquidElements);
 
-  ComponentMetaData extract(ClassElement element) {
-    final List<FieldElement> properties = [];
-    final HashMap<String, int> propertyPositions = new HashMap();
+  ComponentMetaData extractFromComponent(ClassElement element) {
+    // TODO: visit component parents / mixins
+    final extractor = new _AnnotationExtractor(_liquidElements);
+    element.node.visitChildren(extractor);
+    return new ComponentMetaData(extractor.properties);
+  }
 
-    for (final field in element.fields) {
-      if (isPropertyField(field)) {
-        propertyPositions[field.name] = properties.length;
-        properties.add(field);
-      }
-    }
-
-    return new ComponentMetaData(properties, propertyPositions);
+  ComponentMetaData extractFromVComponent(ClassElement element) {
+    final extractor = new _AnnotationExtractor(_liquidElements);
+    element.node.visitChildren(extractor);
+    return new ComponentMetaData(extractor.properties);
   }
 
   bool isComponent(ClassElement element) =>
-      (element.type.isSubtypeOf(_liquidElements.componentClass.type) &&
-       element != _liquidElements.componentClass);
+      element.type.isSubtypeOf(_liquidElements.componentClass.type);
+}
 
-  bool isPropertyField(FieldElement element) {
-    for (final meta in element.metadata) {
-      final metaElement = meta.element;
-      if (metaElement is ConstructorElement &&
-          metaElement.returnType.element == _liquidElements.propertyClass) {
-        return true;
-      }
-    }
-    return false;
-  }
+class PropertyMetaData {
+  final bool required;
+  final bool immutable;
+  final bool equalCheck;
+  final int index;
+  final DartType type;
 
+  const PropertyMetaData(this.required, this.immutable, this.equalCheck, this.index,
+      this.type);
 }
 
 class ComponentMetaData {
-  final List<FieldElement> properties;
-  final HashMap<String, int> propertyPositions;
+  final Map<String, PropertyMetaData> properties;
+  bool isOptimizable = true;
+  bool isPropertyMask = false;
+  bool isImmutable = true;
 
-  ComponentMetaData(this.properties, this.propertyPositions);
+  ComponentMetaData(this.properties) {
+    for (final prop in properties.values) {
+      if (!prop.required) {
+        isPropertyMask = true;
+      }
+      if (!prop.immutable) {
+        isImmutable = false;
+        if (!prop.equalCheck) {
+          isOptimizable = false;
+        }
+      }
+    }
+  }
 
-  int createPropertyMask(namedArguments) {
+  int createPropertyMask(List namedArguments) {
     int mask = 0;
     for (final arg in namedArguments) {
       if (!reservedProperties.containsKey(arg.name)) {
-        final index = propertyPositions[arg.name];
-        mask |= 1 << index;
+        mask |= 1 << properties[arg.name].index;
       }
     }
     return mask;
+  }
+}
+
+class _AnnotationExtractor extends GeneralizingAstVisitor {
+  final LiquidElements _liquidElements;
+
+  final properties = {};
+
+  _AnnotationExtractor(this._liquidElements);
+
+  void visitAnnotation(Annotation annotation) {
+    final parent = annotation.parent;
+    if (parent is! Declaration) {
+      return;
+    }
+
+    final element = annotation.element;
+    if (element is ConstructorElement &&
+        element.returnType.element == _liquidElements.propertyClass) {
+
+      bool required = false;
+      bool immutable = false;
+      bool equalCheck = null;
+
+      for (final arg in annotation.arguments.arguments) {
+        if (arg is NamedExpression) {
+          final name = arg.name.label.name;
+          var value;
+          final valueExpression = arg.expression;
+          if (valueExpression is BooleanLiteral) {
+            value = valueExpression.value;
+          }
+
+          switch (name) {
+            case 'required':
+              required = value;
+              break;
+            case 'immutable':
+              immutable = value;
+              break;
+            case 'equalCheck':
+              equalCheck = value;
+              break;
+          }
+        }
+      }
+
+      if (parent is MethodDeclaration) {
+
+      } else if (parent is FieldDeclaration) {
+        for (final variable in parent.fields.variables) {
+          final varType = variable.element.type;
+          if (equalCheck == null) {
+            if (_liquidElements.isCoreBasicClass(varType.element)) {
+              equalCheck = true;
+            } else {
+              equalCheck = false;
+            }
+          }
+          properties[variable.name.name] = new PropertyMetaData(required, immutable,
+              equalCheck, properties.length, varType);
+        }
+      }
+    }
   }
 }

@@ -14,11 +14,12 @@ class Item {
   Item([this.text = '']) : id = __nextId++;
 }
 
-final todoItem = vdom.staticTreeFactory(({item}) => vdom.li()(item.text));
-final todoList = vdom.dynamicTreeFactory(({items}) {
+todoItem({key, item}) => vdom.li(key: key)(item.text);
+todoList({items}) {
   return vdom.ul()(items.map((i) => todoItem(key: i.id, item: i)));
-});
+}
 
+final todoApp = vdom.componentFactory(TodoApp);
 class TodoApp extends Component<DivElement> {
   @property() List<Item> items;
 

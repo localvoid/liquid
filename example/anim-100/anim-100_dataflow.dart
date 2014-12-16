@@ -8,13 +8,13 @@ import 'dart:html';
 import 'package:liquid/liquid.dart';
 import 'package:liquid/vdom.dart' as vdom;
 
-final box = vdom.dynamicTreeFactory(({count: 0}) {
+box({key, count: 0}) {
   final top = math.sin(count / 10) * 10;
   final left = math.cos(count / 10) * 10;
   final color = count % 255;
   final content = count % 100;
 
-  return vdom.div(classes: ['box-view'])(
+  return vdom.div(key: key, classes: ['box-view'])(
     vdom.div(classes: ['box'],
              styles: {
                'top': '${top}px',
@@ -23,7 +23,7 @@ final box = vdom.dynamicTreeFactory(({count: 0}) {
         content.toString()
     )
   );
-});
+}
 
 class App extends Component {
   @property() List<int> items;

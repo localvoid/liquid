@@ -26,7 +26,7 @@ class Collapsable extends Component {
 
 final basic = vdom.componentFactory(Basic);
 class Basic extends Component {
-  @property(required: true) int elapsed = 0;
+  @property() int elapsed = 0;
 
   String get elapsedSeconds => '${(elapsed / 1000).toStringAsFixed(1)}';
 

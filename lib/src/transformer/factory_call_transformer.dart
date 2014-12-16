@@ -3,13 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 /// Transformer that adds `propertyMask` to specify which properties should be
-/// updated with virtual node for components.
+/// updated.
 ///
 /// ```dart
 /// final myComponent = componentFactory(MyComponent);
 /// class MyComponent extends Component {
-///   @property int prop1;
-///   @property int prop2;
+///   @property() int prop1;
+///   @property() int prop2;
 ///   ...
 /// }
 ///
@@ -19,6 +19,8 @@
 /// // 0b10 is a property mask that indicates that property with index 2 should
 /// // be updated
 /// ```
+///
+/// propertyMask is used only for optional properties (required == false).
 library liquid.transformer.factory_call_transformer;
 
 import 'dart:async';
@@ -57,10 +59,18 @@ class FactoryCallTransformer extends Transformer with ResolverTransformer {
     final transaction = resolver.createTextEditTransaction(lib);
     final unit = lib.definingCompilationUnit.node;
 
+    for (final directive in unit.directives) {
+      if (directive is PartOfDirective) {
+        transform.addOutput(transform.primaryInput);
+        return;
+      }
+    }
+
+
     final liquidElements = new LiquidElements(resolver);
 
-    final lookupFlags = LiquidElements.componentClassFlag |
-                        LiquidElements.propertyClassFlag |
+    final lookupFlags = LiquidElements.propertyClassFlag |
+                        LiquidElements.componentClassFlag |
                         LiquidElements.vComponentClassFlag;
 
     liquidElements.lookup(lookupFlags);
@@ -70,19 +80,27 @@ class FactoryCallTransformer extends Transformer with ResolverTransformer {
       return;
     }
 
-    final componentMetaDataExtractor = new ComponentMetaDataExtractor(liquidElements);
+    final metaDataExtractor =
+        new ComponentMetaDataExtractor(liquidElements);
 
     unit.visitChildren(new _FactoryCallVisitor(
         transaction,
         unit,
         liquidElements,
-        componentMetaDataExtractor));
+        metaDataExtractor));
 
-    final printer = transaction.commit();
-    var url = id.path.startsWith('lib/')
-            ? 'package:${id.package}/${id.path.substring(4)}' : id.path;
-    printer.build(url);
-    transform.addOutput(new Asset.fromString(id, printer.text));
+    var result = transform.primaryInput;
+
+    if (transaction.hasEdits) {
+      final printer = transaction.commit();
+      final url = id.path.startsWith('lib/')
+          ? 'package:${id.package}/${id.path.substring(4)}' :
+            id.path;
+      printer.build(url);
+      result = new Asset.fromString(id, printer.text);
+    }
+
+    transform.addOutput(result);
   }
 }
 
@@ -99,18 +117,20 @@ class _FactoryCallVisitor extends GeneralizingAstVisitor {
     if (m.bestType != null &&
         !m.bestType.isVoid &&
         !m.bestType.isDynamic &&
-        m.bestType.isSubtypeOf(_liquidElements.vComponentBaseClass.type)) {
+        m.bestType.isSubtypeOf(_liquidElements.vComponentClass.type)) {
       final ClassElement cls = m.bestType.element;
-      final metaData = _metaDataExtractor.extract(cls);
-      if (metaData.properties.isNotEmpty) {
+      final metaData = _metaDataExtractor.extractFromVComponent(cls);
+      if (metaData.properties.isNotEmpty && metaData.isPropertyMask) {
         int propertyMask = 0;
         for (var arg in m.argumentList.arguments) {
           final argName = arg.bestParameterElement.name;
           if (!reservedProperties.containsKey(argName)) {
-            propertyMask |= 1 << metaData.propertyPositions[arg.bestParameterElement.name];
+            propertyMask |= 1 << metaData.properties[arg.bestParameterElement.name].index;
           }
         }
-        _transaction.edit(m.argumentList.offset + 1, m.argumentList.offset + 1, '$propertyMask, ');
+        _transaction.edit(m.argumentList.offset + 1,
+            m.argumentList.offset + 1,
+            '$propertyMask, ');
       }
     } else {
       super.visitMethodInvocation(m);
