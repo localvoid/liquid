@@ -245,7 +245,7 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
     final out = new StringBuffer();
 
     _writeVComponent(out, name.name, componentIdentifier.name, metaData);
-    _writeFactoryFunction(out, name.name, componentIdentifier.name, metaData);
+    _writeFactoryFunction(out, name.name, metaData);
 
     return out.toString();
   }
@@ -270,7 +270,7 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
                         ComponentMetaData metaData) {
     final className = '__V$name';
 
-    out.write('\n\nclass $className extends __vdom.VComponent<$componentType> {\n');
+    out.write('\n\nclass $className extends __vdom.VComponent {\n');
 
     // properties
     if (metaData.properties.isNotEmpty) {
@@ -362,9 +362,8 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
 
   void _writeFactoryFunction(StringBuffer out,
                              String name,
-                             String componentType,
                              ComponentMetaData metaData) {
-    out.write('__V$name<$componentType> $name(');
+    out.write('__V$name $name(');
     if (metaData.properties.isNotEmpty) {
       if (metaData.isPropertyMask) {
         out.write('int propertyMask, ');

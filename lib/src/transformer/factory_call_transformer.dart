@@ -121,16 +121,22 @@ class _FactoryCallVisitor extends GeneralizingAstVisitor {
       final ClassElement cls = m.bestType.element;
       final metaData = _metaDataExtractor.extractFromVComponent(cls);
       if (metaData.properties.isNotEmpty && metaData.isPropertyMask) {
-        int propertyMask = 0;
-        for (var arg in m.argumentList.arguments) {
-          final argName = arg.bestParameterElement.name;
-          if (!reservedProperties.containsKey(argName)) {
-            propertyMask |= 1 << metaData.properties[arg.bestParameterElement.name].index;
+        if (m.argumentList.arguments.isEmpty) {
+          _transaction.edit(m.argumentList.offset + 1,
+              m.argumentList.offset + 1,
+              '0');
+        } else {
+          int propertyMask = 0;
+          for (var arg in m.argumentList.arguments) {
+            final argName = arg.bestParameterElement.name;
+            if (!reservedProperties.containsKey(argName)) {
+              propertyMask |= 1 << metaData.properties[arg.bestParameterElement.name].index;
+            }
           }
+          _transaction.edit(m.argumentList.offset + 1,
+              m.argumentList.offset + 1,
+              '$propertyMask, ');
         }
-        _transaction.edit(m.argumentList.offset + 1,
-            m.argumentList.offset + 1,
-            '$propertyMask, ');
       }
     } else {
       super.visitMethodInvocation(m);
