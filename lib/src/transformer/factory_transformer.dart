@@ -86,6 +86,11 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
         'package:${id.package}/${id.path.substring(4)}' :
         id.path;
 
+    if (unit.directives.isNotEmpty) {
+      addImport(transaction, unit, 'package:liquid/liquid.dart', '__liquid');
+      addImport(transaction, unit, 'package:liquid/vdom_static.dart', '__vdom');
+    }
+
     for (final part in lib.parts) {
       final partTransaction = resolver.createTextEditTransaction(part);
       for (final directive in part.unit.directives) {
@@ -183,21 +188,12 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
             'it is recommended to reduce the number of properties.');
       }
 
-      _importDependencies();
       final result = _compile(name, arg, metaData);
       if (result != null) {
         _transaction.edit(tld.offset, tld.end, result);
       }
     } else {
       super.visitMethodInvocation(method);
-    }
-  }
-
-  void _importDependencies() {
-    if (!_imported) {
-      _imported = true;
-      addImport(_transaction, _unit, 'package:liquid/liquid.dart', '__liquid');
-      addImport(_transaction, _unit, 'package:liquid/vdom_static.dart', '__vdom');
     }
   }
 
