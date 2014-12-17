@@ -5,6 +5,15 @@
 /// Annotations
 library liquid.annotations;
 
+/// List of reserved properties
+const reservedProperties = const {'key': true,
+                                  'children': true,
+                                  'id': true,
+                                  'type': true,
+                                  'attributes': true,
+                                  'classes': true,
+                                  'styles': true};
+
 /// Mark variable declarations as a property that can be used in virtual dom
 /// nodes.
 class property {

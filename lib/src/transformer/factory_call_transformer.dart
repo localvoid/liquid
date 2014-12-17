@@ -32,6 +32,7 @@ import 'package:code_transformers/resolver.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
 import 'package:liquid/src/transformer/options.dart';
 import 'package:liquid/src/transformer/component_meta_data.dart';
+import 'package:liquid/src/annotations.dart' show reservedProperties;
 
 class FactoryCallTransformer extends Transformer with ResolverTransformer {
   TransformerOptions options;

@@ -7,15 +7,7 @@ library liquid.transformer.component_meta_data;
 import 'package:analyzer/src/generated/ast.dart';
 import 'package:analyzer/src/generated/element.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
-
-/// List of reserved properties
-const reservedProperties = const {'key': true,
-                                  'children': true,
-                                  'id': true,
-                                  'type': true,
-                                  'attributes': true,
-                                  'classes': true,
-                                  'styles': true};
+import 'package:liquid/src/annotations.dart' show reservedProperties;
 
 class ComponentMetaDataExtractor {
   final LiquidElements _liquidElements;

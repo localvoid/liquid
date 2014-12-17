@@ -88,6 +88,16 @@ class _VGenericComponentFactory extends Function {
       return !d.isPrivate && d is VariableMirror;
     });
     _propertyTypes = _lookupProperties(publicVariables, false);
+
+    assert(() {
+      for (final name in _propertyTypes.keys) {
+        if (reservedProperties.containsKey(MirrorSystem.getName(name))) {
+          throw 'Invalid Component ${MirrorSystem.getName(_classMirror.simpleName)}: '
+                'Component is using reserved property: ${MirrorSystem.getName(name)}.';
+        }
+      }
+      return true;
+    }());
   }
 
   /// Creates a new instance of [VGenericComponent] with [args] properties.
