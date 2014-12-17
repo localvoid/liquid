@@ -18,7 +18,9 @@ class LiquidTransformerGroup extends TransformerGroup {
   LiquidTransformerGroup(Iterable<Iterable> phases) : super(phases);
 
   factory LiquidTransformerGroup.asPlugin(BarbackSettings settings) {
-    final options = new TransformerOptions(settings.configuration);
+    final options = new TransformerOptions.from(
+        settings.configuration,
+        settings.mode == BarbackMode.RELEASE);
 
     final resolvers = new Resolvers(dartSdkDirectory);
 

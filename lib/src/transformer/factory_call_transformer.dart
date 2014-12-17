@@ -31,6 +31,7 @@ import 'package:barback/barback.dart';
 import 'package:code_transformers/resolver.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
 import 'package:liquid/src/transformer/options.dart';
+import 'package:liquid/src/transformer/utils.dart';
 import 'package:liquid/src/transformer/component_meta_data.dart';
 import 'package:liquid/src/annotations.dart' show reservedProperties;
 
@@ -51,7 +52,7 @@ class FactoryCallTransformer extends Transformer with ResolverTransformer {
     return new Future.value(true);
   }
 
-  Future<bool> shouldApplyResolver(Asset asset) => new Future.value(true);
+  Future<bool> shouldApplyResolver(Asset asset) => isLibraryEntry(asset);
 
   void applyResolver(Transform transform, Resolver resolver) {
     final asset = transform.primaryInput;

@@ -6,6 +6,7 @@
 // TODO: componentFactory invocation should work when Component is declared in
 //       imported library.
 // TODO: migrate to aggregate transformers and get rid of the inject parts hack.
+// TODO: use resolver.getSourceSpan(element) when printing errors
 
 /// Transformer that compiles [componentFactory] invocations into static and
 /// optimized objects that can be used without mirror-based apis.
@@ -40,7 +41,7 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
     return new Future.value(true);
   }
 
-  Future<bool> shouldApplyResolver(Asset asset) => new Future.value(true);
+  Future<bool> shouldApplyResolver(Asset asset) => isLibraryEntry(asset);
 
   void applyResolver(Transform transform, Resolver resolver) {
     final asset = transform.primaryInput;

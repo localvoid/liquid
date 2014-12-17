@@ -6,7 +6,27 @@ library liquid.transformer.options;
 
 /// Transformer Options
 class TransformerOptions {
-  TransformerOptions(Map configuration) {
+  final bool enablePerformanceHints;
+  final bool releaseMode;
+  final bool injectLogs;
 
+  bool get applyCodeTransformations => releaseMode;
+
+  TransformerOptions(
+      this.enablePerformanceHints,
+      this.releaseMode,
+      this.injectLogs);
+
+  factory TransformerOptions.from(Map configuration, bool isReleaseMode) {
+    config(key, defaultValue) {
+      var value = configuration[key];
+      return value != null ? value : defaultValue;
+    }
+
+    return new TransformerOptions(
+        config('perf_hints', false),
+        config('release_mode', isReleaseMode),
+        config('inject_logs', !isReleaseMode)
+        );
   }
 }

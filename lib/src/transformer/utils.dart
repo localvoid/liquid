@@ -4,7 +4,10 @@
 
 library liquid.transformer.utils;
 
+import 'dart:async';
+import 'package:analyzer/analyzer.dart' as analyzer;
 import 'package:analyzer/src/generated/ast.dart';
+import 'package:barback/barback.dart';
 import 'package:source_maps/refactor.dart' show TextEditTransaction;
 
 /// Injects an import into the list of imports in the file.
@@ -19,4 +22,11 @@ void addDeclaration(TextEditTransaction transaction, CompilationUnit unit,
                     String declaration) {
   final last = unit.declarations.last;
   transaction.edit(last.end, last.end, declaration);
+}
+
+Future<bool> isLibraryEntry(Asset asset) {
+  return asset.readAsString().then((contents) {
+    final unit = analyzer.parseCompilationUnit(contents, suppressErrors: true);
+    return unit.directives.any((n) => n is LibraryDirective);
+  });
 }
