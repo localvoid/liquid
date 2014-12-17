@@ -11,6 +11,7 @@ VLink link({
   String title,
   List<VNode> children,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -21,6 +22,7 @@ VLink link({
       title: title,
       children: children,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);
@@ -37,10 +39,11 @@ class VLink extends VElementBase<html.AnchorElement> {
     this.title,
     List<VNode> children,
     String id,
+    String type,
     Map<String, String> attributes,
     List<String> classes,
     Map<String, String> styles})
-    : super(key, children, id, attributes, classes, styles);
+    : super(key, children, id, type, attributes, classes, styles);
 
   void create(Context context) { ref = new html.AnchorElement(); }
 

@@ -13,6 +13,7 @@ VImg img({
   bool checked,
   List<VNode> children,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -24,6 +25,7 @@ VImg img({
       title: title,
       children: children,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);
@@ -42,10 +44,11 @@ class VImg extends VElementBase<html.ImageElement> {
     this.title,
     List<VNode> children,
     String id,
+    String type,
     Map<String, String> attributes,
     List<String> classes,
     Map<String, String> styles})
-    : super(key, children, id, attributes, classes, styles);
+    : super(key, children, id, type, attributes, classes, styles);
 
   void create(Context context) { ref = new html.ImageElement(); }
 

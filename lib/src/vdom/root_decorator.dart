@@ -11,10 +11,15 @@ class VRootDecorator<T extends html.Element> extends VRootBase<T> {
 
   html.Node innerContainer;
 
-  VRootDecorator({this.innerContainer, List<VNode> children, String id,
-      Map<String, String> attributes, List<String> classes, Map<String,
-      String> styles})
-      : super(children, id, attributes, classes, styles);
+  VRootDecorator(
+      {this.innerContainer,
+       List<VNode> children,
+       String id,
+       String type,
+       Map<String, String> attributes,
+       List<String> classes,
+       Map<String, String> styles})
+      : super(children, id, type, attributes, classes, styles);
 
   VRootBase<T> decorate(VRootBase<T> root) {
     if (_next == null) {
@@ -60,6 +65,7 @@ VRootDecorator rootDecorator({
   html.Node innerContainer,
   List<VNode> children,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -68,6 +74,7 @@ VRootDecorator rootDecorator({
       innerContainer: innerContainer,
       children: children,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);

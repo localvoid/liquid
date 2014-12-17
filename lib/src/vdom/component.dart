@@ -14,10 +14,11 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
       Object key,
       List<VNode> children,
       String id,
+      String type,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, children, id, attributes, classes, styles);
+      : super(key, children, id, type, attributes, classes, styles);
 
   void init() { component.init(); }
 

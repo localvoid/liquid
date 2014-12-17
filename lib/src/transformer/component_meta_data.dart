@@ -12,6 +12,7 @@ import 'package:liquid/src/transformer/liquid_elements.dart';
 const reservedProperties = const {'key': true,
                                   'children': true,
                                   'id': true,
+                                  'type': true,
                                   'attributes': true,
                                   'classes': true,
                                   'styles': true};

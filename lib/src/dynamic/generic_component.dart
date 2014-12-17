@@ -19,10 +19,11 @@ class VGenericComponent extends vdom.VComponent {
       Object key,
       List<vdom.VNode> children,
       String id,
+      String type,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-    : super(key, children, id, attributes, classes, styles);
+    : super(key, children, id, type, attributes, classes, styles);
 
   void create(vdom.Context context) {
     _instanceMirror = _classMirror.newInstance(const Symbol(''), const []);
@@ -102,12 +103,13 @@ class _VGenericComponentFactory extends Function {
         return true;
       }());
       return new VGenericComponent(_classMirror, _propertyTypes, null, null,
-          null, null, null, null, null);
+          null, null, null, null, null, null);
     }
     final HashMap<Symbol, dynamic> properties = new HashMap.from(args);
     final Object key = properties.remove(#key);
     final List<vdom.VNode> children = properties.remove(#children);
     final String id = properties.remove(#id);
+    final String type = properties.remove(#type);
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
@@ -127,7 +129,7 @@ class _VGenericComponentFactory extends Function {
       return true;
     }());
     return new VGenericComponent(_classMirror, _propertyTypes, properties,
-        key, children, id, attributes, classes, styles);
+        key, children, id, type, attributes, classes, styles);
   }
 
   /// It is used to implement variadic arguments.

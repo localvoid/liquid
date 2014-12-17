@@ -292,8 +292,8 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
       }
     }
     out.write(
-        'Object key, List<__vdom.VNode> children, String id, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
-            '      : super(key, children, id, arguments, classes, styles);\n\n');
+        'Object key, List<__vdom.VNode> children, String id, String type, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
+            '      : super(key, children, id, type, arguments, classes, styles);\n\n');
 
     // create()
     out.write('  void create(__vdom.Context context) {\n');
@@ -372,9 +372,9 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
       out.write('{');
     }
     out.write(
-        'Object key, List<__vdom.VNode> children, String id, '
-            'Map<String, String> arguments, List<String> classes, '
-            'Map<String, String> styles');
+        'Object key, List<__vdom.VNode> children, String id, String type, '
+        'Map<String, String> arguments, List<String> classes, '
+        'Map<String, String> styles');
     out.write('}) =>\n    new __V$name(');
     if (metaData.properties.isNotEmpty) {
       if (metaData.isPropertyMask) {
@@ -384,6 +384,6 @@ class _FactoryCompiler extends GeneralizingAstVisitor {
         out.write('$p, ');
       }
     }
-    out.write('key, children, id, arguments, classes, styles);\n');
+    out.write('key, children, id, type, arguments, classes, styles);\n');
   }
 }

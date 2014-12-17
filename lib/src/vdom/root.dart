@@ -19,10 +19,11 @@ abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
   VRootBase(
       List<VNode> children,
       String id,
+      String type,
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(null, children, id, attributes, classes, styles);
+      : super(null, children, id, type, attributes, classes, styles);
 
   void create(Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'
@@ -56,10 +57,11 @@ class VRoot<T extends html.Element> extends VRootBase<T> {
   VRoot(
       {List<VNode> children,
        String id,
+       String type,
        Map<String, String> attributes,
        List<String> classes,
        Map<String, String> styles})
-      : super(children, id, attributes, classes, styles);
+      : super(children, id, type, attributes, classes, styles);
 
   void insertBefore(VNode node, html.Node nextRef, Context context) {
     component.insertBefore(node, nextRef);
@@ -77,6 +79,7 @@ class VRoot<T extends html.Element> extends VRootBase<T> {
 VRoot root({
   List<VNode> children,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -84,6 +87,7 @@ VRoot root({
   return new VRoot(
       children: children,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);

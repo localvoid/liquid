@@ -11,6 +11,7 @@ VTextInput textInput({
   String placeholder,
   bool autofocus,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -21,6 +22,7 @@ VTextInput textInput({
       placeholder: placeholder,
       autofocus: autofocus,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);
@@ -40,11 +42,12 @@ class VTextInput extends VElementBase<html.InputElement> {
     this.placeholder,
     this.autofocus,
     String id,
+    String type,
     Map<String, String> attributes,
     List<String> classes,
     Map<String, String> styles})
     : _value = value,
-      super(key, null, id, attributes, classes, styles);
+      super(key, null, id, type, attributes, classes, styles);
 
   void create(Context context) { ref = new html.InputElement(type: 'text'); }
 

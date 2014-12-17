@@ -9,6 +9,7 @@ VCheckbox checkbox({
   Object key,
   bool checked,
   String id,
+  String type,
   Map<String, String> attributes,
   List<String> classes,
   Map<String, String> styles}) {
@@ -17,6 +18,7 @@ VCheckbox checkbox({
       key: key,
       checked: checked,
       id: id,
+      type: type,
       attributes: attributes,
       classes: classes,
       styles: styles);
@@ -32,11 +34,12 @@ class VCheckbox extends VElementBase<html.CheckboxInputElement> {
     Object key,
     bool checked,
     String id,
+    String type,
     Map<String, String> attributes,
     List<String> classes,
     Map<String, String> styles})
     : _checked = checked,
-      super(key, null, id, attributes, classes, styles);
+      super(key, null, id, type, attributes, classes, styles);
 
   void create(Context context) { ref = new html.CheckboxInputElement(); }
 
