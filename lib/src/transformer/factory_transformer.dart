@@ -41,7 +41,7 @@ class FactoryTransformer extends Transformer with ResolverTransformer {
     return new Future.value(true);
   }
 
-  Future<bool> shouldApplyResolver(Asset asset) => isLibraryEntry(asset);
+  Future<bool> shouldApplyResolver(Asset asset) => isNotPartOf(asset);
 
   void applyResolver(Transform transform, Resolver resolver) {
     final asset = transform.primaryInput;

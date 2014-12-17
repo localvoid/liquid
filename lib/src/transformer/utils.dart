@@ -30,3 +30,10 @@ Future<bool> isLibraryEntry(Asset asset) {
     return unit.directives.any((n) => n is LibraryDirective);
   });
 }
+
+Future<bool> isNotPartOf(Asset asset) {
+  return asset.readAsString().then((contents) {
+    final unit = analyzer.parseCompilationUnit(contents, suppressErrors: true);
+    return !unit.directives.any((n) => n is PartOfDirective);
+  });
+}
