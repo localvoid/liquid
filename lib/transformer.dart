@@ -12,7 +12,6 @@ import 'package:code_transformers/resolver.dart';
 
 import 'package:liquid/src/transformer/options.dart';
 import 'package:liquid/src/transformer/factory_transformer.dart';
-import 'package:liquid/src/transformer/factory_call_transformer.dart';
 
 class LiquidTransformerGroup extends TransformerGroup {
   LiquidTransformerGroup(Iterable<Iterable> phases) : super(phases);
@@ -27,7 +26,6 @@ class LiquidTransformerGroup extends TransformerGroup {
     return new LiquidTransformerGroup(
         [
          [new FactoryTransformer(options, resolvers)],
-         [new FactoryCallTransformer(options, resolvers)]
         ]);
   }
 }

@@ -19,7 +19,6 @@ todoList({items}) {
   return vdom.ul()(items.map((i) => todoItem(key: i.id, item: i)));
 }
 
-final todoApp = vdom.componentFactory(TodoApp);
 class TodoApp extends Component<DivElement> {
   @property() List<Item> items;
 

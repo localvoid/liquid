@@ -4,53 +4,73 @@
 
 library liquid.transformer.component_meta_data;
 
+import 'dart:collection';
 import 'package:analyzer/src/generated/ast.dart';
 import 'package:analyzer/src/generated/element.dart';
+import 'package:code_transformers/resolver.dart';
+import 'package:code_transformers/messages/build_logger.dart';
 import 'package:liquid/src/transformer/liquid_elements.dart';
 import 'package:liquid/src/annotations.dart' show reservedProperties;
 
 class ComponentMetaDataExtractor {
-  final LiquidElements _liquidElements;
+  final BuildLogger _logger;
+  final Resolver _resolver;
+  final LiquidElements _elements;
+  final Map<ClassElement, ComponentMetaData> _cache =
+      new HashMap<ClassElement, ComponentMetaData>();
 
-  ComponentMetaDataExtractor(this._liquidElements);
+  ComponentMetaDataExtractor(this._logger, this._resolver, this._elements);
 
-  ComponentMetaData extractFromComponent(ClassElement element) {
-    // TODO: visit component parents / mixins
-    final extractor = new _AnnotationExtractor(_liquidElements);
-    element.node.visitChildren(extractor);
-    return new ComponentMetaData(extractor.properties);
+  ComponentMetaData extract(ClassElement componentClass) {
+    ComponentMetaData result = _cache[componentClass];
+    if (result != null) {
+      return result;
+    }
+
+    final _AnnotationExtractor extractor = new _AnnotationExtractor(_elements);
+    for (final InterfaceType supertype in componentClass.allSupertypes.reversed) {
+      if (!supertype.isObject) {
+        supertype.element.node.visitChildren(extractor);
+      }
+    }
+    componentClass.node.visitChildren(extractor);
+
+    result = new ComponentMetaData(extractor.properties);
+    _cache[componentClass] = result;
+
+    return result;
   }
-
-  ComponentMetaData extractFromVComponent(ClassElement element) {
-    final extractor = new _AnnotationExtractor(_liquidElements);
-    element.node.visitChildren(extractor);
-    return new ComponentMetaData(extractor.properties);
-  }
-
-  bool isComponent(ClassElement element) =>
-      element.type.isSubtypeOf(_liquidElements.componentClass.type);
 }
 
-class PropertyMetaData {
+class PropertyData {
+  final String name;
   final bool required;
   final bool immutable;
   final bool equalCheck;
   final int index;
   final DartType type;
 
-  const PropertyMetaData(this.required, this.immutable, this.equalCheck, this.index,
-      this.type);
+  const PropertyData(
+      this.name,
+      {this.required,
+       this.immutable,
+       this.equalCheck,
+       this.index,
+       this.type});
 }
 
 class ComponentMetaData {
-  final Map<String, PropertyMetaData> properties;
+  final Map<String, PropertyData> properties;
+  int requiredPropertiesCounter = 0;
   bool isOptimizable = true;
   bool isPropertyMask = false;
   bool isImmutable = true;
 
   ComponentMetaData(this.properties) {
-    for (final prop in properties.values) {
-      if (!prop.required) {
+    properties.forEach((name, prop) {
+      if (prop.required) {
+        requiredPropertiesCounter++;
+      } else {
         isPropertyMask = true;
       }
       if (!prop.immutable) {
@@ -59,7 +79,7 @@ class ComponentMetaData {
           isOptimizable = false;
         }
       }
-    }
+    });
   }
 
   int createPropertyMask(List namedArguments) {
@@ -76,29 +96,32 @@ class ComponentMetaData {
 class _AnnotationExtractor extends GeneralizingAstVisitor {
   final LiquidElements _liquidElements;
 
-  final properties = {};
+  int optionalIndex = 0;
+
+  final Map<String, PropertyData> properties = {};
 
   _AnnotationExtractor(this._liquidElements);
 
   void visitAnnotation(Annotation annotation) {
-    final parent = annotation.parent;
+    final AstNode parent = annotation.parent;
     if (parent is! Declaration) {
       return;
     }
 
-    final element = annotation.element;
+    final Element element = annotation.element;
     if (element is ConstructorElement &&
-        element.returnType.element == _liquidElements.propertyClass) {
+        element.returnType == _liquidElements.propertyType) {
 
       bool required = false;
       bool immutable = false;
       bool equalCheck = null;
 
-      for (final arg in annotation.arguments.arguments) {
+      for (final Expression arg in annotation.arguments.arguments) {
         if (arg is NamedExpression) {
-          final name = arg.name.label.name;
-          var value;
-          final valueExpression = arg.expression;
+          final String name = arg.name.label.name;
+
+          bool value;
+          final Expression valueExpression = arg.expression;
           if (valueExpression is BooleanLiteral) {
             value = valueExpression.value;
           }
@@ -120,17 +143,25 @@ class _AnnotationExtractor extends GeneralizingAstVisitor {
       if (parent is MethodDeclaration) {
 
       } else if (parent is FieldDeclaration) {
-        for (final variable in parent.fields.variables) {
-          final varType = variable.element.type;
+        for (final VariableDeclaration variable in parent.fields.variables) {
+          final String propertyName = variable.name.name;
+          final int propertyIndex = required ? -1 : optionalIndex++;
+          final DartType propertyType = variable.element.type;
           if (equalCheck == null) {
-            if (_liquidElements.isCoreBasicClass(varType.element)) {
+            if (_liquidElements.isBasicType(propertyType)) {
               equalCheck = true;
             } else {
               equalCheck = false;
             }
           }
-          properties[variable.name.name] = new PropertyMetaData(required, immutable,
-              equalCheck, properties.length, varType);
+
+          properties[propertyName] =
+              new PropertyData(propertyName,
+                  required: required,
+                  immutable: immutable,
+                  equalCheck: equalCheck,
+                  index: propertyIndex,
+                  type: propertyType);
         }
       }
     }
