@@ -90,6 +90,14 @@ class LinterVisitor extends GeneralizingAstVisitor {
 
       final SimpleIdentifier arg = componentFactoryMethod.argumentList.arguments.first;
       final ClassElement component = arg.bestElement;
+
+      if (!_isValidComponent(component, false)) {
+        logger.error(
+              'Cannot create Invalid Component: ${method.toSource()}',
+              span: getSpan(method));
+        return;
+      }
+
       final ComponentMetaData metaData = extractor.extract(component);
       if (metaData == null) {
         return;
@@ -166,9 +174,24 @@ class LinterVisitor extends GeneralizingAstVisitor {
 
       final SimpleIdentifier arg = method.argumentList.arguments.first;
       final ClassElement component = arg.bestElement;
+
+      if (!_isValidComponent(component)) {
+        return;
+      }
+
       final ComponentMetaData metaData = extractor.extract(component);
       if (metaData == null) {
         return;
+      }
+
+      for (final PropertyData propertyData in metaData.properties.values) {
+        final String propertyName = propertyData.name;
+        if (reservedProperties.containsKey(propertyName)) {
+          logger.warning(
+              'Invalid Component "${component.name}": '
+              'Component is using reserved keywords as a property name: $propertyName.',
+              span: getSpan(method));
+        }
       }
 
       if (metaData.properties.length > 48) {
@@ -184,7 +207,38 @@ class LinterVisitor extends GeneralizingAstVisitor {
     }
   }
 
-  bool _isValidFactory(MethodInvocation method, [bool printErrors = false]) {
+  bool _isValidComponent(ClassElement component, [bool printErrors = true]) {
+    final ClassDeclaration componentNode = component.node;
+    final InterfaceType componentType = component.type;
+
+    if (!componentType.isAssignableTo(elements.componentType.substitute4([elements.objectType]))) {
+      if (printErrors) {
+        logger.error(
+            'Invalid Component: '
+            'Component "$component" should be a subclass of the \'Component\''
+            ' type.',
+            span: getSpan(componentNode, resolver.getSourceFile(component)));
+      }
+      return false;
+    }
+
+    ConstructorDeclaration constructor = component.node.getConstructor(null);
+    if (constructor != null) {
+      for (final FormalParameter param in constructor.parameters.parameters) {
+        if (param is! DefaultFormalParameter) {
+          logger.error(
+              'Invalid Component: '
+              'Component constructors should have optional arguments only. '
+              'Argument \'${param.identifier.name}\' is not an optional.',
+              span: getSpan(param, resolver.getSourceFile(component)));
+        }
+      }
+    }
+
+    return true;
+  }
+
+  bool _isValidFactory(MethodInvocation method, [bool printErrors = true]) {
     if (method.parent is! VariableDeclaration ||
         method.parent.parent is! VariableDeclarationList ||
         method.parent.parent.parent is! TopLevelVariableDeclaration) {
@@ -215,20 +269,6 @@ class LinterVisitor extends GeneralizingAstVisitor {
         logger.error(
             'Invalid componentFactory(componentType) invocation: '
             '"componentType" argument should have type "Type".',
-            span: getSpan(method, resolver.getSourceFile(method.methodName.bestElement)));
-      }
-      return false;
-    }
-
-    final ClassElement component = (arg as SimpleIdentifier).bestElement;
-    final InterfaceType componentType = component.type;
-
-    if (!componentType.isAssignableTo(elements.componentType.substitute4([elements.objectType]))) {
-      if (printErrors) {
-        logger.error(
-            'Invalid componentFactory(componentType) invocation: '
-            'Component "$component" should be a subclass of the \'Component\''
-            ' type.',
             span: getSpan(method, resolver.getSourceFile(method.methodName.bestElement)));
       }
       return false;

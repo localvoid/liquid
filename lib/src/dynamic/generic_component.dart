@@ -69,49 +69,15 @@ class VGenericComponentFactory extends Function {
 
   VGenericComponentFactory(this._componentType) {
     _classMirror = reflectClass(_componentType);
-    assert(() {
-      final MethodMirror constructor =
-          _classMirror.declarations[_classMirror.simpleName];
-      if (constructor != null) {
-        for (final p in constructor.parameters) {
-          if (!p.isOptional) {
-            throw 'Component constructors should have optional arguments only.\n'
-                  '${MirrorSystem.getName(_classMirror.simpleName)} constructor '
-                  'parameter ${MirrorSystem.getName(p.simpleName)} isn\'t an '
-                  'optional.';
-          }
-        }
-      }
-      return true;
-    }());
     final publicVariables = _classMirror.declarations.values.where((d) {
       return !d.isPrivate && d is VariableMirror;
     });
     _propertyTypes = _lookupProperties(publicVariables, false);
-
-    assert(() {
-      for (final name in _propertyTypes.keys) {
-        if (reservedProperties.containsKey(MirrorSystem.getName(name))) {
-          throw 'Invalid Component ${MirrorSystem.getName(_classMirror.simpleName)}: '
-                'Component is using reserved property: ${MirrorSystem.getName(name)}.';
-        }
-      }
-      return true;
-    }());
   }
 
   /// Creates a new instance of [VGenericComponent] with [args] properties.
   VGenericComponent _create([Map args]) {
     if (args == null) {
-      assert(() {
-        _propertyTypes.forEach((k, v) {
-          if (v.required) {
-            throw '$_componentType component requires to specify '
-                  '"${MirrorSystem.getName(k)}" property.';
-          }
-        });
-        return true;
-      }());
       return new VGenericComponent(_classMirror, _propertyTypes, null, null,
           null, null, null, null, null, null);
     }
@@ -123,30 +89,12 @@ class VGenericComponentFactory extends Function {
     final Map<String, String> attributes = properties.remove(#attributes);
     final List<String> classes = properties.remove(#classes);
     final Map<String, String> styles = properties.remove(#styles);
-    assert(() {
-      for (final property in properties.keys) {
-        if (!_propertyTypes.containsKey(property)) {
-          throw '$_componentType component doesn\'t have a property '
-                '"${MirrorSystem.getName(property)}".';
-        }
-        _propertyTypes.forEach((k, v) {
-          if (v.required && !properties.containsKey(k)) {
-            throw '$_componentType component requires to specify '
-                  '"${MirrorSystem.getName(k)}" property.';
-          }
-        });
-      }
-      return true;
-    }());
     return new VGenericComponent(_classMirror, _propertyTypes, properties,
         key, children, id, type, attributes, classes, styles);
   }
 
   /// It is used to implement variadic arguments.
   VGenericComponent noSuchMethod(Invocation invocation) {
-    assert(invariant(invocation.positionalArguments.isEmpty, () =>
-        'VComponent factory invocation shouldn\'t have positional arguments.\n'
-        'Positional arguments: ${invocation.positionalArguments}'));
     return _create(invocation.namedArguments);
   }
 
