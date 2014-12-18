@@ -47,11 +47,3 @@ Here are simple examples that is build with Liquid library:
 [[Source Code](https://github.com/localvoid/todomvc-liquid)], it is
 heavily commented and demonstrates many important features of this
 library.
-
-## Roadmap
-
-- Transformers to convert dynamic code into static (0.3.0)
-- Runtime checks in development mode to improve developer experience (0.4.0)
-- Linter/Static analyze
-- Component Stylesheets
-- Server-Side rendering
