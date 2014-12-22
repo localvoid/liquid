@@ -4,14 +4,14 @@
 
 part of liquid.vdom;
 
-VElement a({Object key,
+VHtmlGenericElement a({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('a',
+  return new VHtmlGenericElement('a',
       key: key,
       id: id,
       type: type,
@@ -21,14 +21,14 @@ VElement a({Object key,
       classes: classes);
 }
 
-VElement anchor({Object key,
+VHtmlGenericElement anchor({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('a',
+  return new VHtmlGenericElement('a',
       key: key,
       id: id,
       type: type,
@@ -38,14 +38,14 @@ VElement anchor({Object key,
       classes: classes);
 }
 
-VElement br({Object key,
+VHtmlGenericElement br({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('br',
+  return new VHtmlGenericElement('br',
       key: key,
       id: id,
       type: type,
@@ -55,14 +55,14 @@ VElement br({Object key,
       classes: classes);
 }
 
-VElement button({Object key,
+VHtmlGenericElement button({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('button',
+  return new VHtmlGenericElement('button',
       key: key,
       id: id,
       type: type,
@@ -72,14 +72,14 @@ VElement button({Object key,
       classes: classes);
 }
 
-VElement canvas({Object key,
+VHtmlGenericElement canvas({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('canvas',
+  return new VHtmlGenericElement('canvas',
       key: key,
       id: id,
       type: type,
@@ -89,14 +89,14 @@ VElement canvas({Object key,
       classes: classes);
 }
 
-VElement content({Object key,
+VHtmlGenericElement content({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('content',
+  return new VHtmlGenericElement('content',
       key: key,
       id: id,
       type: type,
@@ -106,14 +106,14 @@ VElement content({Object key,
       classes: classes);
 }
 
-VElement dl({Object key,
+VHtmlGenericElement dl({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('dl',
+  return new VHtmlGenericElement('dl',
       key: key,
       id: id,
       type: type,
@@ -123,14 +123,14 @@ VElement dl({Object key,
       classes: classes);
 }
 
-VElement dt({Object key,
+VHtmlGenericElement dt({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('dt',
+  return new VHtmlGenericElement('dt',
       key: key,
       id: id,
       type: type,
@@ -140,14 +140,14 @@ VElement dt({Object key,
       classes: classes);
 }
 
-VElement dd({Object key,
+VHtmlGenericElement dd({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('dd',
+  return new VHtmlGenericElement('dd',
       key: key,
       id: id,
       type: type,
@@ -157,14 +157,14 @@ VElement dd({Object key,
       classes: classes);
 }
 
-VElement details({Object key,
+VHtmlGenericElement details({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('details',
+  return new VHtmlGenericElement('details',
       key: key,
       id: id,
       type: type,
@@ -174,14 +174,14 @@ VElement details({Object key,
       classes: classes);
 }
 
-VElement dialog({Object key,
+VHtmlGenericElement dialog({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('dialog',
+  return new VHtmlGenericElement('dialog',
       key: key,
       id: id,
       type: type,
@@ -191,14 +191,14 @@ VElement dialog({Object key,
       classes: classes);
 }
 
-VElement div({Object key,
+VHtmlGenericElement div({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('div',
+  return new VHtmlGenericElement('div',
       key: key,
       id: id,
       type: type,
@@ -208,14 +208,14 @@ VElement div({Object key,
       classes: classes);
 }
 
-VElement embed({Object key,
+VHtmlGenericElement embed({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('embed',
+  return new VHtmlGenericElement('embed',
       key: key,
       id: id,
       type: type,
@@ -225,14 +225,14 @@ VElement embed({Object key,
       classes: classes);
 }
 
-VElement fieldset({Object key,
+VHtmlGenericElement fieldset({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('fieldset',
+  return new VHtmlGenericElement('fieldset',
       key: key,
       id: id,
       type: type,
@@ -242,14 +242,14 @@ VElement fieldset({Object key,
       classes: classes);
 }
 
-VElement form({Object key,
+VHtmlGenericElement form({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('form',
+  return new VHtmlGenericElement('form',
       key: key,
       id: id,
       type: type,
@@ -259,14 +259,14 @@ VElement form({Object key,
       classes: classes);
 }
 
-VElement hr({Object key,
+VHtmlGenericElement hr({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('hr',
+  return new VHtmlGenericElement('hr',
       key: key,
       id: id,
       type: type,
@@ -276,14 +276,14 @@ VElement hr({Object key,
       classes: classes);
 }
 
-VElement h1({Object key,
+VHtmlGenericElement h1({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h1',
+  return new VHtmlGenericElement('h1',
       key: key,
       id: id,
       type: type,
@@ -293,14 +293,14 @@ VElement h1({Object key,
       classes: classes);
 }
 
-VElement h2({Object key,
+VHtmlGenericElement h2({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h2',
+  return new VHtmlGenericElement('h2',
       key: key,
       id: id,
       type: type,
@@ -310,14 +310,14 @@ VElement h2({Object key,
       classes: classes);
 }
 
-VElement h3({Object key,
+VHtmlGenericElement h3({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h3',
+  return new VHtmlGenericElement('h3',
       key: key,
       id: id,
       type: type,
@@ -327,14 +327,14 @@ VElement h3({Object key,
       classes: classes);
 }
 
-VElement h4({Object key,
+VHtmlGenericElement h4({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h4',
+  return new VHtmlGenericElement('h4',
       key: key,
       id: id,
       type: type,
@@ -344,14 +344,14 @@ VElement h4({Object key,
       classes: classes);
 }
 
-VElement h5({Object key,
+VHtmlGenericElement h5({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h5',
+  return new VHtmlGenericElement('h5',
       key: key,
       id: id,
       type: type,
@@ -361,14 +361,14 @@ VElement h5({Object key,
       classes: classes);
 }
 
-VElement h6({Object key,
+VHtmlGenericElement h6({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('h6',
+  return new VHtmlGenericElement('h6',
       key: key,
       id: id,
       type: type,
@@ -378,14 +378,14 @@ VElement h6({Object key,
       classes: classes);
 }
 
-VElement iframe({Object key,
+VHtmlGenericElement iframe({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('iframe',
+  return new VHtmlGenericElement('iframe',
       key: key,
       id: id,
       type: type,
@@ -395,14 +395,14 @@ VElement iframe({Object key,
       classes: classes);
 }
 
-VElement input({Object key,
+VHtmlGenericElement input({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('input',
+  return new VHtmlGenericElement('input',
       key: key,
       id: id,
       type: type,
@@ -412,14 +412,14 @@ VElement input({Object key,
       classes: classes);
 }
 
-VElement keygen({Object key,
+VHtmlGenericElement keygen({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('keygen',
+  return new VHtmlGenericElement('keygen',
       key: key,
       id: id,
       type: type,
@@ -429,14 +429,14 @@ VElement keygen({Object key,
       classes: classes);
 }
 
-VElement li({Object key,
+VHtmlGenericElement li({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('li',
+  return new VHtmlGenericElement('li',
       key: key,
       id: id,
       type: type,
@@ -446,14 +446,14 @@ VElement li({Object key,
       classes: classes);
 }
 
-VElement legend({Object key,
+VHtmlGenericElement legend({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('legend',
+  return new VHtmlGenericElement('legend',
       key: key,
       id: id,
       type: type,
@@ -463,14 +463,14 @@ VElement legend({Object key,
       classes: classes);
 }
 
-VElement media({Object key,
+VHtmlGenericElement media({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('media',
+  return new VHtmlGenericElement('media',
       key: key,
       id: id,
       type: type,
@@ -480,14 +480,14 @@ VElement media({Object key,
       classes: classes);
 }
 
-VElement menu({Object key,
+VHtmlGenericElement menu({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('menu',
+  return new VHtmlGenericElement('menu',
       key: key,
       id: id,
       type: type,
@@ -497,14 +497,14 @@ VElement menu({Object key,
       classes: classes);
 }
 
-VElement meter({Object key,
+VHtmlGenericElement meter({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('meter',
+  return new VHtmlGenericElement('meter',
       key: key,
       id: id,
       type: type,
@@ -514,14 +514,14 @@ VElement meter({Object key,
       classes: classes);
 }
 
-VElement mod({Object key,
+VHtmlGenericElement mod({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('mod',
+  return new VHtmlGenericElement('mod',
       key: key,
       id: id,
       type: type,
@@ -531,14 +531,14 @@ VElement mod({Object key,
       classes: classes);
 }
 
-VElement ol({Object key,
+VHtmlGenericElement ol({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('ol',
+  return new VHtmlGenericElement('ol',
       key: key,
       id: id,
       type: type,
@@ -548,14 +548,14 @@ VElement ol({Object key,
       classes: classes);
 }
 
-VElement object({Object key,
+VHtmlGenericElement object({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('object',
+  return new VHtmlGenericElement('object',
       key: key,
       id: id,
       type: type,
@@ -565,14 +565,14 @@ VElement object({Object key,
       classes: classes);
 }
 
-VElement optgroup({Object key,
+VHtmlGenericElement optgroup({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('optgroup',
+  return new VHtmlGenericElement('optgroup',
       key: key,
       id: id,
       type: type,
@@ -582,14 +582,14 @@ VElement optgroup({Object key,
       classes: classes);
 }
 
-VElement option({Object key,
+VHtmlGenericElement option({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('option',
+  return new VHtmlGenericElement('option',
       key: key,
       id: id,
       type: type,
@@ -599,14 +599,14 @@ VElement option({Object key,
       classes: classes);
 }
 
-VElement output({Object key,
+VHtmlGenericElement output({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('output',
+  return new VHtmlGenericElement('output',
       key: key,
       id: id,
       type: type,
@@ -616,14 +616,14 @@ VElement output({Object key,
       classes: classes);
 }
 
-VElement p({Object key,
+VHtmlGenericElement p({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('p',
+  return new VHtmlGenericElement('p',
       key: key,
       id: id,
       type: type,
@@ -633,14 +633,14 @@ VElement p({Object key,
       classes: classes);
 }
 
-VElement param({Object key,
+VHtmlGenericElement param({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('param',
+  return new VHtmlGenericElement('param',
       key: key,
       id: id,
       type: type,
@@ -650,14 +650,14 @@ VElement param({Object key,
       classes: classes);
 }
 
-VElement picture({Object key,
+VHtmlGenericElement picture({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('picture',
+  return new VHtmlGenericElement('picture',
       key: key,
       id: id,
       type: type,
@@ -667,14 +667,14 @@ VElement picture({Object key,
       classes: classes);
 }
 
-VElement pre({Object key,
+VHtmlGenericElement pre({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('pre',
+  return new VHtmlGenericElement('pre',
       key: key,
       id: id,
       type: type,
@@ -684,14 +684,14 @@ VElement pre({Object key,
       classes: classes);
 }
 
-VElement progress({Object key,
+VHtmlGenericElement progress({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('progress',
+  return new VHtmlGenericElement('progress',
       key: key,
       id: id,
       type: type,
@@ -701,14 +701,14 @@ VElement progress({Object key,
       classes: classes);
 }
 
-VElement quote({Object key,
+VHtmlGenericElement quote({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('quote',
+  return new VHtmlGenericElement('quote',
       key: key,
       id: id,
       type: type,
@@ -718,14 +718,14 @@ VElement quote({Object key,
       classes: classes);
 }
 
-VElement select({Object key,
+VHtmlGenericElement select({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('select',
+  return new VHtmlGenericElement('select',
       key: key,
       id: id,
       type: type,
@@ -735,14 +735,14 @@ VElement select({Object key,
       classes: classes);
 }
 
-VElement source({Object key,
+VHtmlGenericElement source({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('source',
+  return new VHtmlGenericElement('source',
       key: key,
       id: id,
       type: type,
@@ -752,14 +752,14 @@ VElement source({Object key,
       classes: classes);
 }
 
-VElement span({Object key,
+VHtmlGenericElement span({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('span',
+  return new VHtmlGenericElement('span',
       key: key,
       id: id,
       type: type,
@@ -769,14 +769,14 @@ VElement span({Object key,
       classes: classes);
 }
 
-VElement caption({Object key,
+VHtmlGenericElement caption({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('caption',
+  return new VHtmlGenericElement('caption',
       key: key,
       id: id,
       type: type,
@@ -786,14 +786,14 @@ VElement caption({Object key,
       classes: classes);
 }
 
-VElement td({Object key,
+VHtmlGenericElement td({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('td',
+  return new VHtmlGenericElement('td',
       key: key,
       id: id,
       type: type,
@@ -804,14 +804,14 @@ VElement td({Object key,
 }
 
 
-VElement tr({Object key,
+VHtmlGenericElement tr({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('tr',
+  return new VHtmlGenericElement('tr',
       key: key,
       id: id,
       type: type,
@@ -821,14 +821,14 @@ VElement tr({Object key,
       classes: classes);
 }
 
-VElement table({Object key,
+VHtmlGenericElement table({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('table',
+  return new VHtmlGenericElement('table',
       key: key,
       id: id,
       type: type,
@@ -838,14 +838,14 @@ VElement table({Object key,
       classes: classes);
 }
 
-VElement template({Object key,
+VHtmlGenericElement template({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('template',
+  return new VHtmlGenericElement('template',
       key: key,
       id: id,
       type: type,
@@ -855,14 +855,14 @@ VElement template({Object key,
       classes: classes);
 }
 
-VElement ul({Object key,
+VHtmlGenericElement ul({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('ul',
+  return new VHtmlGenericElement('ul',
       key: key,
       id: id,
       type: type,
@@ -872,14 +872,14 @@ VElement ul({Object key,
       classes: classes);
 }
 
-VElement article({Object key,
+VHtmlGenericElement article({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('article',
+  return new VHtmlGenericElement('article',
       key: key,
       id: id,
       type: type,
@@ -889,14 +889,14 @@ VElement article({Object key,
       classes: classes);
 }
 
-VElement section({Object key,
+VHtmlGenericElement section({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('section',
+  return new VHtmlGenericElement('section',
       key: key,
       id: id,
       type: type,
@@ -906,14 +906,14 @@ VElement section({Object key,
       classes: classes);
 }
 
-VElement nav({Object key,
+VHtmlGenericElement nav({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('nav',
+  return new VHtmlGenericElement('nav',
       key: key,
       id: id,
       type: type,
@@ -923,14 +923,14 @@ VElement nav({Object key,
       classes: classes);
 }
 
-VElement header({Object key,
+VHtmlGenericElement header({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('header',
+  return new VHtmlGenericElement('header',
       key: key,
       id: id,
       type: type,
@@ -940,14 +940,14 @@ VElement header({Object key,
       classes: classes);
 }
 
-VElement footer({Object key,
+VHtmlGenericElement footer({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('footer',
+  return new VHtmlGenericElement('footer',
       key: key,
       id: id,
       type: type,
@@ -957,14 +957,14 @@ VElement footer({Object key,
       classes: classes);
 }
 
-VElement strong({Object key,
+VHtmlGenericElement strong({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VElement('strong',
+  return new VHtmlGenericElement('strong',
       key: key,
       id: id,
       type: type,

@@ -4,7 +4,7 @@
 
 part of liquid.vdom;
 
-abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
+abstract class VRootBase<T extends html.Element> extends VElement<T> {
   VRootDecorator<T> parent;
   Component<T> component;
 
@@ -23,7 +23,13 @@ abstract class VRootBase<T extends html.Element> extends VElementBase<T> {
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(null, children, id, type, attributes, classes, styles);
+      : super(
+          key: null,
+          children: children,
+          id: id,
+          type: type,
+          classes: classes,
+          styles: styles);
 
   void create(Context context) {
     throw new UnsupportedError('VRootBase doesn\'t support creating, you'

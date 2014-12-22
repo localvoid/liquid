@@ -12,16 +12,7 @@ import 'package:liquid/src/utils.dart';
 import 'package:liquid/src/component.dart';
 
 part 'package:liquid/src/vdom/basic.dart';
+part 'package:liquid/src/vdom/elements.dart';
 part 'package:liquid/src/vdom/component.dart';
 part 'package:liquid/src/vdom/root.dart';
 part 'package:liquid/src/vdom/root_decorator.dart';
-
-part 'package:liquid/src/vdom/elements/abbr.dart';
-part 'package:liquid/src/vdom/elements/map.dart';
-part 'package:liquid/src/vdom/elements/area.dart';
-part 'package:liquid/src/vdom/elements/check_box.dart';
-part 'package:liquid/src/vdom/elements/label.dart';
-part 'package:liquid/src/vdom/elements/text_input.dart';
-part 'package:liquid/src/vdom/elements/text_area.dart';
-part 'package:liquid/src/vdom/elements/link.dart';
-part 'package:liquid/src/vdom/elements/img.dart';

@@ -5,7 +5,7 @@
 part of liquid.vdom;
 
 abstract class VComponent<C extends Component<T>, T extends html.Element>
-  extends VElementBase<T> {
+  extends VElement<T> {
   C component;
 
   html.Node get container => component.container;
@@ -18,7 +18,13 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
       Map<String, String> attributes,
       List<String> classes,
       Map<String, String> styles)
-      : super(key, children, id, type, attributes, classes, styles);
+      : super(
+          key: key,
+          children: children,
+          id: id,
+          type: type,
+          classes: classes,
+          styles: styles);
 
   void init() { component.init(); }
 
