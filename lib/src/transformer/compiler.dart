@@ -41,7 +41,10 @@ class CompilerVisitor extends LinterVisitor {
           final argName = arg.name.label.name;
           if (!reservedProperties.containsKey(argName) &&
               componentMetaData.properties.containsKey(argName)) {
-            propertyMask |= 1 << componentMetaData.properties[argName].index;
+            final propertyData = componentMetaData.properties[argName];
+            if (!propertyData.required) {
+              propertyMask |= 1 << propertyData.index;
+            }
           }
         }
         transaction.edit(offset, offset, '$propertyMask, ');
