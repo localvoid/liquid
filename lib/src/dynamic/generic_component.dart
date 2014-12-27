@@ -56,6 +56,10 @@ class VGenericComponent extends vdom.VComponent {
     component.internalUpdate();
   }
 
+  bool sameType(vdom.VNode other) =>
+      (super.sameType(other) &&
+       _classMirror.reflectedType == (other as VGenericComponent)._classMirror.reflectedType);
+
   String toString() =>
       '<${MirrorSystem.getName(_classMirror.simpleName)} key="$key"/>';
 }
