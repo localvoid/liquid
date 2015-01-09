@@ -136,7 +136,7 @@ abstract class Component<T extends html.Element> implements Context {
   /// Execution context: [domScheduler]:write
   vdom.VRootBase<T> build() => null;
 
-  /// Lifecycle method to update [Component].
+  /// Lifecycle method to update [Component]. *EXPERIMENTAL*
   ///
   /// Execution context: [domScheduler]:write
   Future update() => null;
@@ -342,7 +342,7 @@ abstract class Component<T extends html.Element> implements Context {
     return null;
   }
 
-  /// Experimental API
+  /// *EXPERIMENTAL*
   dynamic scopeGet(Symbol key) {
     Component c = this;
     while (c != null) {
@@ -357,7 +357,7 @@ abstract class Component<T extends html.Element> implements Context {
     return null;
   }
 
-  /// Experimental API
+  /// *EXPERIMENTAL*
   void scopeSet(Symbol key, dynamic value) {
     if (_store == null) {
       _store = new HashMap<Symbol, dynamic>();
