@@ -6,10 +6,8 @@ homepage: https://github.com/localvoid/liquid
 environment:
   sdk: '>=1.6.0'
 dependencies:
-  vdom:
-    git: git://github.com/localvoid/vdom.git
-  dom_scheduler:
-    git: git://github.com/localvoid/dom_scheduler.git
+  vdom: '>=0.8.0'
+  dom_scheduler: '>=0.0.2'
   analyzer: any
   code_transformers: any
   barback: any

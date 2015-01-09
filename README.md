@@ -1,4 +1,4 @@
-# [Liquid](https://localvoid.github.io/liquid/)
+# Liquid
 
 Library to build User Interfaces in Dart with
 [Virtual DOM](https://github.com/localvoid/vdom).
@@ -7,14 +7,16 @@ Library to build User Interfaces in Dart with
 
 Requirements:
 
- - Dart SDK 1.6 or greater
+ - Dart SDK 1.8 or greater
 
 #### 1. Create a new Dart Web Project
-#### 2. Add Liquid library in `pubspec.yaml` file:
+#### 2. Add Liquid library and transformer in `pubspec.yaml` file:
 
 ```yaml
 dependencies:
   liquid: any
+transformers:
+- liquid
 ```
 
 #### 3. Install it
@@ -26,10 +28,6 @@ $ pub get
 And now you are ready to use it, just import
 `'package:liquid/liquid.dart'` and start writing your first
 application with Liquid library
-
-You can start by going through our
-[Tutorial](https://localvoid.github.io/liquid/), or read
-the source code from our examples.
 
 ## Examples
 
