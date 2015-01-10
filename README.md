@@ -38,6 +38,7 @@ Here are simple examples that is build with Liquid library:
 - [100 Animated Boxes](https://github.com/localvoid/liquid/tree/master/example/anim-100)
 - [Todo App](https://github.com/localvoid/liquid/tree/master/example/todo)
 - [Read DOM](https://github.com/localvoid/liquid/tree/master/example/read-dom)
+- [Form](https://github.com/localvoid/liquid/tree/master/example/form)
 
 ### TodoMVC example
 

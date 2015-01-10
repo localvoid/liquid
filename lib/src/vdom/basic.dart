@@ -191,14 +191,14 @@ VHtmlGenericElement dialog({Object key,
       classes: classes);
 }
 
-VHtmlGenericElement div({Object key,
+VDiv div({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VHtmlGenericElement('div',
+  return new VDiv(
       key: key,
       id: id,
       type: type,
@@ -752,14 +752,14 @@ VHtmlGenericElement source({Object key,
       classes: classes);
 }
 
-VHtmlGenericElement span({Object key,
+VSpan span({Object key,
      String id,
      String type,
      List<VNode> children,
      Map<String, String> attributes,
      Map<String, String> styles,
      List<String> classes}) {
-  return new VHtmlGenericElement('span',
+  return new VSpan(
       key: key,
       id: id,
       type: type,

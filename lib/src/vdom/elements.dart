@@ -54,26 +54,6 @@ VArea area({
       styles: styles);
 }
 
-/// Creates a new [Checkbox] element.
-VCheckBox checkbox({
-  Object key,
-  bool checked,
-  String id,
-  String type,
-  Map<String, String> attributes,
-  List<String> classes,
-  Map<String, String> styles}) {
-
-  return new VCheckBox(
-      key: key,
-      checked: checked,
-      id: id,
-      type: type,
-      attributes: attributes,
-      classes: classes,
-      styles: styles);
-}
-
 /// Creates a new [VImg] element.
 VImg img({
   Object key,
@@ -170,6 +150,9 @@ VMap map({
 }
 
 /// Creates a new [VTextArea] element.
+///
+/// deprecated in favour of [textArea]
+@deprecated
 VTextArea textarea({
   Object key,
   String value,
@@ -193,8 +176,8 @@ VTextArea textarea({
       styles: styles);
 }
 
-/// Creates a new [TextInput] element.
-VTextInput textInput({
+/// Creates a new [VTextArea] element.
+VTextArea textArea({
   Object key,
   String value,
   String placeholder,
@@ -205,11 +188,492 @@ VTextInput textInput({
   List<String> classes,
   Map<String, String> styles}) {
 
-  return new VTextInput(
+  return new VTextArea(
       key: key,
       value: value,
       placeholder: placeholder,
       autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VTextInput] element.
+VTextInput textInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VTextInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VPasswordInput] element.
+VPasswordInput passwordInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VPasswordInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VEmailInput] element.
+VEmailInput emailInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VEmailInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VUrlInput] element.
+VUrlInput urlInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VUrlInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VTelInput] element.
+VTelInput telInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VTelInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VNumberInput] element.
+VNumberInput numberInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VNumberInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VSearchInput] element.
+VSearchInput searchInput({
+  Object key,
+  String value,
+  bool disabled,
+  String placeholder,
+  int maxLength,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VSearchInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder,
+      maxLength: maxLength,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VTimeInput] element.
+VTimeInput timeInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VTimeInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VWeekInput] element.
+VWeekInput weekInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VWeekInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VMonthInput] element.
+VMonthInput monthInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VMonthInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VDateInput] element.
+VDateInput dateInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VDateInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VDateTimeInput] element.
+VDateTimeInput dateTimeInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VDateTimeInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VLocalDateTimeInput] element.
+VLocalDateTimeInput localDateTimeInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VLocalDateTimeInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VColorInput] element.
+VColorInput colorInput({
+  Object key,
+  String value,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VColorInput(
+      key: key,
+      value: value,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VFileInput] element.
+VFileInput fileInput({
+  Object key,
+  String value,
+  String accept,
+  bool multiple,
+  bool disabled,
+  bool autofocus,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VFileInput(
+      key: key,
+      value: value,
+      accept: accept,
+      multiple: multiple,
+      disabled: disabled,
+      autofocus: autofocus,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VCheckBox] element.
+///
+/// Deprecated in favour of [checkBox]
+@deprecated
+VCheckBox checkbox({
+  Object key,
+  bool checked,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VCheckBox(
+      key: key,
+      checked: checked,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VCheckBox] element.
+VCheckBox checkBox({
+  Object key,
+  bool checked,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VCheckBox(
+      key: key,
+      checked: checked,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VRadioButton] element.
+VRadioButton radioButton({
+  Object key,
+  bool checked,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VRadioButton(
+      key: key,
+      checked: checked,
+      id: id,
+      type: type,
+      attributes: attributes,
+      classes: classes,
+      styles: styles);
+}
+
+/// Creates a new [VSlider] element.
+VSlider slider({
+  Object key,
+  String value,
+  int max,
+  int min,
+  int step,
+  String id,
+  String type,
+  Map<String, String> attributes,
+  List<String> classes,
+  Map<String, String> styles}) {
+
+  return new VSlider(
+      key: key,
+      value: value,
+      max: max,
+      min: min,
+      step: step,
       id: id,
       type: type,
       attributes: attributes,
