@@ -46,3 +46,7 @@ Here are simple examples that is build with Liquid library:
 [[Source Code](https://github.com/localvoid/todomvc-liquid)], it is
 heavily commented and demonstrates many important features of this
 library.
+
+### DBMonster Benchmark
+
+[Run](http://localvoid.github.io/liquid-dbmonster/)
