@@ -1,4 +1,4 @@
-# Liquid
+# Liquid (deprecated in favor of [uix](https://github.com/localvoid/uix/))
 
 Library to build User Interfaces in Dart with
 [Virtual DOM](https://github.com/localvoid/vdom).
