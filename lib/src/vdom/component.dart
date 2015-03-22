@@ -23,6 +23,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
           children: children,
           id: id,
           type: type,
+          attributes: attributes,
           classes: classes,
           styles: styles);
 
