@@ -1,6 +1,6 @@
 name: liquid
 description: Library to build User Interfaces
-version: 0.3.2
+version: 0.3.3
 author: Boris Kaul <localvoid@gmail.com>
 homepage: https://github.com/localvoid/liquid
 environment:
