@@ -28,6 +28,7 @@ abstract class VRootBase<T extends html.Element> extends VElement<T> {
           children: children,
           id: id,
           type: type,
+          attributes: attributes,
           classes: classes,
           styles: styles);
 

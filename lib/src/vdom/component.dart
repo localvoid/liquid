@@ -23,6 +23,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
           children: children,
           id: id,
           type: type,
+          attributes: attributes,
           classes: classes,
           styles: styles);
 
@@ -34,6 +35,7 @@ abstract class VComponent<C extends Component<T>, T extends html.Element>
   }
 
   void update(VComponent<C, T> other, Context context) {
+    super.update(other, context);
     other.ref = ref;
     other.component = component;
   }

@@ -104,8 +104,8 @@ class CompilerVisitor extends LinterVisitor {
       }
     }
     out.write(
-        'Object key, List<__vdom.VNode> children, String id, String type, Map<String, String> arguments, List<String> classes, Map<String, String> styles)\n'
-            '      : super(key, children, id, type, arguments, classes, styles);\n\n');
+        'Object key, List<__vdom.VNode> children, String id, String type, Map<String, String> attributes, List<String> classes, Map<String, String> styles)\n'
+            '      : super(key, children, id, type, attributes, classes, styles);\n\n');
 
     // create()
     out.write('  void create(__vdom.Context context) {\n');
@@ -185,7 +185,7 @@ class CompilerVisitor extends LinterVisitor {
     }
     out.write(
         'Object key, List<__vdom.VNode> children, String id, String type, '
-        'Map<String, String> arguments, List<String> classes, '
+        'Map<String, String> attributes, List<String> classes, '
         'Map<String, String> styles');
     out.write('}) =>\n    new __V$name(');
     if (metaData.properties.isNotEmpty) {
@@ -196,6 +196,6 @@ class CompilerVisitor extends LinterVisitor {
         out.write('$p, ');
       }
     }
-    out.write('key, children, id, type, arguments, classes, styles);\n');
+    out.write('key, children, id, type, attributes, classes, styles);\n');
   }
 }
